@@ -2,8 +2,8 @@ package pl.jkap.sozzt.controller;
 
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.hibernate.criterion.Order;
+import org.springframework.web.bind.annotation.*;
 import pl.jkap.sozzt.model.Orders;
 import pl.jkap.sozzt.service.OrderService;
 
@@ -22,5 +22,15 @@ public class OrderController {
    public List<Orders> getOrders(){
        return orderService.getOrders();
    }
+
+    @GetMapping("/orders/{id}")
+    public Orders getSingleOrder(@PathVariable long id){
+        return orderService.getSingleOrders(id);
+    }
+
+    @PostMapping("/orders")
+    public Orders addOrder(@RequestBody Orders orders){
+        return orderService.addOrder(orders);
+    }
 
 }
