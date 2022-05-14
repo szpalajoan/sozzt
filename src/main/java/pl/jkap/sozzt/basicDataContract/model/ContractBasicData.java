@@ -1,5 +1,6 @@
 package pl.jkap.sozzt.basicDataContract.model;
 
+
 import lombok.Getter;
 import lombok.Setter;
 
