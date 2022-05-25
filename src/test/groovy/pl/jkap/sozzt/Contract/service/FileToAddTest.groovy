@@ -1,4 +1,4 @@
-package pl.jkap.sozzt.basicDataContract.service
+package pl.jkap.sozzt.Contract.service
 
 
 import org.springframework.web.multipart.MultipartFile
@@ -7,8 +7,6 @@ import spock.lang.Specification
 
 class FileToAddTest extends Specification {
 
-
-    //Class to be tested
     private FileToAdd addedFile
 
     private MultipartFile multipartFile

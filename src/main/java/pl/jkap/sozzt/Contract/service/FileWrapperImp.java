@@ -1,4 +1,4 @@
-package pl.jkap.sozzt.basicDataContract.service;
+package pl.jkap.sozzt.Contract.service;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;

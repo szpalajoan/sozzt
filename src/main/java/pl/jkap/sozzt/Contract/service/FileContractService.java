@@ -1,11 +1,11 @@
-package pl.jkap.sozzt.basicDataContract.service;
+package pl.jkap.sozzt.Contract.service;
 
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import pl.jkap.sozzt.basicDataContract.model.FileContractData;
-import pl.jkap.sozzt.basicDataContract.repository.FileContractRepository;
+import pl.jkap.sozzt.Contract.model.FileContract;
+import pl.jkap.sozzt.Contract.repository.FileContractRepository;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -18,22 +18,22 @@ public class FileContractService {
     private final FileContractRepository fileContractRepository;
 
 
-    public FileContractData uploadFileContact(MultipartFile file, long idContractBasicData) {
+    public FileContract uploadFileContact(MultipartFile file, long idContract) {
 
-        FileContractData fileContractData = new FileContractData();
+        FileContract fileContract = new FileContract();
 
         try {
-            String savedPathFile = saveFileOnServer(file, idContractBasicData);
+            String savedPathFile = saveFileOnServer(file, idContract);
 
-            fileContractData.setPath_file(savedPathFile);
-            fileContractData.setName_file(file.getOriginalFilename());
-            fileContractData.setId_contract_basic_data(idContractBasicData);
+            fileContract.setPathFile(savedPathFile);
+            fileContract.setNameFile(file.getOriginalFilename());
+            fileContract.setIdContract(idContract);
+            fileContractRepository.save(fileContract);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
-        fileContractRepository.save(fileContractData);
-        return fileContractData;
+        return fileContract;
     }
 
     public static String saveFileOnServer(MultipartFile file, long numberFolder) throws IOException {
@@ -41,7 +41,7 @@ public class FileContractService {
         FileToAdd fileToAdd = new FileToAdd();
 
         String pathFileWithName = fileToAdd.createPathWithUniqueFileName(numberFolder,file);
-
+        Files.createDirectories(Paths.get("files/" + numberFolder));
         Files.write(Paths.get(pathFileWithName), file.getBytes());
         return pathFileWithName;
     }

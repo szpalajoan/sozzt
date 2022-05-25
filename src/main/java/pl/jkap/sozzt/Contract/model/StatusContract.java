@@ -1,4 +1,4 @@
-package pl.jkap.sozzt.basicDataContract.model;
+package pl.jkap.sozzt.Contract.model;
 
 
 import lombok.Getter;
@@ -9,10 +9,10 @@ import javax.persistence.*;
 @Entity
 @Table(name = "status_contract")
 @Getter
-public class StatusContractData {
+public class StatusContract {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id_status_contract;
-    private String status_text;
+    private Long idStatusContract;
+    private String statusText;
 
 }

@@ -1,4 +1,4 @@
-package pl.jkap.sozzt.basicDataContract.controller
+package pl.jkap.sozzt.Contract.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.beans.factory.annotation.Autowired
@@ -8,9 +8,9 @@ import org.springframework.mock.web.MockMultipartFile
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.MvcResult
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-import pl.jkap.sozzt.basicDataContract.model.ContractBasicData
-import pl.jkap.sozzt.basicDataContract.model.FileContractData
-import pl.jkap.sozzt.basicDataContract.service.ContractBasicDataService
+import pl.jkap.sozzt.Contract.model.Contract
+import pl.jkap.sozzt.Contract.model.FileContract
+import pl.jkap.sozzt.Contract.service.ContractService
 import org.springframework.http.MediaType
 import spock.lang.Specification
 
@@ -20,7 +20,7 @@ import spock.lang.Specification
 class FileContractControllerTest extends Specification {
 
     @Autowired
-    private ContractBasicDataService contractBasicDataService
+    private ContractService contractBasicDataService
 
     @Autowired
     private MockMvc mockMvc
@@ -32,22 +32,22 @@ class FileContractControllerTest extends Specification {
     def "Justyna can upload an attachment to the contract"() {
 
         given: "There is exist contract"
-        ContractBasicData newContractBasicData = new ContractBasicData()
-        newContractBasicData.setInvoice_number(invoiceNumber)
-        contractBasicDataService.addContractBasicData(newContractBasicData)
+        Contract newContractBasicData = new Contract()
+        newContractBasicData.setInvoiceNumber(invoiceNumber)
+        contractBasicDataService.addContract(newContractBasicData)
 
         when: "Justyna upload an attachment to the contract"
         MockMultipartFile file = new MockMultipartFile("file", fileName, MediaType.TEXT_PLAIN_VALUE, "Hello, World!".getBytes())
 
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.multipart("/fileContract")
                 .file(file)
-                .param("idContractBasicData", newContractBasicData.getId_contract_basic_data().toString()))
-                .andReturn()
+               .param("idContractBasicData", newContractBasicData.getId().toString()))
+               .andReturn()
 
-        then: "an attachment is added to this contract"
-        FileContractData fileContractData = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), FileContractData.class)
-        fileContractData.getName_file() == fileName
-        fileContractData.getId_contract_basic_data() == newContractBasicData.getId_contract_basic_data()
+       then: "an attachment is added to this contract"
+        FileContract fileContractData = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), FileContract.class)
+        fileContractData.getNameFile() == fileName
+        fileContractData.getIdContract() == newContractBasicData.getId()
 
 
         where:

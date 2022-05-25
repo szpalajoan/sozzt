@@ -1,4 +1,4 @@
-package pl.jkap.sozzt.basicDataContract.controller
+package pl.jkap.sozzt.Contract.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.ObjectWriter
@@ -9,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.MvcResult
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
-import pl.jkap.sozzt.basicDataContract.model.ContractBasicData
+import pl.jkap.sozzt.Contract.model.Contract
 import spock.lang.Specification
 import org.springframework.http.MediaType
 import javax.transaction.Transactional
@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @Transactional
 @SpringBootTest
 @AutoConfigureMockMvc
-class ContractBasicDataControllerTest extends Specification {
+class ContractControllerTest extends Specification {
 
 
     @Autowired
@@ -37,8 +37,8 @@ class ContractBasicDataControllerTest extends Specification {
 
         when: "Justyna enters the contract data"
 
-        ContractBasicData newContractBasicData = new ContractBasicData()
-        newContractBasicData.setInvoice_number(invoiceNumber)
+        Contract newContractBasicData = new Contract()
+        newContractBasicData.setInvoiceNumber(invoiceNumber)
         newContractBasicData.setLocation(location)
 
 
@@ -47,14 +47,14 @@ class ContractBasicDataControllerTest extends Specification {
                 .andExpect(MockMvcResultMatchers.status().is(200))
                 .andReturn()
 
-        then: "a new contract is createsd"
-        ContractBasicData contractBasicData = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), ContractBasicData.class)
+        then: "a new contract is created"
+        Contract contractBasicData = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Contract.class)
 
-        contractBasicData.getInvoice_number() == invoiceNumber
+        contractBasicData.getInvoiceNumber() == invoiceNumber
         contractBasicData.getLocation() == location
 
         and: "contract has status 'waiting to preliminary map'"
-        contractBasicData.getId_status_contract().getId_status_contract() == waitingToPreliminaryMapStatus
+        contractBasicData.getIdStatusContract().getIdStatusContract() == waitingToPreliminaryMapStatus
 
 
         where:
@@ -63,8 +63,9 @@ class ContractBasicDataControllerTest extends Specification {
         waitingToPreliminaryMapStatus = 1
 
     }
+    
 
-    private static String mapperContractBasicDataToJson(ContractBasicData newContractBasicData) {
+    private static String mapperContractBasicDataToJson(Contract newContractBasicData) {
         ObjectMapper mapper = new ObjectMapper()
         mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false)
         ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter()
