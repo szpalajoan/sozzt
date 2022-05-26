@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.mock.web.MockMultipartFile
+import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.MvcResult
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
@@ -17,6 +18,7 @@ import spock.lang.Specification
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@WithMockUser
 class FileContractControllerTest extends Specification {
 
     @Autowired
@@ -41,7 +43,7 @@ class FileContractControllerTest extends Specification {
 
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.multipart("/fileContract")
                 .file(file)
-               .param("idContractBasicData", newContractBasicData.getId().toString()))
+               .param("idContract", newContractBasicData.getId().toString()))
                .andReturn()
 
        then: "an attachment is added to this contract"

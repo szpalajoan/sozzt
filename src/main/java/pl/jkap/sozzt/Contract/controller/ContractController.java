@@ -2,11 +2,15 @@ package pl.jkap.sozzt.Contract.controller;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import pl.jkap.sozzt.Contract.controller.dto.ContractDTO;
 import pl.jkap.sozzt.Contract.model.Contract;
 import pl.jkap.sozzt.Contract.service.ContractService;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.List;
 
 
@@ -16,6 +20,8 @@ public class ContractController {
 
     private final ContractService contractService;
 
+
+    //@PreAuthorize("hasRole('USER')")
     @GetMapping("/contracts")
     public List<ContractDTO> getContracts(@RequestParam(required = false) int page) {
         int pageNumber = page >= 0 ? page : 0;
@@ -27,7 +33,6 @@ public class ContractController {
         int pageNumber = page >= 0 ? page : 0;
         return contractService.getContractsWithFiles(pageNumber);
     }
-
 
     @GetMapping("/contract/{id}")
     public Contract getSingleContract(@PathVariable long id) {

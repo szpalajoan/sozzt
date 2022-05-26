@@ -1,5 +1,6 @@
 package pl.jkap.sozzt.Contract.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import pl.jkap.sozzt.Contract.controller.dto.ContractDTO;
 import pl.jkap.sozzt.Contract.model.Contract;
 
@@ -11,6 +12,7 @@ public class ContractMapper {
 
     private ContractMapper() {
     }
+
 
     public static List<ContractDTO> mapToContractDtos(List<Contract> contracts) {
         return contracts.stream()
