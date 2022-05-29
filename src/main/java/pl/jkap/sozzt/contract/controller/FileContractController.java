@@ -1,4 +1,4 @@
-package pl.jkap.sozzt.Contract.controller;
+package pl.jkap.sozzt.contract.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -6,8 +6,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-import pl.jkap.sozzt.Contract.model.FileContract;
-import pl.jkap.sozzt.Contract.service.FileContractService;
+import pl.jkap.sozzt.contract.model.FileContract;
+import pl.jkap.sozzt.contract.service.FileContractService;
 
 
 @RestController

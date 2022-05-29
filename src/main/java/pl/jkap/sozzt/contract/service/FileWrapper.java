@@ -1,4 +1,4 @@
-package pl.jkap.sozzt.Contract.service;
+package pl.jkap.sozzt.contract.service;
 
 public interface FileWrapper {
 

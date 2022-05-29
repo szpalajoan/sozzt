@@ -1,4 +1,4 @@
-package pl.jkap.sozzt.Contract.controller.dto;
+package pl.jkap.sozzt.contract.controller.dto;
 
 import lombok.Builder;
 import lombok.Getter;

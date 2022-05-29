@@ -1,8 +1,7 @@
-package pl.jkap.sozzt.Contract.controller;
+package pl.jkap.sozzt.contract.controller;
 
-import org.springframework.security.access.prepost.PreAuthorize;
-import pl.jkap.sozzt.Contract.controller.dto.ContractDTO;
-import pl.jkap.sozzt.Contract.model.Contract;
+import pl.jkap.sozzt.contract.controller.dto.ContractDTO;
+import pl.jkap.sozzt.contract.model.Contract;
 
 import java.util.List;
 import java.util.stream.Collectors;

@@ -1,19 +1,19 @@
-package pl.jkap.sozzt.Contract.service;
+package pl.jkap.sozzt.contract.service;
 
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import pl.jkap.sozzt.Contract.model.Contract;
-import pl.jkap.sozzt.Contract.model.FileContract;
-import pl.jkap.sozzt.Contract.model.StatusContract;
-import pl.jkap.sozzt.Contract.repository.ContractRepository;
-import pl.jkap.sozzt.Contract.repository.FileContractRepository;
-import pl.jkap.sozzt.Contract.repository.StatusContractRepository;
+import pl.jkap.sozzt.contract.model.Contract;
+import pl.jkap.sozzt.contract.model.FileContract;
+import pl.jkap.sozzt.contract.model.StatusContract;
+import pl.jkap.sozzt.contract.repository.ContractRepository;
+import pl.jkap.sozzt.contract.repository.FileContractRepository;
+import pl.jkap.sozzt.contract.repository.StatusContractRepository;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -65,9 +65,9 @@ public class ContractService {
         return allContracts;
     }
 
-    private List<FileContract> extractFilesContractData(List<FileContract> filesContractData, Long id_contract_basic_data) {
+    private List<FileContract> extractFilesContractData(List<FileContract> filesContractData, Long idContract) {
         return filesContractData.stream()
-                .filter(fileContractData -> fileContractData.getIdContract() == id_contract_basic_data)
+                .filter(fileContractData -> Objects.equals(fileContractData.getIdContract(), idContract))
                 .collect(Collectors.toList());
     }
 }

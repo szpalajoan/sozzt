@@ -1,16 +1,12 @@
-package pl.jkap.sozzt.Contract.controller;
+package pl.jkap.sozzt.contract.controller;
 
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import pl.jkap.sozzt.Contract.controller.dto.ContractDTO;
-import pl.jkap.sozzt.Contract.model.Contract;
-import pl.jkap.sozzt.Contract.service.ContractService;
+import pl.jkap.sozzt.contract.controller.dto.ContractDTO;
+import pl.jkap.sozzt.contract.model.Contract;
+import pl.jkap.sozzt.contract.service.ContractService;
 
-import javax.annotation.security.RolesAllowed;
 import java.util.List;
 
 

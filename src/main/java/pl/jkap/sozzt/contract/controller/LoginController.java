@@ -1,4 +1,4 @@
-package pl.jkap.sozzt.Contract.controller;
+package pl.jkap.sozzt.contract.controller;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

@@ -1,4 +1,4 @@
-package pl.jkap.sozzt.Contract.controller
+package pl.jkap.sozzt.contract.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.beans.factory.annotation.Autowired
@@ -9,9 +9,9 @@ import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.MvcResult
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-import pl.jkap.sozzt.Contract.model.Contract
-import pl.jkap.sozzt.Contract.model.FileContract
-import pl.jkap.sozzt.Contract.service.ContractService
+import pl.jkap.sozzt.contract.model.Contract
+import pl.jkap.sozzt.contract.model.FileContract
+import pl.jkap.sozzt.contract.service.ContractService
 import org.springframework.http.MediaType
 import spock.lang.Specification
 
@@ -43,10 +43,10 @@ class FileContractControllerTest extends Specification {
 
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.multipart("/fileContract")
                 .file(file)
-               .param("idContract", newContractBasicData.getId().toString()))
-               .andReturn()
+                .param("idContract", newContractBasicData.getId().toString()))
+                .andReturn()
 
-       then: "an attachment is added to this contract"
+        then: "an attachment is added to this contract"
         FileContract fileContractData = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), FileContract.class)
         fileContractData.getNameFile() == fileName
         fileContractData.getIdContract() == newContractBasicData.getId()

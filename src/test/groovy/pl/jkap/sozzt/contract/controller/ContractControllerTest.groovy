@@ -1,4 +1,4 @@
-package pl.jkap.sozzt.Contract.controller
+package pl.jkap.sozzt.contract.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.ObjectWriter
@@ -10,7 +10,7 @@ import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.MvcResult
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
-import pl.jkap.sozzt.Contract.model.Contract
+import pl.jkap.sozzt.contract.model.Contract
 import spock.lang.Specification
 import org.springframework.http.MediaType
 import javax.transaction.Transactional
@@ -42,7 +42,6 @@ class ContractControllerTest extends Specification {
         Contract newContractBasicData = new Contract()
         newContractBasicData.setInvoiceNumber(invoiceNumber)
         newContractBasicData.setLocation(location)
-
 
         MvcResult mvcResult = mockMvc.perform(post("/contract").contentType(APPLICATION_JSON_UTF8)
                 .content(mapperContractBasicDataToJson(newContractBasicData)))

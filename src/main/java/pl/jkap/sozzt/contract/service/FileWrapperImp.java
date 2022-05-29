@@ -1,8 +1,11 @@
-package pl.jkap.sozzt.Contract.service;
+package pl.jkap.sozzt.contract.service;
+
+import org.springframework.stereotype.Component;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+@Component
 public class FileWrapperImp implements FileWrapper{
 
     @Override

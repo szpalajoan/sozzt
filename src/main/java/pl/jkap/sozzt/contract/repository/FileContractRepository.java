@@ -1,9 +1,9 @@
-package pl.jkap.sozzt.Contract.repository;
+package pl.jkap.sozzt.contract.repository;
 
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import pl.jkap.sozzt.Contract.model.FileContract;
+import pl.jkap.sozzt.contract.model.FileContract;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package pl.jkap.sozzt.Contract.model;
+package pl.jkap.sozzt.contract.model;
 
 
 import lombok.Getter;

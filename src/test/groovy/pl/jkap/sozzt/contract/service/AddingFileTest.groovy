@@ -1,13 +1,11 @@
-package pl.jkap.sozzt.Contract.service
+package pl.jkap.sozzt.contract.service
 
 
 import org.springframework.web.multipart.MultipartFile
 import spock.lang.Specification
 
 
-class FileToAddTest extends Specification {
-
-    private FileToAdd addedFile
+class AddingFileTest extends Specification {
 
     private MultipartFile multipartFile
     private FileWrapper fileWrapper
@@ -15,25 +13,24 @@ class FileToAddTest extends Specification {
     void setup() {
         multipartFile = Stub(MultipartFile.class)
         fileWrapper = Stub(FileWrapper.class)
-
-        addedFile = new FileToAdd()
-        addedFile.setFileWrapper(fileWrapper)
-
     }
 
 
     def "adding a new file if a file with the same name already exists, it will change to a unique name"() {
-        given: "there is file with name "
+        given: "there are files with name "
         multipartFile.getOriginalFilename() >> nameFile
         fileWrapper.checkFileExist("files/1/test.txt") >> fileFirstExist
         fileWrapper.checkFileExist("files/1/(1)test.txt") >> fileSecondExist
         fileWrapper.checkFileExist("files/1/(2)test.txt") >> fileThirdExist
 
         when: "add new file"
-        String resultNewName = addedFile.createPathWithUniqueFileName(1, multipartFile)
+        AddingFile addingFile = new AddingFile(fileWrapper)
+        addingFile.setFile(multipartFile)
+        addingFile.setNumberFolder(1)
+        addingFile.saveFileOnServer()
 
         then: " if a file with the same name already exists there is unique name"
-        resultNewName == newName
+        addingFile.savedPathFile == newName
 
 
         where:
