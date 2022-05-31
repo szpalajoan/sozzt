@@ -16,5 +16,6 @@ public class FileContract {
     private Long idContract;
     private String nameFile;
     private String pathFile;
+    private FileType fileType;
 
 }

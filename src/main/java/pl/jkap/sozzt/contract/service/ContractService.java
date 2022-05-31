@@ -6,22 +6,23 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import pl.jkap.sozzt.contract.model.Contract;
 import pl.jkap.sozzt.contract.model.FileContract;
-import pl.jkap.sozzt.contract.model.StatusContract;
 import pl.jkap.sozzt.contract.repository.ContractRepository;
 import pl.jkap.sozzt.contract.repository.FileContractRepository;
-import pl.jkap.sozzt.contract.repository.StatusContractRepository;
+import pl.jkap.sozzt.contract.service.stepContract.Step;
+import pl.jkap.sozzt.contract.service.stepContract.StepChecker;
 
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static pl.jkap.sozzt.contract.model.ContractStep.DATA_INPUT;
+
 @Service
 @RequiredArgsConstructor
 public class ContractService {
 
     private final ContractRepository contractRepository;
-    private final StatusContractRepository statusContractRepository;
     private final FileContractRepository fileContractRepository;
 
     private static final int PAGE_SIZE = 5;
@@ -36,8 +37,7 @@ public class ContractService {
     }
 
     public Contract addContract(Contract contract) {
-        StatusContract statusContract = statusContractRepository.findById(1L).orElseThrow();
-        contract.setIdStatusContract(statusContract);
+        contract.setContractStep(DATA_INPUT);
         return contractRepository.save(contract);
     }
 
@@ -47,6 +47,7 @@ public class ContractService {
         contractEdited.setInvoiceNumber(contract.getInvoiceNumber());
         contractEdited.setExecutive(contract.getExecutive());
         contractEdited.setLocation(contract.getLocation());
+        contractEdited.setContractStep(contract.getContractStep());
         return contractEdited;
     }
 
@@ -70,4 +71,16 @@ public class ContractService {
                 .filter(fileContractData -> Objects.equals(fileContractData.getIdContract(), idContract))
                 .collect(Collectors.toList());
     }
+
+    public Contract validateStepContract(long idContract) {
+        Contract contractEdited = contractRepository.findById(idContract).orElseThrow();
+
+        StepChecker stepChecker = new StepChecker(idContract, fileContractRepository);
+        Step step = stepChecker.returnActualStep(contractEdited.getContractStep());
+
+        Step stepAfterValidate = step.validateStep();
+        contractEdited.setContractStep(stepAfterValidate.getFileType());
+        return contractEdited;
+    }
+
 }

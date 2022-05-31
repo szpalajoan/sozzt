@@ -20,10 +20,7 @@ public class Contract {
     private String location;
     private String executive;
     private LocalDateTime created;
-
-    @OneToOne
-    @JoinColumn(name = "idStatusContract")
-    private StatusContract idStatusContract;
+    private ContractStep contractStep;
 
     @OneToMany (cascade = CascadeType.REMOVE)
     @JoinColumn(name = "idContract")

@@ -11,9 +11,17 @@ import org.springframework.test.web.servlet.MvcResult
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import pl.jkap.sozzt.contract.model.Contract
 import pl.jkap.sozzt.contract.model.FileContract
+import pl.jkap.sozzt.contract.repository.FileContractRepository
 import pl.jkap.sozzt.contract.service.ContractService
 import org.springframework.http.MediaType
+import pl.jkap.sozzt.contract.service.FileContractService
+
+import static pl.jkap.sozzt.contract.model.FileType.CONTRACT_FROM_TAURON
 import spock.lang.Specification
+
+
+
+import static pl.jkap.sozzt.contract.model.ContractStep.DATA_INPUT
 
 
 @SpringBootTest
@@ -23,6 +31,7 @@ class FileContractControllerTest extends Specification {
 
     @Autowired
     private ContractService contractBasicDataService
+
 
     @Autowired
     private MockMvc mockMvc
@@ -36,14 +45,18 @@ class FileContractControllerTest extends Specification {
         given: "There is exist contract"
         Contract newContractBasicData = new Contract()
         newContractBasicData.setInvoiceNumber(invoiceNumber)
+
+        and: "contract has status 'data input'"
+        newContractBasicData.setContractStep(DATA_INPUT)
         contractBasicDataService.addContract(newContractBasicData)
 
-        when: "Justyna upload an attachment to the contract"
+        when: "Justyna upload an attachment to the contract as contract from tauron"
         MockMultipartFile file = new MockMultipartFile("file", fileName, MediaType.TEXT_PLAIN_VALUE, "Hello, World!".getBytes())
 
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.multipart("/fileContract")
                 .file(file)
-                .param("idContract", newContractBasicData.getId().toString()))
+                .param("idContract", newContractBasicData.getId().toString())
+                .param("fileType", CONTRACT_FROM_TAURON.toString()))
                 .andReturn()
 
         then: "an attachment is added to this contract"
@@ -51,6 +64,8 @@ class FileContractControllerTest extends Specification {
         fileContractData.getNameFile() == fileName
         fileContractData.getIdContract() == newContractBasicData.getId()
 
+        and: " attachment have type 'contract from tauron'"
+        fileContractData.getFileType() == CONTRACT_FROM_TAURON
 
         where:
         invoiceNumber = "123123"

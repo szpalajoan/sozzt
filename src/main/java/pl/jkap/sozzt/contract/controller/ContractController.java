@@ -2,9 +2,13 @@ package pl.jkap.sozzt.contract.controller;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.jkap.sozzt.contract.controller.dto.ContractDTO;
 import pl.jkap.sozzt.contract.model.Contract;
+import pl.jkap.sozzt.contract.model.ContractStep;
+import pl.jkap.sozzt.contract.model.FileType;
 import pl.jkap.sozzt.contract.service.ContractService;
 
 import java.util.List;
@@ -30,25 +34,31 @@ public class ContractController {
         return contractService.getContractsWithFiles(pageNumber);
     }
 
-    @GetMapping("/contract/{id}")
+    @GetMapping("/contracts/{id}")
     public Contract getSingleContract(@PathVariable long id) {
         return contractService.getContract(id);
     }
 
-    @PostMapping("/contract")
+    @PostMapping("/contracts")
     public Contract addContract(@RequestBody Contract contracts) {
         return contractService.addContract(contracts);
     }
 
-    @PutMapping("/contract")
+    @PutMapping("/contracts")
     public Contract editContract(@RequestBody Contract contracts) {
         return contractService.editContract(contracts);
     }
 
-    @DeleteMapping("/contract/{id}")
+    @PutMapping("/contracts/{id}/validateStepContract")
+    public ResponseEntity<Object> validateStepContract(@PathVariable long id) {
+        Contract editedContract = contractService.validateStepContract(id);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(editedContract);
+    }
+
+    @DeleteMapping("/contracts/{id}")
     public void deleteContract(@PathVariable long id) {
         contractService.deleteContract(id);
-
     }
 
 }

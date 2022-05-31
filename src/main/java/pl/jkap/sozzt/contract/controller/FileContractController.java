@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import pl.jkap.sozzt.contract.model.FileContract;
+import pl.jkap.sozzt.contract.model.FileType;
 import pl.jkap.sozzt.contract.service.FileContractService;
 
 
@@ -18,8 +19,8 @@ public class FileContractController {
 
 
     @PostMapping(value = "/fileContract", consumes = {"multipart/form-data"})
-    public FileContract uploadFileContact(@RequestPart("file") MultipartFile file, @RequestParam long idContract) {
-        return fileContractService.uploadFileContact(file,idContract);
+    public FileContract uploadFileContact(@RequestPart("file") MultipartFile file, @RequestParam long idContract, FileType fileType) {
+        return fileContractService.uploadFileContact(file,idContract, fileType);
 
     }
 }

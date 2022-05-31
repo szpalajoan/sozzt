@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pl.jkap.sozzt.contract.controller.ContractMapper;
 import pl.jkap.sozzt.contract.model.FileContract;
+import pl.jkap.sozzt.contract.model.FileType;
 import pl.jkap.sozzt.contract.repository.FileContractRepository;
 
 import java.io.IOException;
@@ -18,7 +19,7 @@ public class FileContractService {
     private final FileContractRepository fileContractRepository;
     private final FileWrapper fileWrapper;
 
-    public FileContract uploadFileContact(MultipartFile file, long idContract) {
+    public FileContract uploadFileContact(MultipartFile file, long idContract, FileType fileType) {
 
         AddingFile addingFile = new AddingFile(fileWrapper);
         try {
@@ -29,6 +30,7 @@ public class FileContractService {
             e.printStackTrace();
         }
         FileContract fileContract = FileMapper.mapToFileContract(addingFile);
+        fileContract.setFileType(fileType);
         fileContractRepository.save(fileContract);
         return fileContract;
     }
