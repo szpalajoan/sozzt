@@ -1,6 +1,5 @@
 package pl.jkap.sozzt.contract.service.stepContract;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import pl.jkap.sozzt.contract.model.ContractStep;
@@ -34,7 +33,7 @@ public class DataInputStep implements Step {
     }
 
     @Override
-    public ContractStep getFileType() {
+    public ContractStep getContractStep() {
         return ContractStep.DATA_INPUT;
     }
 }

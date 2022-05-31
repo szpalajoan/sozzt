@@ -4,6 +4,6 @@ import pl.jkap.sozzt.contract.model.ContractStep;
 
 public interface Step {
 
-    public ContractStep getFileType();
+    public ContractStep getContractStep();
     public Step validateStep();
 }

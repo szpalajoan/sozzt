@@ -11,10 +11,8 @@ import org.springframework.test.web.servlet.MvcResult
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import pl.jkap.sozzt.contract.model.Contract
 import pl.jkap.sozzt.contract.model.FileContract
-import pl.jkap.sozzt.contract.repository.FileContractRepository
 import pl.jkap.sozzt.contract.service.ContractService
 import org.springframework.http.MediaType
-import pl.jkap.sozzt.contract.service.FileContractService
 
 import static pl.jkap.sozzt.contract.model.FileType.CONTRACT_FROM_TAURON
 import spock.lang.Specification

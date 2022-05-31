@@ -79,7 +79,7 @@ public class ContractService {
         Step step = stepChecker.returnActualStep(contractEdited.getContractStep());
 
         Step stepAfterValidate = step.validateStep();
-        contractEdited.setContractStep(stepAfterValidate.getFileType());
+        contractEdited.setContractStep(stepAfterValidate.getContractStep());
         return contractEdited;
     }
 
