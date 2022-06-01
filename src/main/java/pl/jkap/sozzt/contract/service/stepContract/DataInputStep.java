@@ -19,7 +19,6 @@ public class DataInputStep implements Step {
 
     public DataInputStep(long id, FileContractRepository fileContractRepository) {
         this.id = id;
-
         this.fileContractRepository = fileContractRepository;
     }
 

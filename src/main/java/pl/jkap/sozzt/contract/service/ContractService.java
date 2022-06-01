@@ -75,8 +75,8 @@ public class ContractService {
     public Contract validateStepContract(long idContract) {
         Contract contractEdited = contractRepository.findById(idContract).orElseThrow();
 
-        StepChecker stepChecker = new StepChecker(idContract, fileContractRepository);
-        Step step = stepChecker.returnActualStep(contractEdited.getContractStep());
+        StepChecker stepChecker = new StepChecker(idContract, contractEdited.getContractStep(), fileContractRepository);
+        Step step = stepChecker.returnActualStep();
 
         Step stepAfterValidate = step.validateStep();
         contractEdited.setContractStep(stepAfterValidate.getContractStep());

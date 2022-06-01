@@ -9,7 +9,7 @@ import spock.lang.Specification
 class DataInputStepTest extends Specification {
 
 
-    private FileContractRepository fileContractRepository;
+    private FileContractRepository fileContractRepository
 
     void setup() {
         fileContractRepository = Stub(FileContractRepository.class)
