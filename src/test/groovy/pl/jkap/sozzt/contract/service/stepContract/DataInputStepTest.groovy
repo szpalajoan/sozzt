@@ -1,9 +1,12 @@
 package pl.jkap.sozzt.contract.service.stepContract
 
 import org.springframework.web.server.ResponseStatusException
-import pl.jkap.sozzt.contract.model.FileContract
-import pl.jkap.sozzt.contract.model.FileType
-import pl.jkap.sozzt.contract.repository.FileContractRepository
+import pl.jkap.sozzt.contract.old.service.stepContract.DataInputStep
+import pl.jkap.sozzt.contract.old.service.stepContract.Step
+import pl.jkap.sozzt.contract.old.service.stepContract.WaitingToPreliminaryStep
+import pl.jkap.sozzt.fileContract.domain.FileContract
+import pl.jkap.sozzt.contract.old.model.FileType
+import pl.jkap.sozzt.contract.old.repository.FileContractRepository
 import spock.lang.Specification
 
 class DataInputStepTest extends Specification {

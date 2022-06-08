@@ -1,10 +1,14 @@
 package pl.jkap.sozzt.contract.service.stepContract
 
-import pl.jkap.sozzt.contract.repository.FileContractRepository
+import pl.jkap.sozzt.contract.old.repository.FileContractRepository
+import pl.jkap.sozzt.contract.old.service.stepContract.DataInputStep
+import pl.jkap.sozzt.contract.old.service.stepContract.Step
+import pl.jkap.sozzt.contract.old.service.stepContract.StepChecker
+import pl.jkap.sozzt.contract.old.service.stepContract.WaitingToPreliminaryStep
 import spock.lang.Specification
 
-import static pl.jkap.sozzt.contract.model.ContractStep.DATA_INPUT
-import static pl.jkap.sozzt.contract.model.ContractStep.WAITING_TO_PRELIMINARY
+import static pl.jkap.sozzt.contract.old.model.ContractStep.DATA_INPUT
+
 
 class StepCheckerTest extends Specification {
 

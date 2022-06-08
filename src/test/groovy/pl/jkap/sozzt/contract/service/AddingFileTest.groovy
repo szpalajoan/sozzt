@@ -2,6 +2,8 @@ package pl.jkap.sozzt.contract.service
 
 
 import org.springframework.web.multipart.MultipartFile
+import pl.jkap.sozzt.contract.old.service.AddingFile
+import pl.jkap.sozzt.contract.old.service.FileWrapper
 import spock.lang.Specification
 
 
