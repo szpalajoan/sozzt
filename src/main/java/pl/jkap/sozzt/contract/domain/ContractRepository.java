@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.Repository;
 
+
 interface ContractRepository extends Repository<Contract, Long> {
 
     Contract save(Contract contract);

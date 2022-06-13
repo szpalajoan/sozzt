@@ -2,7 +2,8 @@ package pl.jkap.sozzt.contract.domain;
 
 import lombok.Builder;
 import lombok.Getter;
-import pl.jkap.sozzt.contract.dto.ContractDTO;
+import pl.jkap.sozzt.contract.dto.ContractDto;
+import pl.jkap.sozzt.contract.exception.ContractStepNotFoundException;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -10,7 +11,7 @@ import java.time.LocalDateTime;
 @Entity
 @Builder
 @Getter
-public class Contract {
+class Contract {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,27 +22,48 @@ public class Contract {
 
     private ContractStep contractStep;
 
-    void setContractStep(ContractStep contractStep) {
+    void changeStep(ContractStep contractStep) {
         this.contractStep = contractStep;
     }
 
-    void changeState(ContractStep contractStep){
-        this.contractStep = contractStep;
-    }
-
-    void confirmStep(){
+    void confirmStep() {
         this.contractStep.confirmStep();
     }
 
-    ContractDTO dto(){
-        return ContractDTO.builder()
+    void confirmScanUploaded() {
+        if (this.getContractStep() instanceof DataInputStep) {
+            ((DataInputStep) this.getContractStep()).setScanFromTauronUpload();
+        }
+    }
+
+    boolean checkIsScanFromTauronUploaded() {
+        if (this.getContractStep() instanceof DataInputStep) {
+            return ((DataInputStep) this.getContractStep()).getIsScanFromTauronUpload();
+        }
+        return true;
+    }
+
+    ContractDto.ContactStepDto checkCurrentStepDto() {
+        if (this.getContractStep() instanceof DataInputStep) {
+            return ContractDto.ContactStepDto.DATA_INPUT_STEP;
+        }
+        if (this.getContractStep() instanceof WaitingToPreliminaryMapStep) {
+            return ContractDto.ContactStepDto.WAITING_TO_PRELIMINARY_MAP_STEP;
+        }
+        throw new ContractStepNotFoundException("Contract step not found");
+    }
+
+    ContractDto dto() {
+        return ContractDto.builder()
                 .id(id)
                 .invoiceNumber(invoiceNumber)
                 .location(location)
                 .executive(executive)
+                .isScanFromTauronUpload(checkIsScanFromTauronUploaded())
+                .contactStep(checkCurrentStepDto())
+                .created(created)
                 .build();
     }
-
 
 
 }

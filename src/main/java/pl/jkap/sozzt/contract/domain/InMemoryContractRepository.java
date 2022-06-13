@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import static java.util.Objects.requireNonNull;
 
 class InMemoryContractRepository implements ContractRepository {
-    private ConcurrentHashMap<Long, Contract> map = new ConcurrentHashMap();
+    private ConcurrentHashMap<Long, Contract> map = new ConcurrentHashMap<>();
 
     @Override
     public Contract save(Contract contract) {

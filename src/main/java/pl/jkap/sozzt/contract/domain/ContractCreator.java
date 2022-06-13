@@ -1,12 +1,12 @@
 package pl.jkap.sozzt.contract.domain;
 
-import pl.jkap.sozzt.contract.dto.ContractDTO;
-import pl.jkap.sozzt.contract.dto.DataInputContractDTO;
+import pl.jkap.sozzt.contract.dto.ContractDto;
+import java.time.LocalDateTime;
 
 import static java.util.Objects.requireNonNull;
 
 class ContractCreator {
-    Contract from(ContractDTO ContractDTO){
+    Contract from(ContractDto ContractDTO){
         requireNonNull(ContractDTO);
 
         Contract contract = Contract.builder()
@@ -14,10 +14,11 @@ class ContractCreator {
                 .invoiceNumber(ContractDTO.getInvoiceNumber())
                 .location(ContractDTO.getLocation())
                 .executive(ContractDTO.getExecutive())
+                .created(LocalDateTime.now())
                 .build();
 
-        contract.setContractStep(new DataInputStep(contract));
-        
+        contract.changeStep(new DataInputStep(contract));
+
         return contract;
     }
 

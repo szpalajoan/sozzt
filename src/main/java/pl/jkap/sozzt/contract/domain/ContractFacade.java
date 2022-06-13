@@ -1,36 +1,55 @@
 package pl.jkap.sozzt.contract.domain;
 
-import lombok.extern.java.Log;
-import org.springframework.transaction.annotation.Transactional;
-import pl.jkap.sozzt.contract.dto.ContractDTO;
+import org.springframework.context.event.EventListener;
+import pl.jkap.sozzt.contract.dto.ContractDto;
+import pl.jkap.sozzt.fileContract.event.FileUploadedSpringEvent;
 
 import static java.util.Objects.requireNonNull;
 
 public class ContractFacade {
 
-    private ContractRepository contractRepository;
-    private ContractCreator contractCreator;
+    private final ContractRepository contractRepository;
+    private final ContractCreator contractCreator;
 
-    public ContractFacade(ContractRepository contractRepository, ContractCreator contractCreator){
+    public ContractFacade(ContractRepository contractRepository, ContractCreator contractCreator) {
         this.contractCreator = contractCreator;
         this.contractRepository = contractRepository;
     }
 
-    public ContractDTO addContract(ContractDTO contractDTO) {
+    public ContractDto addContract(ContractDto contractDTO) {
         requireNonNull(contractDTO);
         Contract contract = contractCreator.from(contractDTO);
         contract = contractRepository.save(contract);
         return contract.dto();
     }
 
-    public Contract getContract(long id) {
-        return contractRepository.findById(id);
+    public ContractDto getContract(long id) {
+        return contractRepository.findById(id).dto();
     }
 
-    public Contract confirmStep(long id){
-        Contract contract = contractRepository.findById(id);
-        contract.confirmStep();
-        return contractRepository.save(contract);
+    @EventListener
+    public void uploadedScanFromTauron(FileUploadedSpringEvent event) {
+        confirmScanUploaded(event.getMessage());
     }
+
+    public ContractDto confirmStep(long idContract) {
+        Contract contract = contractRepository.findById(idContract);
+        contract.confirmStep();
+        return contractRepository.save(contract).dto();
+    }
+
+    public void confirmScanUploaded(long idContract) {
+        Contract contract = contractRepository.findById(idContract);
+        contract.confirmScanUploaded();
+        contractRepository.save(contract);
+
+    }
+    public boolean checkIsScanFromTauronUploaded(long idContract){
+        Contract contract = contractRepository.findById(idContract);
+        return contract.checkIsScanFromTauronUploaded();
+    }
+
+
+
 
 }
