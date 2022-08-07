@@ -18,7 +18,6 @@ public class ContractDto {
     private boolean scanFromTauronUpload;
     private ContractStepEnum contactStepEnum;
     private LocalDateTime created;
-
 }
 
 

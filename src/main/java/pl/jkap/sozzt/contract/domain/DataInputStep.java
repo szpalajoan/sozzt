@@ -22,7 +22,7 @@ class DataInputStep implements ContractStep {
 
     @Override
     public void confirmStep() {
-        if (contract.checkIsScanFromTauronUploaded()) {
+        if (isScanFromTauronUpload) {
             this.contract.setContractStep(new WaitingToPreliminaryMapStep(this.contract));
         } else {
             throw new NoScanFileOnConfirmingException("There is no uploaded scan file.");

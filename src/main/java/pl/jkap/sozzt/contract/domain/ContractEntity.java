@@ -1,8 +1,10 @@
 package pl.jkap.sozzt.contract.domain;
 
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import pl.jkap.sozzt.contract.dto.ContractDto;
 import pl.jkap.sozzt.contract.dto.ContractStepEnum;
 
@@ -18,6 +20,8 @@ import java.time.LocalDateTime;
 @Table(name = "Contract")
 @Getter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 class ContractEntity {
 
     @Id
@@ -31,7 +35,7 @@ class ContractEntity {
     @Column(name = "contract_step")
     private ContractStepEnum contractStepEnum;
 
-    @Column(name = "is_scan_from_tauron_upload")
+    @Column(name = "scan_from_tauron_upload")
     private boolean scanFromTauronUpload;
 
     ContractDto dto() {

@@ -1,6 +1,5 @@
 package pl.jkap.sozzt.config;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
