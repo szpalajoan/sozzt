@@ -6,7 +6,7 @@ import pl.jkap.sozzt.config.application.ContractSpringEventPublisher
 import spock.lang.Specification
 
 
-class FileContractSystemStorageSpec extends Specification implements FileSample{
+class FileContractSystemStorageSpec extends Specification implements FileSample {
 
     private FileWrapper fileWrapper
     private FileContractFacade fileContractFacade
@@ -16,11 +16,11 @@ class FileContractSystemStorageSpec extends Specification implements FileSample{
     void setup() {
         fileWrapper = Stub(FileWrapper.class)
         contractSpringEventPublisher = Mock(ContractSpringEventPublisher.class)
-        fileContractFacade = new FileContractFacade(new FileSystemStorage(fileWrapper, contractSpringEventPublisher))
+        fileContractFacade = new FileContractFacade(new FileSystemStorage(contractSpringEventPublisher, fileWrapper))
     }
 
 
-    def "Should add a scan from Tauron with event send"(){
+    def "Should add a scan from Tauron with event send"() {
 
         when: "User uploads scan from Tauron"
         fileWrapper.checkFileExist("upload_dir/1/fil22eName") >> true
@@ -43,8 +43,8 @@ class FileContractSystemStorageSpec extends Specification implements FileSample{
 
         given: "there are files with name "
         fileWrapper.checkFileExist("upload_dir/1/CONTRACT_SCAN_FROM_TAURON/scan_123321") >> fileFirstExist
-        fileWrapper.checkFileExist("upload_dir/1/CONTRACT_SCAN_FROM_TAURON/scan_123321 (1)") >> fileSecondExist
-        fileWrapper.checkFileExist("upload_dir/1/CONTRACT_SCAN_FROM_TAURON/scan_123321 (2)") >> fileThirdExist
+        fileWrapper.checkFileExist("upload_dir/1/CONTRACT_SCAN_FROM_TAURON/(1)scan_123321") >> fileSecondExist
+        fileWrapper.checkFileExist("upload_dir/1/CONTRACT_SCAN_FROM_TAURON/(2)scan_123321") >> fileThirdExist
 
         when: "add new file"
         MockMultipartFile scanFromTauron = SCAN_FROM_TAURON
@@ -57,8 +57,8 @@ class FileContractSystemStorageSpec extends Specification implements FileSample{
         where:
         fileFirstExist | fileSecondExist | fileThirdExist | newPathName
         false          | false           | false          | "upload_dir/1/CONTRACT_SCAN_FROM_TAURON/scan_123321"
-        true           | false           | false          | "upload_dir/1/CONTRACT_SCAN_FROM_TAURON/scan_123321 (1)"
-        true           | true            | false          | "upload_dir/1/CONTRACT_SCAN_FROM_TAURON/scan_123321 (2)"
+        true           | false           | false          | "upload_dir/1/CONTRACT_SCAN_FROM_TAURON/(1)scan_123321"
+        true           | true            | false          | "upload_dir/1/CONTRACT_SCAN_FROM_TAURON/(2)scan_123321"
 
         idContract = 1
     }

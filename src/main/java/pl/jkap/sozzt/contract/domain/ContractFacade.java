@@ -4,6 +4,8 @@ import org.springframework.context.event.EventListener;
 import pl.jkap.sozzt.contract.dto.ContractDto;
 import pl.jkap.sozzt.fileContract.event.FileUploadedSpringEvent;
 
+import java.time.LocalDateTime;
+
 import static java.util.Objects.requireNonNull;
 
 public class ContractFacade {
@@ -18,38 +20,33 @@ public class ContractFacade {
 
     public ContractDto addContract(ContractDto contractDTO) {
         requireNonNull(contractDTO);
-        Contract contract = contractCreator.from(contractDTO);
-        contract = contractRepository.save(contract);
-        return contract.dto();
+        ContractEntity contractEntity = contractCreator.from(contractDTO);
+        Contract contract = contractCreator.from(contractEntity);
+        contract.setContractStep(new DataInputStep(contract, false));
+        contract.setCreated(LocalDateTime.now());
+        return contractRepository.save(contract.toContractEntity()).dto();
     }
 
     public ContractDto getContract(long id) {
-        return contractRepository.findById(id).dto();
+        return contractRepository.findById(id).orElseThrow().dto();
     }
 
     @EventListener
-    public void uploadedScanFromTauron(FileUploadedSpringEvent event) {
-        confirmScanUploaded(event.getMessage());
+    public void uploadedScanFromTauron(FileUploadedSpringEvent fileUploadedSpringEvent) {
+        confirmScanUploaded(fileUploadedSpringEvent.getIdContract());
     }
 
     public ContractDto confirmStep(long idContract) {
-        Contract contract = contractRepository.findById(idContract);
+        ContractEntity contractEntity = contractRepository.findById(idContract).orElseThrow();
+        Contract contract = contractCreator.from(contractEntity);
         contract.confirmStep();
-        return contractRepository.save(contract).dto();
+        return contractRepository.save(contract.toContractEntity()).dto();
     }
 
     public void confirmScanUploaded(long idContract) {
-        Contract contract = contractRepository.findById(idContract);
+        ContractEntity contractEntity = contractRepository.findById(idContract).orElseThrow();
+        Contract contract = contractCreator.from(contractEntity);
         contract.confirmScanUploaded();
-        contractRepository.save(contract);
-
+        contractRepository.save(contract.toContractEntity());
     }
-    public boolean checkIsScanFromTauronUploaded(long idContract){
-        Contract contract = contractRepository.findById(idContract);
-        return contract.checkIsScanFromTauronUploaded();
-    }
-
-
-
-
 }

@@ -1,6 +1,6 @@
 package pl.jkap.sozzt.fileContract.domain;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.util.StringUtils;
@@ -16,21 +16,15 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
 
+@AllArgsConstructor
 class FileSystemStorage {
     private static final String UPLOAD_FILE_DIR = "upload_dir/";
-    private final Path rootLocation;
+    private final Path rootLocation = Paths.get(UPLOAD_FILE_DIR);
 
-    @Autowired
     private final ContractSpringEventPublisher contractSpringEventPublisher;
-
 
     private final FileWrapper fileWrapper;
 
-    FileSystemStorage(FileWrapper fileWrapper, ContractSpringEventPublisher contractSpringEventPublisher) {
-        this.fileWrapper = fileWrapper;
-        this.rootLocation = Paths.get(UPLOAD_FILE_DIR);
-        this.contractSpringEventPublisher = contractSpringEventPublisher;
-    }
 
     String store(MultipartFile file, long idContract, FileType fileType) {
         String pathFile;
@@ -61,7 +55,7 @@ class FileSystemStorage {
 
         StringBuilder fileNameBuilder = new StringBuilder(fileName);
         while (fileWrapper.checkFileExist(directoriesFile + fileNameBuilder)) {
-            fileNameBuilder = new StringBuilder( fileName +" (" + additionalNameDistinction + ")"  );
+            fileNameBuilder = new StringBuilder("(" + additionalNameDistinction + ")" + fileName);
             additionalNameDistinction++;
         }
         return fileNameBuilder.toString();

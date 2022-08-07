@@ -1,12 +1,17 @@
 package pl.jkap.sozzt.fileContract.event;
 
-public class FileUploadedSpringEvent {
+
+import org.springframework.context.ApplicationEvent;
+
+public class FileUploadedSpringEvent extends ApplicationEvent {
     private final long idContract;
 
-    public FileUploadedSpringEvent(long idContract) {
+    public FileUploadedSpringEvent(Object source, long idContract) {
+        super(source);
         this.idContract = idContract;
     }
-    public long getMessage() {
+
+    public long getIdContract() {
         return idContract;
     }
 }

@@ -1,24 +1,44 @@
 package pl.jkap.sozzt.contract.domain;
 
+import lombok.AllArgsConstructor;
 import pl.jkap.sozzt.contract.dto.ContractDto;
-import java.time.LocalDateTime;
+import pl.jkap.sozzt.contract.dto.ContractStepEnum;
 
 import static java.util.Objects.requireNonNull;
 
+@AllArgsConstructor
 class ContractCreator {
-    Contract from(ContractDto ContractDTO){
+
+    ContractEntity from(ContractDto ContractDTO) {
         requireNonNull(ContractDTO);
 
-        Contract contract = Contract.builder()
+        return ContractEntity.builder()
                 .id(ContractDTO.getId())
                 .invoiceNumber(ContractDTO.getInvoiceNumber())
                 .location(ContractDTO.getLocation())
                 .executive(ContractDTO.getExecutive())
-                .created(LocalDateTime.now())
+                .scanFromTauronUpload(ContractDTO.isScanFromTauronUpload())
+                .contractStepEnum(ContractDTO.getContactStepEnum())
+                .created(ContractDTO.getCreated())
+                .build();
+    }
+
+    Contract from(ContractEntity contractEntity) {
+        requireNonNull(contractEntity);
+
+        Contract contract = Contract.builder()
+                .id(contractEntity.getId())
+                .invoiceNumber(contractEntity.getInvoiceNumber())
+                .location(contractEntity.getLocation())
+                .executive(contractEntity.getExecutive())
+                .created(contractEntity.getCreated())
                 .build();
 
-        contract.changeStep(new DataInputStep(contract));
-
+        if (contractEntity.getContractStepEnum() == ContractStepEnum.DATA_INPUT_STEP) {
+            contract.setContractStep(new DataInputStep(contract, contractEntity.isScanFromTauronUpload()));
+        } else if (contractEntity.getContractStepEnum() == ContractStepEnum.WAITING_TO_PRELIMINARY_MAP_STEP) {
+            contract.setContractStep(new WaitingToPreliminaryMapStep(contract));
+        }
         return contract;
     }
 

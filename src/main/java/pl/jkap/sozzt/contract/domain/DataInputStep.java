@@ -1,11 +1,16 @@
 package pl.jkap.sozzt.contract.domain;
 
-
-import pl.jkap.sozzt.contract.exception.NoScanFileOnConfirming;
+import pl.jkap.sozzt.contract.exception.NoScanFileOnConfirmingException;
 
 class DataInputStep implements ContractStep {
 
     private final Contract contract;
+    private boolean isScanFromTauronUpload;
+
+    DataInputStep(Contract contract, boolean isScanFromTauronUpload) {
+        this.contract = contract;
+        this.isScanFromTauronUpload = isScanFromTauronUpload;
+    }
 
     void setScanFromTauronUpload() {
         isScanFromTauronUpload = true;
@@ -15,19 +20,12 @@ class DataInputStep implements ContractStep {
         return isScanFromTauronUpload;
     }
 
-    private boolean isScanFromTauronUpload;
-
-    DataInputStep(Contract contract) {
-        this.contract = contract;
-        isScanFromTauronUpload = false;
-    }
-
     @Override
     public void confirmStep() {
         if (contract.checkIsScanFromTauronUploaded()) {
-            this.contract.changeStep(new WaitingToPreliminaryMapStep(this.contract));
+            this.contract.setContractStep(new WaitingToPreliminaryMapStep(this.contract));
         } else {
-            throw new NoScanFileOnConfirming("There is no uploaded skan file.");
+            throw new NoScanFileOnConfirmingException("There is no uploaded scan file.");
         }
     }
 }

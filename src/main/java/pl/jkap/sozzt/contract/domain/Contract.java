@@ -2,16 +2,20 @@ package pl.jkap.sozzt.contract.domain;
 
 import lombok.Builder;
 import lombok.Getter;
-import pl.jkap.sozzt.contract.dto.ContractDto;
+import lombok.Setter;
+import pl.jkap.sozzt.contract.dto.ContractStepEnum;
 import pl.jkap.sozzt.contract.exception.ContractStepNotFoundException;
 
-import javax.persistence.*;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.time.LocalDateTime;
 
-@Entity
 @Builder
 @Getter
+@Setter
 class Contract {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,10 +23,9 @@ class Contract {
     private String location;
     private String executive;
     private LocalDateTime created;
-
     private ContractStep contractStep;
 
-    void changeStep(ContractStep contractStep) {
+    void setContractStep(ContractStep contractStep) {
         this.contractStep = contractStep;
     }
 
@@ -43,28 +46,27 @@ class Contract {
         return true;
     }
 
-    ContractDto.ContactStepDto checkCurrentStepDto() {
+    ContractStepEnum checkCurrentStepDto() {
         if (this.getContractStep() instanceof DataInputStep) {
-            return ContractDto.ContactStepDto.DATA_INPUT_STEP;
+            return ContractStepEnum.DATA_INPUT_STEP;
         }
         if (this.getContractStep() instanceof WaitingToPreliminaryMapStep) {
-            return ContractDto.ContactStepDto.WAITING_TO_PRELIMINARY_MAP_STEP;
+            return ContractStepEnum.WAITING_TO_PRELIMINARY_MAP_STEP;
         }
         throw new ContractStepNotFoundException("Contract step not found");
     }
 
-    ContractDto dto() {
-        return ContractDto.builder()
+    ContractEntity toContractEntity() {
+        return ContractEntity.builder()
                 .id(id)
                 .invoiceNumber(invoiceNumber)
                 .location(location)
                 .executive(executive)
-                .isScanFromTauronUpload(checkIsScanFromTauronUploaded())
-                .contactStep(checkCurrentStepDto())
+                .scanFromTauronUpload(checkIsScanFromTauronUploaded())
+                .contractStepEnum(checkCurrentStepDto())
                 .created(created)
                 .build();
     }
-
 
 }
 

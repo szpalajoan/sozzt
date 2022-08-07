@@ -6,6 +6,7 @@ import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+
 @Builder
 @Getter
 @EqualsAndHashCode
@@ -14,14 +15,10 @@ public class ContractDto {
     private String invoiceNumber;
     private String location;
     private String executive;
-    private boolean isScanFromTauronUpload;
-    private ContactStepDto contactStep;
+    private boolean scanFromTauronUpload;
+    private ContractStepEnum contactStepEnum;
     private LocalDateTime created;
 
-    public enum ContactStepDto {
-        DATA_INPUT_STEP,
-        WAITING_TO_PRELIMINARY_MAP_STEP
-    }
 }
 
 

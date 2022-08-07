@@ -14,11 +14,11 @@ public class FileContractFacade {
         this.fileSystemStorage.init();
     }
 
-    public String store(MultipartFile file, long idContract, FileType fileType){
+    public String store(MultipartFile file, long idContract, FileType fileType) {
         return fileSystemStorage.store(file, idContract, fileType);
     }
 
-    public Resource loadAsResource(String filename){
+    public Resource loadAsResource(String filename) {
         return fileSystemStorage.loadAsResource(filename);
     }
 }
