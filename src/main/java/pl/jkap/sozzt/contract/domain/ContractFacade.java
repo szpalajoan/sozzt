@@ -6,7 +6,6 @@ import pl.jkap.sozzt.contract.dto.ContractDto;
 import pl.jkap.sozzt.contract.exception.ContractNotFoundException;
 import pl.jkap.sozzt.fileContract.event.FileUploadedSpringEvent;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,20 +15,18 @@ public class ContractFacade {
 
     private static final int PAGE_SIZE = 5;
     private final ContractRepository contractRepository;
-    private final ContractCreator contractCreator;
+    private final ContractMapper contractMapper;
 
-    public ContractFacade(ContractRepository contractRepository, ContractCreator contractCreator) {
-        this.contractCreator = contractCreator;
+    public ContractFacade(ContractRepository contractRepository, ContractMapper contractMapper) {
+        this.contractMapper = contractMapper;
         this.contractRepository = contractRepository;
     }
 
     public ContractDto addContract(ContractDto contractDTO) {
         requireNonNull(contractDTO);
-        ContractEntity contractEntity = contractCreator.from(contractDTO);
-        Contract contract = contractCreator.from(contractEntity);
-        contract.setContractStep(new DataInputStep(contract, false));
-        contract.setCreated(LocalDateTime.now());
-        return contractRepository.save(contract.toContractEntity()).dto();
+        ContractEntity contractEntity = contractMapper.from(contractDTO);
+        DataInputContract dataInputContract = contractMapper.dataInputStepFrom(contractEntity);
+        return contractRepository.save(dataInputContract.toContractEntity()).dto();
     }
 
     public ContractDto getContract(long id) {
@@ -41,18 +38,19 @@ public class ContractFacade {
         confirmScanUploaded(fileUploadedSpringEvent.getIdContract());
     }
 
-    public ContractDto confirmStep(long idContract) {
-        ContractEntity contractEntity = contractRepository.findById(idContract).orElseThrow(ContractNotFoundException::new);
-        Contract contract = contractCreator.from(contractEntity);
-        contract.confirmStep();
-        return contractRepository.save(contract.toContractEntity()).dto();
-    }
-
     public void confirmScanUploaded(long idContract) {
         ContractEntity contractEntity = contractRepository.findById(idContract).orElseThrow(ContractNotFoundException::new);
-        Contract contract = contractCreator.from(contractEntity);
-        contract.confirmScanUploaded();
-        contractRepository.save(contract.toContractEntity());
+        DataInputContract dataInputContract = contractMapper.dataInputStepFrom(contractEntity);
+        dataInputContract.setScanFromTauronUpload(true);
+        contractRepository.save(dataInputContract.toContractEntity());
+    }
+
+    public ContractDto confirmStep(long idContract) {
+        ContractEntity contractEntity = contractRepository.findById(idContract).orElseThrow(ContractNotFoundException::new);
+        Contract contract = contractMapper.from(contractEntity);
+        Contract confirmContract = contract.confirmStep();
+        contractEntity.setContractStepEnum(confirmContract.toContractEntity().getContractStepEnum());
+        return contractRepository.save(contractEntity).dto();
     }
 
     public List<ContractDto> getContracts(int page) {

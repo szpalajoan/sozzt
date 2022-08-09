@@ -1,13 +1,14 @@
 package pl.jkap.sozzt.contract.domain;
 
 import lombok.AllArgsConstructor;
+import org.hibernate.cfg.NotYetImplementedException;
 import pl.jkap.sozzt.contract.dto.ContractDto;
 import pl.jkap.sozzt.contract.dto.ContractStepEnum;
 
 import static java.util.Objects.requireNonNull;
 
 @AllArgsConstructor
-class ContractCreator {
+class ContractMapper {
 
     ContractEntity from(ContractDto ContractDTO) {
         requireNonNull(ContractDTO);
@@ -23,23 +24,30 @@ class ContractCreator {
                 .build();
     }
 
-    Contract from(ContractEntity contractEntity) {
+    public DataInputContract dataInputStepFrom(ContractEntity contractEntity) {
         requireNonNull(contractEntity);
 
-        Contract contract = Contract.builder()
+        return DataInputContract.builder()
+                .contractData(getContractData(contractEntity))
+                .isScanFromTauronUpload(contractEntity.isScanFromTauronUpload())
+                .build();
+    }
+
+    private ContractData getContractData(ContractEntity contractEntity) {
+        return ContractData.builder()
                 .id(contractEntity.getId())
                 .invoiceNumber(contractEntity.getInvoiceNumber())
                 .location(contractEntity.getLocation())
                 .executive(contractEntity.getExecutive())
                 .created(contractEntity.getCreated())
                 .build();
-
-        if (contractEntity.getContractStepEnum() == ContractStepEnum.DATA_INPUT_STEP) {
-            contract.setContractStep(new DataInputStep(contract, contractEntity.isScanFromTauronUpload()));
-        } else if (contractEntity.getContractStepEnum() == ContractStepEnum.WAITING_TO_PRELIMINARY_MAP_STEP) {
-            contract.setContractStep(new WaitingToPreliminaryMapStep(contract));
-        }
-        return contract;
     }
 
+    public Contract from(ContractEntity contractEntity) {
+        if (contractEntity.getContractStepEnum().equals(ContractStepEnum.DATA_INPUT_STEP)) {
+            return dataInputStepFrom(contractEntity);
+        } else {
+            throw new NotYetImplementedException();
+        }
+    }
 }

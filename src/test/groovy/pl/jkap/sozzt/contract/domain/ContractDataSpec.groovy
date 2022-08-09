@@ -7,14 +7,14 @@ import pl.jkap.sozzt.fileContract.event.FileUploadedSpringEvent
 import spock.lang.Specification
 
 
-class ContractSpec extends Specification implements ContractSample {
+class ContractDataSpec extends Specification implements ContractSample {
 
     ContractFacade contractFacade = new ContractConfiguration().contractFacade()
 
     def "Should add contract"() {
 
         when: "User add new contract"
-        ContractDto contract = contractFacade.addContract(MEDIUM_VOLTAGE_NETWORK_IN_TARNOW_CONTRACT)
+        contractFacade.addContract(MEDIUM_VOLTAGE_NETWORK_IN_TARNOW_CONTRACT)
 
         then: "New contract is added"
         contractFacade.getContract(MEDIUM_VOLTAGE_NETWORK_IN_TARNOW_CONTRACT.id).getId() == MEDIUM_VOLTAGE_NETWORK_IN_TARNOW_CONTRACT.id

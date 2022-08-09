@@ -6,7 +6,7 @@ import pl.jkap.sozzt.config.application.ContractSpringEventPublisher
 import spock.lang.Specification
 
 
-class FileContractSystemStorageSpec extends Specification implements FileSample {
+class FileContractSystemStorageSpecData extends Specification implements FileSample {
 
     private FileWrapper fileWrapper
     private FileContractFacade fileContractFacade
