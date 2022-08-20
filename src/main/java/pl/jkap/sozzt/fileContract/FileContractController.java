@@ -14,7 +14,6 @@ import pl.jkap.sozzt.fileContract.domain.FileType;
 
 @RestController
 @RequiredArgsConstructor
-@SuppressWarnings(value = "unused")
 public class FileContractController {
 
     @Autowired

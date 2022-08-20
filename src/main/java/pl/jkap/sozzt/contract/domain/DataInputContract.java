@@ -38,5 +38,3 @@ class DataInputContract implements Contract {
                 .build();
     }
 }
-
-

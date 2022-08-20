@@ -16,14 +16,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import pl.jkap.sozzt.contract.domain.ContractFacade;
 import pl.jkap.sozzt.contract.dto.ContractDto;
 
+import javax.validation.constraints.Min;
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@SuppressWarnings(value = "unused")
 public class ContractController {
 
-    @Autowired
     private final ContractFacade contractFacade;
 
     @GetMapping("/contract/{id}")
@@ -32,8 +31,8 @@ public class ContractController {
     }
 
     @PostMapping("/contract")
-    public ContractDto addContract(@RequestBody ContractDto contractDto) {
-        return contractFacade.addContract(contractDto);
+    public ResponseEntity<ContractDto> addContract(@RequestBody ContractDto contractDto) {
+        return new ResponseEntity<>(contractFacade.addContract(contractDto), HttpStatus.CREATED);
     }
 
     @PutMapping("/contract/confirm_step/{id}")
@@ -42,8 +41,7 @@ public class ContractController {
     }
 
     @GetMapping("/contract")
-    public List<ContractDto> getContracts(@RequestParam(required = false) int page) {
-        int pageNumber = page >= 0 ? page : 0;
-        return contractFacade.getContracts(pageNumber);
+    public ResponseEntity<List<ContractDto>> getContracts(@RequestParam(defaultValue = "0") @Min(0) int page) {
+        return new ResponseEntity<>(contractFacade.getContracts(page), HttpStatus.OK);
     }
 }
