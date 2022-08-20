@@ -15,6 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
+import java.util.UUID;
 
 @AllArgsConstructor
 class FileSystemStorage {
@@ -26,7 +27,7 @@ class FileSystemStorage {
     private final FileWrapper fileWrapper;
 
 
-    String store(MultipartFile file, long idContract, FileType fileType) {
+    String store(MultipartFile file, UUID idContract, FileType fileType) {
 
         validateFile(file.isEmpty(), "Failed to store empty file ");
         String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
@@ -45,7 +46,7 @@ class FileSystemStorage {
         return pathFile;
     }
 
-    private void sendEventAboutUploadedFileWithGivenType(long idContract, FileType fileType) {
+    private void sendEventAboutUploadedFileWithGivenType(UUID idContract, FileType fileType) {
         switch (fileType) {
             case CONTRACT_SCAN_FROM_TAURON:
                 contractSpringEventPublisher.storeScanFromTauron(idContract);

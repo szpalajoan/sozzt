@@ -5,13 +5,14 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Builder
 @Getter
 @Setter
 class ContractData {
 
-    private Long id;
+    private UUID id;
     private String invoiceNumber;
     private String location;
     private String executive;

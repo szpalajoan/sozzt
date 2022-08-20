@@ -5,13 +5,14 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 
 @Builder
 @Getter
 @EqualsAndHashCode
 public class ContractDto {
-    private Long id;
+    private UUID id;
     private String invoiceNumber;
     private String location;
     private String executive;

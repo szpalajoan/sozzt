@@ -9,6 +9,7 @@ import pl.jkap.sozzt.fileContract.event.UploadedPreliminaryMapSpringEvent;
 import pl.jkap.sozzt.fileContract.event.UploadedScanFromTauronSpringEvent;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
@@ -18,19 +19,21 @@ public class ContractFacade {
     private static final int PAGE_SIZE = 5;
     private final ContractRepository contractRepository;
     private final ContractMapper contractMapper;
+    private final ContractCreator contractCreator;
 
-    public ContractFacade(ContractRepository contractRepository, ContractMapper contractMapper) {
+    public ContractFacade(ContractRepository contractRepository, ContractMapper contractMapper, ContractCreator contractCreator) {
         this.contractMapper = contractMapper;
         this.contractRepository = contractRepository;
+        this.contractCreator = contractCreator;
     }
 
     public ContractDto addContract(AddContractDto addContractDto) {
         requireNonNull(addContractDto);
-        ContractEntity contractEntity = contractMapper.from(addContractDto);
+        ContractEntity contractEntity = contractCreator.createContract(addContractDto);
         return contractRepository.save(contractEntity).dto();
     }
 
-    public ContractDto getContract(long id) {
+    public ContractDto getContract(UUID id) {
         return contractRepository.findById(id).orElseThrow(ContractNotFoundException::new).dto();
     }
 
@@ -39,7 +42,7 @@ public class ContractFacade {
         confirmScanUploaded(uploadedScanFromTauronSpringEvent.getIdContract());
     }
 
-    public void confirmScanUploaded(long idContract) {
+    public void confirmScanUploaded(UUID idContract) {
         ContractEntity contractEntity = contractRepository.findById(idContract)
                 .orElseThrow(ContractNotFoundException::new);
         DataInputContract dataInputContract = contractMapper.dataInputStepFrom(contractEntity);
@@ -53,7 +56,7 @@ public class ContractFacade {
         confirmPreliminaryMapUploaded(uploadedPreliminaryMapSpringEvent.getIdContract());
     }
 
-    public void confirmPreliminaryMapUploaded(long idContract) {
+    public void confirmPreliminaryMapUploaded(UUID idContract) {
         ContractEntity contractEntity = contractRepository.findById(idContract)
                 .orElseThrow(ContractNotFoundException::new);
         PreliminaryMapToUploadContract preliminaryMapToUploadContract = contractMapper.preliminaryMapToUploadStepFrom(contractEntity);
@@ -63,7 +66,7 @@ public class ContractFacade {
     }
 
 
-    public ContractDto confirmStep(long idContract) {
+    public ContractDto confirmStep(UUID idContract) {
         ContractEntity contractEntity = contractRepository.findById(idContract)
                 .orElseThrow(ContractNotFoundException::new);
         Contract contract = contractMapper.from(contractEntity);

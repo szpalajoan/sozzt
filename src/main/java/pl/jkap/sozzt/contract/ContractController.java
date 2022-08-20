@@ -16,6 +16,7 @@ import pl.jkap.sozzt.contract.dto.ContractDto;
 
 import javax.validation.constraints.Min;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,7 +26,7 @@ public class ContractController {
 
     @GetMapping("/contracts/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ContractDto getContract(@PathVariable long id) {
+    public ContractDto getContract(@PathVariable UUID id) {
         return contractFacade.getContract(id);
     }
 
@@ -37,7 +38,7 @@ public class ContractController {
 
     @PutMapping("/contracts/confirm_step/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ContractDto confirmContractStep(@PathVariable long id) {
+    public ContractDto confirmContractStep(@PathVariable UUID id) {
         return contractFacade.confirmStep(id);
     }
 

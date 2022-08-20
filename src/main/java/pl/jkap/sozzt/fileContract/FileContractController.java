@@ -12,6 +12,8 @@ import org.springframework.web.multipart.MultipartFile;
 import pl.jkap.sozzt.fileContract.domain.FileContractFacade;
 import pl.jkap.sozzt.fileContract.domain.FileType;
 
+import java.util.UUID;
+
 @RestController
 @RequiredArgsConstructor
 public class FileContractController {
@@ -20,7 +22,7 @@ public class FileContractController {
     private final FileContractFacade fileContractFacade;
 
     @PostMapping(value = "/fileContract", consumes = {"multipart/form-data"})
-    public ResponseEntity<String> uploadFileContact(@RequestPart("file") MultipartFile file, @RequestParam long idContract, @RequestParam FileType fileType) {
+    public ResponseEntity<String> uploadFileContact(@RequestPart("file") MultipartFile file, @RequestParam UUID idContract, @RequestParam FileType fileType) {
         fileContractFacade.store(file, idContract, fileType);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

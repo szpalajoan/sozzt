@@ -14,16 +14,13 @@ class DataInputContractSpec extends Specification implements ContractSample {
     def "Should add contract"() {
 
         when: "User add new contract"
-        contractFacade.addContract(NEW_MEDIUM_VOLTAGE_NETWORK_IN_TARNOW_CONTRACT)
+        ContractDto contractDto = contractFacade.addContract(NEW_MEDIUM_VOLTAGE_NETWORK_IN_TARNOW_CONTRACT)
 
-        then: "New contract is added"
-        contractFacade.getContract(NEW_MEDIUM_VOLTAGE_NETWORK_IN_TARNOW_CONTRACT.id).getId() == NEW_MEDIUM_VOLTAGE_NETWORK_IN_TARNOW_CONTRACT.id
-
-        and: "Contract step is 'data input'"
-        contractFacade.getContract(NEW_MEDIUM_VOLTAGE_NETWORK_IN_TARNOW_CONTRACT.id).contactStepEnum == ContractStepEnum.DATA_INPUT_STEP
+        then: "New contract has 'data input' step"
+        contractFacade.getContract(contractDto.id).contactStepEnum == ContractStepEnum.DATA_INPUT_STEP
 
         and: "scan file isn't uploaded"
-        !contractFacade.getContract(NEW_MEDIUM_VOLTAGE_NETWORK_IN_TARNOW_CONTRACT.id).isScanFromTauronUpload()
+        !contractFacade.getContract(contractDto.id).isScanFromTauronUpload()
 
     }
 

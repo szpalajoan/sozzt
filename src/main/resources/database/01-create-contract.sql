@@ -1,7 +1,7 @@
 --liquibase formatted sql
 --changeset jkap:1
 CREATE TABLE contract (
-  id bigint NOT NULL AUTO_INCREMENT,
+  id binary(16) NOT NULL,
   invoice_number varchar(400) NOT NULL,
   location varchar(400) DEFAULT NULL,
   executive varchar(2000) DEFAULT NULL,

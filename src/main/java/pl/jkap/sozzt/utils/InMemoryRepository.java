@@ -19,7 +19,7 @@ import java.util.stream.StreamSupport;
 
 public abstract class InMemoryRepository<T, ID> implements JpaRepository<T, ID> {
 
-    private ConcurrentHashMap<ID, T> map = new ConcurrentHashMap<>();
+    public ConcurrentHashMap<ID, T> map = new ConcurrentHashMap<>();
 
     public abstract ID getId(T entity);
 
