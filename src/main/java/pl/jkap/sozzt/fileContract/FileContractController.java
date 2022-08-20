@@ -14,7 +14,6 @@ import pl.jkap.sozzt.fileContract.domain.FileType;
 
 @RestController
 @RequiredArgsConstructor
-@SuppressWarnings(value = "unused")
 public class FileContractController {
 
     @Autowired
@@ -24,6 +23,5 @@ public class FileContractController {
     public ResponseEntity<String> uploadFileContact(@RequestPart("file") MultipartFile file, @RequestParam long idContract, @RequestParam FileType fileType) {
         fileContractFacade.store(file, idContract, fileType);
         return new ResponseEntity<>(HttpStatus.CREATED);
-
     }
 }

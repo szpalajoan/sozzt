@@ -45,7 +45,7 @@ class FileSystemStorage {
             throw new StorageException("Failed to store file " + fileName, e);
         }
         if (fileType == FileType.CONTRACT_SCAN_FROM_TAURON) {
-            contractSpringEventPublisher.publishCustomEvent(idContract);
+            contractSpringEventPublisher.storeFileEvent(idContract);
         }
         return pathFile;
     }
