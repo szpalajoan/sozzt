@@ -2,8 +2,11 @@ package pl.jkap.sozzt.contract.domain;
 
 import lombok.AllArgsConstructor;
 import org.hibernate.cfg.NotYetImplementedException;
+import pl.jkap.sozzt.contract.dto.AddContractDto;
 import pl.jkap.sozzt.contract.dto.ContractDto;
 import pl.jkap.sozzt.contract.dto.ContractStepEnum;
+
+import java.time.LocalDateTime;
 
 import static java.util.Objects.requireNonNull;
 
@@ -22,6 +25,20 @@ class ContractMapper {
                 .isPreliminaryMapUpload(ContractDTO.isPreliminaryMapUpload())
                 .contractStepEnum(ContractDTO.getContactStepEnum())
                 .created(ContractDTO.getCreated())
+                .build();
+    }
+
+    ContractEntity from(AddContractDto addContractDto) {
+        requireNonNull(addContractDto);
+
+        return ContractEntity.builder()
+                .executive(addContractDto.getExecutive())
+                .location(addContractDto.getLocation())
+                .invoiceNumber(addContractDto.getInvoiceNumber())
+                .isScanFromTauronUpload(false)
+                .isPreliminaryMapUpload(false)
+                .contractStepEnum(ContractStepEnum.DATA_INPUT_STEP)
+                .created(LocalDateTime.now())
                 .build();
     }
 
@@ -56,7 +73,7 @@ class ContractMapper {
     public Contract from(ContractEntity contractEntity) {
         if (contractEntity.getContractStepEnum().equals(ContractStepEnum.DATA_INPUT_STEP)) {
             return dataInputStepFrom(contractEntity);
-        } else if (contractEntity.getContractStepEnum().equals(ContractStepEnum.WAITING_TO_PRELIMINARY_MAP_STEP)) {
+        } else if (contractEntity.getContractStepEnum().equals(ContractStepEnum.PRELIMINARY_MAP_TO_UPLOAD)) {
             return preliminaryMapToUploadStepFrom(contractEntity);
         } else {
             throw new NotYetImplementedException();

@@ -29,7 +29,7 @@ class PreliminaryMapToUploadContract implements Contract {
     @Override
     public void updateContractEntity(ContractEntity contractEntity) {
         contractEntity.setContractData(contractData);
-        contractEntity.setContractStepEnum(ContractStepEnum.WAITING_TO_PRELIMINARY_MAP_STEP);
+        contractEntity.setContractStepEnum(ContractStepEnum.PRELIMINARY_MAP_TO_UPLOAD);
         contractEntity.setPreliminaryMapUpload(isPreliminaryMapUpload);
     }
 }

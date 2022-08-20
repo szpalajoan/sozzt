@@ -2,6 +2,7 @@ package pl.jkap.sozzt.contract.domain;
 
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.PageRequest;
+import pl.jkap.sozzt.contract.dto.AddContractDto;
 import pl.jkap.sozzt.contract.dto.ContractDto;
 import pl.jkap.sozzt.contract.exception.ContractNotFoundException;
 import pl.jkap.sozzt.fileContract.event.UploadedPreliminaryMapSpringEvent;
@@ -23,11 +24,9 @@ public class ContractFacade {
         this.contractRepository = contractRepository;
     }
 
-    public ContractDto addContract(ContractDto contractDTO) {
-        requireNonNull(contractDTO);
-        ContractEntity contractEntity = contractMapper.from(contractDTO);
-        DataInputContract dataInputContract = contractMapper.dataInputStepFrom(contractEntity);
-        dataInputContract.updateContractEntity(contractEntity);
+    public ContractDto addContract(AddContractDto addContractDto) {
+        requireNonNull(addContractDto);
+        ContractEntity contractEntity = contractMapper.from(addContractDto);
         return contractRepository.save(contractEntity).dto();
     }
 

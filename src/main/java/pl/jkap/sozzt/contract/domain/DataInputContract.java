@@ -9,7 +9,7 @@ import pl.jkap.sozzt.contract.exception.NoScanFileOnConfirmingException;
 @Setter
 class DataInputContract implements Contract {
 
-    private final ContractData contractData;
+    private ContractData contractData;
     private boolean isScanFromTauronUpload;
 
     DataInputContract(ContractData contractData, boolean isScanFromTauronUpload) {
@@ -32,4 +32,5 @@ class DataInputContract implements Contract {
         contractEntity.setContractStepEnum(ContractStepEnum.DATA_INPUT_STEP);
         contractEntity.setScanFromTauronUpload(isScanFromTauronUpload);
     }
+
 }
