@@ -3,7 +3,6 @@ package pl.jkap.sozzt.contract.domain;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@SuppressWarnings(value = "unused")
 @Configuration
 public class ContractConfiguration {
 
