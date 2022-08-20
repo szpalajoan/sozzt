@@ -5,12 +5,7 @@ import lombok.*;
 import pl.jkap.sozzt.contract.dto.ContractDto;
 import pl.jkap.sozzt.contract.dto.ContractStepEnum;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.GenerationType;
-import javax.persistence.Column;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
@@ -31,6 +26,7 @@ class ContractEntity {
     private LocalDateTime created;
 
     @Column(name = "contract_step")
+    @Enumerated(EnumType.STRING)
     private ContractStepEnum contractStepEnum;
 
     private boolean scanFromTauronUpload;

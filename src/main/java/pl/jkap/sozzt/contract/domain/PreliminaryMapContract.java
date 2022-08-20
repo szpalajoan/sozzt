@@ -3,16 +3,16 @@ package pl.jkap.sozzt.contract.domain;
 import pl.jkap.sozzt.contract.dto.ContractStepEnum;
 import pl.jkap.sozzt.contract.exception.MyNotYetImplementedException;
 
-class WaitingToPreliminaryMapContract implements Contract {
+class PreliminaryMapContract implements Contract {
 
     private final ContractData contractData;
 
-    WaitingToPreliminaryMapContract(ContractData contractData) {
+    PreliminaryMapContract(ContractData contractData) {
         this.contractData = contractData;
     }
 
     @Override
-    public WaitingToPreliminaryMapContract confirmStep() {
+    public PreliminaryMapContract confirmStep() {
         throw new MyNotYetImplementedException();
     }
 

@@ -18,9 +18,9 @@ class DataInputContract implements Contract {
     }
 
     @Override
-    public WaitingToPreliminaryMapContract confirmStep() {
+    public PreliminaryMapContract confirmStep() {
         if (isScanFromTauronUpload) {
-            return new WaitingToPreliminaryMapContract(this.contractData);
+            return new PreliminaryMapContract(this.contractData);
         } else {
             throw new NoScanFileOnConfirmingException("There is no uploaded scan file.");
         }
