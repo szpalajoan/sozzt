@@ -9,5 +9,4 @@ class InMemoryContractRepository extends InMemoryRepository<ContractEntity, Long
     public Long getId(ContractEntity entity) {
         return entity.getId();
     }
-
 }

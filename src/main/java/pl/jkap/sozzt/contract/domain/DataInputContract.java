@@ -9,7 +9,7 @@ import pl.jkap.sozzt.contract.exception.NoScanFileOnConfirmingException;
 @Setter
 class DataInputContract implements Contract {
 
-    private ContractData contractData;
+    private final ContractData contractData;
     private boolean isScanFromTauronUpload;
 
     DataInputContract(ContractData contractData, boolean isScanFromTauronUpload) {
@@ -18,23 +18,18 @@ class DataInputContract implements Contract {
     }
 
     @Override
-    public PreliminaryMapContract confirmStep() {
+    public PreliminaryMapToUploadContract confirmStep() {
         if (isScanFromTauronUpload) {
-            return new PreliminaryMapContract(this.contractData);
+            return new PreliminaryMapToUploadContract(this.contractData, false);
         } else {
             throw new NoScanFileOnConfirmingException("There is no uploaded scan file.");
         }
     }
 
-    public ContractEntity toContractEntity() {
-        return ContractEntity.builder()
-                .id(contractData.getId())
-                .invoiceNumber(contractData.getInvoiceNumber())
-                .location(contractData.getLocation())
-                .executive(contractData.getExecutive())
-                .scanFromTauronUpload(isScanFromTauronUpload)
-                .contractStepEnum(ContractStepEnum.DATA_INPUT_STEP)
-                .created(contractData.getCreated())
-                .build();
+    @Override
+    public void updateContractEntity(ContractEntity contractEntity) {
+        contractEntity.setContractData(contractData);
+        contractEntity.setContractStepEnum(ContractStepEnum.DATA_INPUT_STEP);
+        contractEntity.setScanFromTauronUpload(isScanFromTauronUpload);
     }
 }

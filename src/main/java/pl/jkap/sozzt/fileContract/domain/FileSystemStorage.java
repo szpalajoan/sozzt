@@ -27,15 +27,12 @@ class FileSystemStorage {
 
 
     String store(MultipartFile file, long idContract, FileType fileType) {
-        String pathFile;
-        if (file.isEmpty()) {
-            throw new StorageException("Failed to store empty file ");
-        }
-        String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
 
-        if (fileName.contains("..")) {
-            throw new StorageException("Cannot store file with relative path outside current directory " + fileName);
-        }
+        validateFile(file.isEmpty(), "Failed to store empty file ");
+        String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
+        validateFile(fileName.contains(".."), "Cannot store file with relative path outside current directory " + fileName);
+
+        String pathFile;
         try {
             String directoriesFile = UPLOAD_FILE_DIR + idContract + "/" + fileType + "/";
             pathFile = directoriesFile + createUniqueFileName(fileName, directoriesFile);
@@ -44,10 +41,25 @@ class FileSystemStorage {
         } catch (IOException e) {
             throw new StorageException("Failed to store file " + fileName, e);
         }
-        if (fileType == FileType.CONTRACT_SCAN_FROM_TAURON) {
-            contractSpringEventPublisher.storeFileEvent(idContract);
-        }
+        sendEventAboutUploadedFileWithGivenType(idContract, fileType);
         return pathFile;
+    }
+
+    private void sendEventAboutUploadedFileWithGivenType(long idContract, FileType fileType) {
+        switch (fileType) {
+            case CONTRACT_SCAN_FROM_TAURON:
+                contractSpringEventPublisher.storeScanFromTauron(idContract);
+                break;
+            case PRELIMINARY_MAP:
+                contractSpringEventPublisher.storePreliminaryMap(idContract);
+                break;
+        }
+    }
+
+    private void validateFile(boolean condition, String throwMessage) {
+        if (condition) {
+            throw new StorageException(throwMessage);
+        }
     }
 
     private String createUniqueFileName(String fileName, String directoriesFile) {
@@ -74,7 +86,6 @@ class FileSystemStorage {
                 return resource;
             } else {
                 throw new StorageFileNotFoundException("Could not read file: " + filename);
-
             }
         } catch (MalformedURLException e) {
             throw new StorageFileNotFoundException("Could not read file: " + filename, e);

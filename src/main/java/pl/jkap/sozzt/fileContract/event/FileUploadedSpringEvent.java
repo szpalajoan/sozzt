@@ -3,7 +3,8 @@ package pl.jkap.sozzt.fileContract.event;
 
 import org.springframework.context.ApplicationEvent;
 
-public class FileUploadedSpringEvent extends ApplicationEvent {
+
+public abstract class FileUploadedSpringEvent extends ApplicationEvent {
     private final long idContract;
 
     public FileUploadedSpringEvent(Object source, long idContract) {

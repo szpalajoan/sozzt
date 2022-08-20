@@ -5,5 +5,5 @@ interface Contract {
 
     Contract confirmStep();
 
-    ContractEntity toContractEntity();
+    void updateContractEntity(ContractEntity contractEntity);
 }

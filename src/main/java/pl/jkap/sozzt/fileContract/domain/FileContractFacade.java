@@ -9,6 +9,7 @@ public class FileContractFacade {
 
     private final FileSystemStorage fileSystemStorage;
 
+
     public FileContractFacade(FileSystemStorage fileSystemStorage) {
         this.fileSystemStorage = fileSystemStorage;
         this.fileSystemStorage.init();

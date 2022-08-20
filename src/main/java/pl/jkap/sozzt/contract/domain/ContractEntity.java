@@ -29,7 +29,8 @@ class ContractEntity {
     @Enumerated(EnumType.STRING)
     private ContractStepEnum contractStepEnum;
 
-    private boolean scanFromTauronUpload;
+    private boolean isScanFromTauronUpload;
+    private boolean isPreliminaryMapUpload;
 
     ContractDto dto() {
         return ContractDto.builder()
@@ -37,9 +38,19 @@ class ContractEntity {
                 .invoiceNumber(invoiceNumber)
                 .location(location)
                 .executive(executive)
-                .scanFromTauronUpload(scanFromTauronUpload)
+                .isScanFromTauronUpload(isScanFromTauronUpload)
+                .isPreliminaryMapUpload(isPreliminaryMapUpload)
                 .contactStepEnum(contractStepEnum)
                 .created(created)
                 .build();
     }
+
+    void setContractData(ContractData contractData) {
+        this.id = contractData.getId();
+        this.invoiceNumber = contractData.getInvoiceNumber();
+        this.location = contractData.getLocation();
+        this.executive = contractData.getExecutive();
+        this.created = contractData.getCreated();
+    }
+
 }

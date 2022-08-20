@@ -18,7 +18,8 @@ class ContractMapper {
                 .invoiceNumber(ContractDTO.getInvoiceNumber())
                 .location(ContractDTO.getLocation())
                 .executive(ContractDTO.getExecutive())
-                .scanFromTauronUpload(ContractDTO.isScanFromTauronUpload())
+                .isScanFromTauronUpload(ContractDTO.isScanFromTauronUpload())
+                .isPreliminaryMapUpload(ContractDTO.isPreliminaryMapUpload())
                 .contractStepEnum(ContractDTO.getContactStepEnum())
                 .created(ContractDTO.getCreated())
                 .build();
@@ -30,6 +31,15 @@ class ContractMapper {
         return DataInputContract.builder()
                 .contractData(getContractData(contractEntity))
                 .isScanFromTauronUpload(contractEntity.isScanFromTauronUpload())
+                .build();
+    }
+
+    public PreliminaryMapToUploadContract preliminaryMapToUploadStepFrom(ContractEntity contractEntity) {
+        requireNonNull(contractEntity);
+
+        return PreliminaryMapToUploadContract.builder()
+                .contractData(getContractData(contractEntity))
+                .isPreliminaryMapUpload(contractEntity.isPreliminaryMapUpload())
                 .build();
     }
 
@@ -46,6 +56,8 @@ class ContractMapper {
     public Contract from(ContractEntity contractEntity) {
         if (contractEntity.getContractStepEnum().equals(ContractStepEnum.DATA_INPUT_STEP)) {
             return dataInputStepFrom(contractEntity);
+        } else if (contractEntity.getContractStepEnum().equals(ContractStepEnum.WAITING_TO_PRELIMINARY_MAP_STEP)) {
+            return preliminaryMapToUploadStepFrom(contractEntity);
         } else {
             throw new NotYetImplementedException();
         }

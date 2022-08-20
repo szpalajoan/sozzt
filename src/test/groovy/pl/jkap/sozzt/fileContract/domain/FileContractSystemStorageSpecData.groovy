@@ -32,7 +32,7 @@ class FileContractSystemStorageSpecData extends Specification implements FileSam
         fileContractFacade.loadAsResource("fil22eName").filename == "fil22eName"
 
         and: "The event about uploading the scan is sent"
-        1 * contractSpringEventPublisher.storeFileEvent(idContract)
+        1 * contractSpringEventPublisher.storeScanFromTauron(idContract)
 
         where:
         idContract = 1

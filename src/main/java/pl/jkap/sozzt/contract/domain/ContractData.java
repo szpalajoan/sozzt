@@ -2,6 +2,7 @@ package pl.jkap.sozzt.contract.domain;
 
 import lombok.Builder;
 import lombok.Getter;
+
 import java.time.LocalDateTime;
 
 @Builder
