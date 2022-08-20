@@ -23,6 +23,5 @@ public class FileContractController {
     public ResponseEntity<String> uploadFileContact(@RequestPart("file") MultipartFile file, @RequestParam long idContract, @RequestParam FileType fileType) {
         fileContractFacade.store(file, idContract, fileType);
         return new ResponseEntity<>(HttpStatus.CREATED);
-
     }
 }
