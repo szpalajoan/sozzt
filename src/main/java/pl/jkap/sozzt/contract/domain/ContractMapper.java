@@ -2,7 +2,6 @@ package pl.jkap.sozzt.contract.domain;
 
 import lombok.AllArgsConstructor;
 import org.hibernate.cfg.NotYetImplementedException;
-import pl.jkap.sozzt.contract.dto.ContractStepEnum;
 
 import static java.util.Objects.requireNonNull;
 
@@ -46,14 +45,19 @@ class ContractMapper {
     }
 
     public Contract from(ContractEntity contractEntity) {
-        if (contractEntity.getContractStepEnum().equals(ContractStepEnum.DATA_INPUT_STEP)) {
-            return dataInputStepFrom(contractEntity);
-        } else if (contractEntity.getContractStepEnum().equals(ContractStepEnum.PRELIMINARY_MAP_TO_UPLOAD)) {
-            return preliminaryMapToUploadStepFrom(contractEntity);
-        } else if (contractEntity.getContractStepEnum().equals(ContractStepEnum.PRELIMINARY_MAP_TO_VERIFY)) {
-            return preliminaryMapToVerifyStepFrom(contractEntity);
-        } else {
-            throw new NotYetImplementedException();
+        switch (contractEntity.getContractStepEnum()) {
+            case DATA_INPUT_STEP: {
+                return dataInputStepFrom(contractEntity);
+            }
+            case PRELIMINARY_MAP_TO_UPLOAD: {
+                return preliminaryMapToUploadStepFrom(contractEntity);
+            }
+            case PRELIMINARY_MAP_TO_VERIFY: {
+                return preliminaryMapToVerifyStepFrom(contractEntity);
+            }
+            default: {
+                throw new NotYetImplementedException();
+            }
         }
     }
 }
