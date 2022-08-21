@@ -18,7 +18,7 @@ trait ContractSample {
                 .build()
     }
 
-    private static ContractDto createContractDto(Long id, String invoiceNumber, String location, String executive, boolean isScanFromTauronUpload, boolean isPreliminaryMapUpload, ContractStepEnum contractStepEnum, LocalDateTime created) {
+    private static ContractDto createContractDto(UUID id, String invoiceNumber, String location, String executive, boolean isScanFromTauronUpload, boolean isPreliminaryMapUpload, ContractStepEnum contractStepEnum, LocalDateTime created) {
         return ContractDto.builder()
                 .id(id)
                 .invoiceNumber(invoiceNumber)

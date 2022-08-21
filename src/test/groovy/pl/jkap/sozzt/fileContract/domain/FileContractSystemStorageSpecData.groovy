@@ -35,20 +35,21 @@ class FileContractSystemStorageSpecData extends Specification implements FileSam
         1 * contractSpringEventPublisher.storeScanFromTauron(idContract)
 
         where:
-        idContract = 1
+        idContract = UUID.randomUUID()
     }
 
 
     def "should change file name to a unique name if there is already a file with the same name as the added file"() {
 
         given: "there are files with name "
-        fileWrapper.checkFileExist("upload_dir/1/CONTRACT_SCAN_FROM_TAURON/scan_123321") >> fileFirstExist
-        fileWrapper.checkFileExist("upload_dir/1/CONTRACT_SCAN_FROM_TAURON/(1)scan_123321") >> fileSecondExist
-        fileWrapper.checkFileExist("upload_dir/1/CONTRACT_SCAN_FROM_TAURON/(2)scan_123321") >> fileThirdExist
+        UUID sampleIdContract = UUID.fromString("7aeb1dee-67e2-49d6-b81c-ef29af62918b")
+        fileWrapper.checkFileExist("upload_dir/" + sampleIdContract + "/CONTRACT_SCAN_FROM_TAURON/scan_123321") >> fileFirstExist
+        fileWrapper.checkFileExist("upload_dir/" + sampleIdContract + "/CONTRACT_SCAN_FROM_TAURON/(1)scan_123321") >> fileSecondExist
+        fileWrapper.checkFileExist("upload_dir/" + sampleIdContract + "/CONTRACT_SCAN_FROM_TAURON/(2)scan_123321") >> fileThirdExist
 
         when: "add new file"
         MockMultipartFile scanFromTauron = SCAN_FROM_TAURON
-        String pathFile = fileContractFacade.store(scanFromTauron, idContract, FileType.CONTRACT_SCAN_FROM_TAURON)
+        String pathFile = fileContractFacade.store(scanFromTauron, sampleIdContract, FileType.CONTRACT_SCAN_FROM_TAURON)
 
         then: " if a file with the same name already exists there is unique name"
         pathFile == newPathName
@@ -56,11 +57,9 @@ class FileContractSystemStorageSpecData extends Specification implements FileSam
 
         where:
         fileFirstExist | fileSecondExist | fileThirdExist | newPathName
-        false          | false           | false          | "upload_dir/1/CONTRACT_SCAN_FROM_TAURON/scan_123321"
-        true           | false           | false          | "upload_dir/1/CONTRACT_SCAN_FROM_TAURON/(1)scan_123321"
-        true           | true            | false          | "upload_dir/1/CONTRACT_SCAN_FROM_TAURON/(2)scan_123321"
-
-        idContract = 1
+        false          | false           | false          | "upload_dir/7aeb1dee-67e2-49d6-b81c-ef29af62918b/CONTRACT_SCAN_FROM_TAURON/scan_123321"
+        true           | false           | false          | "upload_dir/7aeb1dee-67e2-49d6-b81c-ef29af62918b/CONTRACT_SCAN_FROM_TAURON/(1)scan_123321"
+        true           | true            | false          | "upload_dir/7aeb1dee-67e2-49d6-b81c-ef29af62918b/CONTRACT_SCAN_FROM_TAURON/(2)scan_123321"
     }
 
 }
