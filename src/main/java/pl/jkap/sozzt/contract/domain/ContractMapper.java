@@ -9,7 +9,7 @@ import static java.util.Objects.requireNonNull;
 @AllArgsConstructor
 class ContractMapper {
 
-    public DataInputContract dataInputStepFrom(ContractEntity contractEntity) {
+    DataInputContract dataInputStepFrom(ContractEntity contractEntity) {
         requireNonNull(contractEntity);
 
         return DataInputContract.builder()
@@ -18,12 +18,20 @@ class ContractMapper {
                 .build();
     }
 
-    public PreliminaryMapToUploadContract preliminaryMapToUploadStepFrom(ContractEntity contractEntity) {
+    PreliminaryMapToUploadContract preliminaryMapToUploadStepFrom(ContractEntity contractEntity) {
         requireNonNull(contractEntity);
 
         return PreliminaryMapToUploadContract.builder()
                 .contractData(getContractData(contractEntity))
                 .isPreliminaryMapUpload(contractEntity.isPreliminaryMapUpload())
+                .build();
+    }
+
+    PreliminaryMapToVerifyContract preliminaryMapToVerifyStepFrom(ContractEntity contractEntity) {
+        requireNonNull(contractEntity);
+
+        return PreliminaryMapToVerifyContract.builder()
+                .contractData(getContractData(contractEntity))
                 .build();
     }
 
@@ -42,6 +50,8 @@ class ContractMapper {
             return dataInputStepFrom(contractEntity);
         } else if (contractEntity.getContractStepEnum().equals(ContractStepEnum.PRELIMINARY_MAP_TO_UPLOAD)) {
             return preliminaryMapToUploadStepFrom(contractEntity);
+        } else if (contractEntity.getContractStepEnum().equals(ContractStepEnum.PRELIMINARY_MAP_TO_VERIFY)) {
+            return preliminaryMapToVerifyStepFrom(contractEntity);
         } else {
             throw new NotYetImplementedException();
         }

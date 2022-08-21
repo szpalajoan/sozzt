@@ -2,15 +2,15 @@ package pl.jkap.sozzt.contract.domain
 
 import pl.jkap.sozzt.contract.dto.AddContractDto
 import pl.jkap.sozzt.contract.dto.ContractDto
-import pl.jkap.sozzt.contract.dto.ContractStepEnum
-
-import java.time.LocalDateTime
 
 trait ContractSample {
 
-    AddContractDto NEW_MEDIUM_VOLTAGE_NETWORK_IN_TARNOW_CONTRACT = createNewContractDto("2022VOLTAGE", "Tarnów", "Electro")
+    ContractFacade contractFacade = new ContractConfiguration().contractFacade()
 
-    private static AddContractDto createNewContractDto(String invoiceNumber, String location, String executive) {
+    AddContractDto NEW_MEDIUM_VOLTAGE_NETWORK_IN_TARNOW_CONTRACT = createNewContractDto("2022VOLTAGE", "Tarnów", "Electro")
+    ContractDto CONTRACT_WITH_PRELIMINARY_MAP_TO_UPLOAD_STEP = addContractDtoWithPreliminaryMapToUploadStep("2022VOLTAGE", "Tarnów", "Electro")
+
+    private AddContractDto createNewContractDto(String invoiceNumber, String location, String executive) {
         return AddContractDto.builder()
                 .invoiceNumber(invoiceNumber)
                 .location(location)
@@ -18,17 +18,11 @@ trait ContractSample {
                 .build()
     }
 
-    private static ContractDto createContractDto(UUID id, String invoiceNumber, String location, String executive, boolean isScanFromTauronUpload, boolean isPreliminaryMapUpload, ContractStepEnum contractStepEnum, LocalDateTime created) {
-        return ContractDto.builder()
-                .id(id)
-                .invoiceNumber(invoiceNumber)
-                .location(location)
-                .executive(executive)
-                .isScanFromTauronUpload(isScanFromTauronUpload)
-                .isPreliminaryMapUpload(isPreliminaryMapUpload)
-                .contactStepEnum(contractStepEnum)
-                .created(created)
-                .build()
+    ContractDto addContractDtoWithPreliminaryMapToUploadStep(String invoiceNumber, String location, String executive) {
+        ContractDto contractDto = contractFacade.addContract(createNewContractDto(invoiceNumber, location, executive))
+        contractFacade.confirmScanUploaded(contractDto.id)
+        contractFacade.confirmStep(contractDto.id)
+        return contractDto
     }
 
 }

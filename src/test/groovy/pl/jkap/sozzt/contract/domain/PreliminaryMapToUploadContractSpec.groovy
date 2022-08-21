@@ -2,49 +2,50 @@ package pl.jkap.sozzt.contract.domain
 
 import pl.jkap.sozzt.contract.dto.ContractDto
 import pl.jkap.sozzt.contract.dto.ContractStepEnum
-import pl.jkap.sozzt.contract.exception.NoScanFileOnConfirmingException
+import pl.jkap.sozzt.contract.exception.NoPreliminaryMapOnConfirmingException
 import pl.jkap.sozzt.fileContract.event.UploadedScanFromTauronSpringEvent
 import spock.lang.Specification
 
 
 class PreliminaryMapToUploadContractSpec extends Specification implements ContractSample {
 
-    ContractFacade contractFacade = new ContractConfiguration().contractFacade()
-
     def "Should confirm 'preliminary map to upload' step"() {
         given: "There is a contract with 'preliminary map to upload' step"
-        ContractDto contract = contractFacade.addContract(NEW_MEDIUM_VOLTAGE_NETWORK_IN_TARNOW_CONTRACT)
+        ContractDto contractDto = CONTRACT_WITH_PRELIMINARY_MAP_TO_UPLOAD_STEP
 
-        and: "this contract has uploaded scan file"
-        contractFacade.confirmScanUploaded(NEW_MEDIUM_VOLTAGE_NETWORK_IN_TARNOW_CONTRACT.id)
+        and: "preliminary map is uploaded"
+        contractFacade.confirmPreliminaryMapUploaded(contractDto.id)
 
         when: "confirm contract"
-        contractFacade.confirmStep(contract.id)
+        contractFacade.confirmStep(contractDto.id)
 
         then: "contract has WaitingToPreliminaryMapStep"
-        contractFacade.getContract(NEW_MEDIUM_VOLTAGE_NETWORK_IN_TARNOW_CONTRACT.id).contactStepEnum == ContractStepEnum.PRELIMINARY_MAP_TO_UPLOAD
+        contractFacade.getContract(contractDto.id).contactStepEnum == ContractStepEnum.PRELIMINARY_MAP_TO_VERIFY
     }
 
     def "Shouldn't confirm 'data input step' if scan file from Tauron isn't uploaded"() {
         given: "There is a contract with 'data input' without uploaded scan file from Tauron"
-        ContractDto contract = contractFacade.addContract(NEW_MEDIUM_VOLTAGE_NETWORK_IN_TARNOW_CONTRACT)
+        ContractDto contractDto = CONTRACT_WITH_PRELIMINARY_MAP_TO_UPLOAD_STEP
+
+        and: "preliminary map isn't uploaded"
+        !contractDto.preliminaryMapUpload
 
         when: "confirm contract"
-        contractFacade.confirmStep(contract.id)
+        contractFacade.confirmStep(contractDto.id)
 
         then: "contract has WaitingToPreliminaryMapStep"
-        thrown(NoScanFileOnConfirmingException)
+        thrown(NoPreliminaryMapOnConfirmingException)
     }
 
     def 'Should set scan uploaded when event came'() {
-        given: "There is a contract with 'data input'"
-        contractFacade.addContract(NEW_MEDIUM_VOLTAGE_NETWORK_IN_TARNOW_CONTRACT)
+        given: "There is a contract with 'data input' without uploaded scan file from Tauron"
+        ContractDto contractDto = CONTRACT_WITH_PRELIMINARY_MAP_TO_UPLOAD_STEP
 
         when: "Event came about that the scan file from Tauron has been uploaded"
-        contractFacade.uploadedScanFromTauron(new UploadedScanFromTauronSpringEvent(any(), NEW_MEDIUM_VOLTAGE_NETWORK_IN_TARNOW_CONTRACT.getId()))
+        contractFacade.uploadedScanFromTauron(new UploadedScanFromTauronSpringEvent(any(), contractDto.id))
 
         then: "Contract have an information that a scan has been uploaded"
-        contractFacade.getContract(NEW_MEDIUM_VOLTAGE_NETWORK_IN_TARNOW_CONTRACT.id).scanFromTauronUpload
+        contractFacade.getContract(contractDto.id).scanFromTauronUpload
 
     }
 }

@@ -1,9 +1,12 @@
 package pl.jkap.sozzt.contract.domain;
 
+import lombok.Builder;
 import lombok.Setter;
+import pl.jkap.sozzt.contract.dto.ContractStepEnum;
 import pl.jkap.sozzt.contract.exception.MyNotYetImplementedException;
 
 @Setter
+@Builder
 class PreliminaryMapToVerifyContract implements Contract {
 
     private final ContractData contractData;
@@ -19,6 +22,7 @@ class PreliminaryMapToVerifyContract implements Contract {
 
     @Override
     public void updateContractEntity(ContractEntity contractEntity) {
-        throw new MyNotYetImplementedException();
+        contractEntity.setContractData(contractData);
+        contractEntity.setContractStepEnum(ContractStepEnum.PRELIMINARY_MAP_TO_VERIFY);
     }
 }
