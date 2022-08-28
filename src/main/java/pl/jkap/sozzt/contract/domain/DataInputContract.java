@@ -1,12 +1,17 @@
 package pl.jkap.sozzt.contract.domain;
 
 import lombok.Builder;
+import lombok.Getter;
 import lombok.Setter;
-import pl.jkap.sozzt.contract.dto.ContractStepEnum;
+import pl.jkap.sozzt.contract.dto.ContractDataDto;
+import pl.jkap.sozzt.contract.dto.DataInputContractDto;
 import pl.jkap.sozzt.contract.exception.NoScanFileOnConfirmingException;
+
+import static pl.jkap.sozzt.contract.dto.ContractStepEnum.DATA_INPUT_STEP;
 
 @Builder
 @Setter
+@Getter
 class DataInputContract implements Contract {
 
     private ContractData contractData;
@@ -27,10 +32,27 @@ class DataInputContract implements Contract {
     }
 
     @Override
-    public void updateContractEntity(ContractEntity contractEntity) {
-        contractEntity.setContractData(contractData);
-        contractEntity.setContractStepEnum(ContractStepEnum.DATA_INPUT_STEP);
-        contractEntity.setScanFromTauronUpload(isScanFromTauronUpload);
+    public ContractData getContractData() {
+        return contractData;
+    }
+
+    @Override
+    public ContractDataDto dto() {
+        return ContractDataDto.builder()
+                .id(contractData.getId())
+                .invoiceNumber(contractData.getInvoiceNumber())
+                .location(contractData.getLocation())
+                .executive(contractData.getExecutive())
+                .created(contractData.getCreated())
+                .contactStepEnum(DATA_INPUT_STEP)
+                .build();
+    }
+
+    DataInputContractDto dataInputContractDto() {
+        return DataInputContractDto.builder()
+                .contractDataDto(dto())
+                .isScanFromTauronUpload(isScanFromTauronUpload)
+                .build();
     }
 
 }

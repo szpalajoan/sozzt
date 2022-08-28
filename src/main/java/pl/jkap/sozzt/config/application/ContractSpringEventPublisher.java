@@ -3,8 +3,8 @@ package pl.jkap.sozzt.config.application;
 import lombok.AllArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import pl.jkap.sozzt.fileContract.event.FileUploadedSpringEvent;
-import pl.jkap.sozzt.fileContract.event.UploadedPreliminaryMapSpringEvent;
-import pl.jkap.sozzt.fileContract.event.UploadedScanFromTauronSpringEvent;
+import pl.jkap.sozzt.fileContract.event.PreliminaryMapUploadedSpringEvent;
+import pl.jkap.sozzt.fileContract.event.ScanFromTauronUploadedSpringEvent;
 
 import java.util.UUID;
 
@@ -18,10 +18,10 @@ public class ContractSpringEventPublisher {
     }
 
     public void storeScanFromTauron(final UUID idContract) {
-        publishEvent(new UploadedScanFromTauronSpringEvent(this, idContract));
+        publishEvent(new ScanFromTauronUploadedSpringEvent(idContract));
     }
 
     public void storePreliminaryMap(UUID idContract) {
-        publishEvent(new UploadedPreliminaryMapSpringEvent(this, idContract));
+        publishEvent(new PreliminaryMapUploadedSpringEvent(idContract));
     }
 }

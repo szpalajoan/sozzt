@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import pl.jkap.sozzt.contract.domain.ContractFacade;
 import pl.jkap.sozzt.contract.dto.AddContractDto;
-import pl.jkap.sozzt.contract.dto.ContractDto;
+import pl.jkap.sozzt.contract.dto.ContractDataDto;
+import pl.jkap.sozzt.contract.dto.ContractDtoRepository;
+import pl.jkap.sozzt.contract.dto.DataInputContractDto;
 
 import javax.validation.constraints.Min;
 import java.util.List;
@@ -26,25 +28,25 @@ public class ContractController {
 
     @GetMapping("/contracts/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ContractDto getContract(@PathVariable UUID id) {
+    public ContractDtoRepository getContract(@PathVariable UUID id) {
         return contractFacade.getContract(id);
     }
 
     @PostMapping("/contracts")
     @ResponseStatus(HttpStatus.CREATED)
-    public ContractDto addContract(@RequestBody AddContractDto addContractDto) {
+    public DataInputContractDto addContract(@RequestBody AddContractDto addContractDto) {
         return contractFacade.addContract(addContractDto);
     }
 
     @PutMapping("/contracts/confirm_step/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ContractDto confirmContractStep(@PathVariable UUID id) {
+    public ContractDataDto confirmContractStep(@PathVariable UUID id) {
         return contractFacade.confirmStep(id);
     }
 
     @GetMapping("/contracts")
     @ResponseStatus(HttpStatus.OK)
-    public List<ContractDto> getContracts(@RequestParam(defaultValue = "0") @Min(0) int page) {
+    public List<ContractDataDto> getContracts(@RequestParam(defaultValue = "0") @Min(0) int page) {
         return contractFacade.getContracts(page);
     }
 }

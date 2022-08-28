@@ -3,6 +3,7 @@ package pl.jkap.sozzt.contract.domain;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import pl.jkap.sozzt.contract.dto.ContractStepEnum;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -18,7 +19,7 @@ class ContractData {
     private String executive;
     private LocalDateTime created;
     private Contract contract;
-
+    private ContractStepEnum contactStepEnum;
 }
 
 

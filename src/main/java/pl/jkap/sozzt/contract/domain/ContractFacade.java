@@ -3,10 +3,12 @@ package pl.jkap.sozzt.contract.domain;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.PageRequest;
 import pl.jkap.sozzt.contract.dto.AddContractDto;
-import pl.jkap.sozzt.contract.dto.ContractDto;
+import pl.jkap.sozzt.contract.dto.ContractDataDto;
+import pl.jkap.sozzt.contract.dto.ContractDtoRepository;
+import pl.jkap.sozzt.contract.dto.DataInputContractDto;
 import pl.jkap.sozzt.contract.exception.ContractNotFoundException;
-import pl.jkap.sozzt.fileContract.event.UploadedPreliminaryMapSpringEvent;
-import pl.jkap.sozzt.fileContract.event.UploadedScanFromTauronSpringEvent;
+import pl.jkap.sozzt.fileContract.event.PreliminaryMapUploadedSpringEvent;
+import pl.jkap.sozzt.fileContract.event.ScanFromTauronUploadedSpringEvent;
 
 import java.util.List;
 import java.util.UUID;
@@ -27,19 +29,21 @@ public class ContractFacade {
         this.contractCreator = contractCreator;
     }
 
-    public ContractDto addContract(AddContractDto addContractDto) {
+    public DataInputContractDto addContract(AddContractDto addContractDto) {
         requireNonNull(addContractDto);
-        ContractEntity contractEntity = contractCreator.createContract(addContractDto);
-        return contractRepository.save(contractEntity).dto();
+        DataInputContract dataInputContract = contractCreator.createContract(addContractDto);
+        ContractEntity contractEntity = contractCreator.createContactEntity(dataInputContract);
+        contractRepository.save(contractEntity);
+        return dataInputContract.dataInputContractDto();
     }
 
-    public ContractDto getContract(UUID id) {
-        return contractRepository.findById(id).orElseThrow(ContractNotFoundException::new).dto();
+    public ContractDtoRepository getContract(UUID id) {
+        return contractRepository.findContractDataById(id);
     }
 
     @EventListener
-    public void uploadedScanFromTauron(UploadedScanFromTauronSpringEvent uploadedScanFromTauronSpringEvent) {
-        confirmScanUploaded(uploadedScanFromTauronSpringEvent.getIdContract());
+    public void uploadedScanFromTauron(ScanFromTauronUploadedSpringEvent scanFromTauronUploadedSpringEvent) {
+        confirmScanUploaded(scanFromTauronUploadedSpringEvent.getIdContract());
     }
 
     public void confirmScanUploaded(UUID idContract) {
@@ -47,13 +51,13 @@ public class ContractFacade {
                 .orElseThrow(ContractNotFoundException::new);
         DataInputContract dataInputContract = contractMapper.dataInputStepFrom(contractEntity);
         dataInputContract.setScanFromTauronUpload(true);
-        dataInputContract.updateContractEntity(contractEntity);
-        contractRepository.save(contractEntity).dto();
+        contractEntity.update(dataInputContract);
+        contractRepository.save(contractEntity);
     }
 
     @EventListener
-    public void uploadedPreliminaryMap(UploadedPreliminaryMapSpringEvent uploadedPreliminaryMapSpringEvent) {
-        confirmPreliminaryMapUploaded(uploadedPreliminaryMapSpringEvent.getIdContract());
+    public void uploadedPreliminaryMap(PreliminaryMapUploadedSpringEvent preliminaryMapUploadedSpringEvent) {
+        confirmPreliminaryMapUploaded(preliminaryMapUploadedSpringEvent.getIdContract());
     }
 
     public void confirmPreliminaryMapUploaded(UUID idContract) {
@@ -61,24 +65,24 @@ public class ContractFacade {
                 .orElseThrow(ContractNotFoundException::new);
         PreliminaryMapToUploadContract preliminaryMapToUploadContract = contractMapper.preliminaryMapToUploadStepFrom(contractEntity);
         preliminaryMapToUploadContract.setPreliminaryMapUpload(true);
-        preliminaryMapToUploadContract.updateContractEntity(contractEntity);
+        contractEntity.update(preliminaryMapToUploadContract);
         contractRepository.save(contractEntity);
     }
 
-
-    public ContractDto confirmStep(UUID idContract) {
+    public ContractDataDto confirmStep(UUID idContract) {
         ContractEntity contractEntity = contractRepository.findById(idContract)
                 .orElseThrow(ContractNotFoundException::new);
         Contract contract = contractMapper.from(contractEntity);
         Contract confirmContract = contract.confirmStep();
-        confirmContract.updateContractEntity(contractEntity);
-        return contractRepository.save(contractEntity).dto();
+        contractEntity.updateFromContract(confirmContract);
+        contractRepository.save(contractEntity);
+        return confirmContract.dto();
     }
 
-    public List<ContractDto> getContracts(int page) {
+    public List<ContractDataDto> getContracts(int page) {
         return contractRepository.findAll(PageRequest.of(page, PAGE_SIZE))
                 .stream()
-                .map(ContractEntity::dto)
+                .map(contractEntity -> contractMapper.from(contractEntity).dto())
                 .collect(Collectors.toList());
     }
 

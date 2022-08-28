@@ -29,9 +29,7 @@ class ContractMapper {
     PreliminaryMapToVerifyContract preliminaryMapToVerifyStepFrom(ContractEntity contractEntity) {
         requireNonNull(contractEntity);
 
-        return PreliminaryMapToVerifyContract.builder()
-                .contractData(getContractData(contractEntity))
-                .build();
+        return PreliminaryMapToVerifyContract.builder().contractData(getContractData(contractEntity)).build();
     }
 
     private ContractData getContractData(ContractEntity contractEntity) {
@@ -41,6 +39,7 @@ class ContractMapper {
                 .location(contractEntity.getLocation())
                 .executive(contractEntity.getExecutive())
                 .created(contractEntity.getCreated())
+                .contactStepEnum(contractEntity.getContractStepEnum())
                 .build();
     }
 

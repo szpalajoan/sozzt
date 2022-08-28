@@ -6,15 +6,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.GenericGenerator;
-import pl.jkap.sozzt.contract.dto.ContractDto;
 import pl.jkap.sozzt.contract.dto.ContractStepEnum;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
@@ -23,19 +20,14 @@ import java.util.UUID;
 @Entity
 @Table(name = "Contract")
 @Getter
-@Builder
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 class ContractEntity {
 
-
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(updatable = false, nullable = false)
     private UUID id;
-
     private String invoiceNumber;
     private String location;
     private String executive;
@@ -45,20 +37,11 @@ class ContractEntity {
     @Enumerated(EnumType.STRING)
     private ContractStepEnum contractStepEnum;
 
-    private boolean isScanFromTauronUpload;
-    private boolean isPreliminaryMapUpload;
+    private boolean scanFromTauronUpload;
+    private boolean preliminaryMapUpload;
 
-    ContractDto dto() {
-        return ContractDto.builder()
-                .id(id)
-                .invoiceNumber(invoiceNumber)
-                .location(location)
-                .executive(executive)
-                .isScanFromTauronUpload(isScanFromTauronUpload)
-                .isPreliminaryMapUpload(isPreliminaryMapUpload)
-                .contactStepEnum(contractStepEnum)
-                .created(created)
-                .build();
+    void updateFromContract(Contract contract) {
+        setContractData(contract.getContractData());
     }
 
     void setContractData(ContractData contractData) {
@@ -67,6 +50,17 @@ class ContractEntity {
         this.location = contractData.getLocation();
         this.executive = contractData.getExecutive();
         this.created = contractData.getCreated();
+        this.contractStepEnum = contractData.getContactStepEnum();
+    }
+
+    public void update(DataInputContract dataInputContract) {
+        setContractData(dataInputContract.getContractData());
+        scanFromTauronUpload = dataInputContract.isScanFromTauronUpload();
+    }
+
+    public void update(PreliminaryMapToUploadContract preliminaryMapToUploadContract) {
+        setContractData(preliminaryMapToUploadContract.getContractData());
+        preliminaryMapUpload = preliminaryMapToUploadContract.isPreliminaryMapUpload();
     }
 
 }

@@ -12,18 +12,35 @@ import static java.util.Objects.requireNonNull;
 @AllArgsConstructor
 public class ContractCreator {
 
-    ContractEntity createContract(AddContractDto addContractDto) {
+    DataInputContract createContract(AddContractDto addContractDto) {
         requireNonNull(addContractDto);
+        return DataInputContract.builder()
+                .contractData(buildContractData(addContractDto))
+                .isScanFromTauronUpload(false)
+                .build();
+    }
 
-        return ContractEntity.builder()
+    private ContractData buildContractData(AddContractDto addContractDto) {
+        return ContractData.builder()
                 .id(UUID.randomUUID())
                 .executive(addContractDto.getExecutive())
                 .location(addContractDto.getLocation())
+                .contactStepEnum(ContractStepEnum.DATA_INPUT_STEP)
                 .invoiceNumber(addContractDto.getInvoiceNumber())
-                .isScanFromTauronUpload(false)
-                .isPreliminaryMapUpload(false)
-                .contractStepEnum(ContractStepEnum.DATA_INPUT_STEP)
+                .created(LocalDateTime.now())
+                .build();
+    }
+
+    public ContractEntity createContactEntity(DataInputContract dataInputContract) {
+        return ContractEntity.builder()
+                .id(dataInputContract.getContractData().getId())
+                .executive(dataInputContract.getContractData().getExecutive())
+                .location(dataInputContract.getContractData().getLocation())
+                .contractStepEnum(dataInputContract.getContractData().getContactStepEnum())
+                .invoiceNumber(dataInputContract.getContractData().getInvoiceNumber())
+                .scanFromTauronUpload(dataInputContract.isScanFromTauronUpload())
                 .created(LocalDateTime.now())
                 .build();
     }
 }
+

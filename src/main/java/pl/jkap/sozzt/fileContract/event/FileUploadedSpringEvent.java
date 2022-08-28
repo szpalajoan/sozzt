@@ -1,16 +1,14 @@
 package pl.jkap.sozzt.fileContract.event;
 
 
-import org.springframework.context.ApplicationEvent;
 
 import java.util.UUID;
 
 
-public abstract class FileUploadedSpringEvent extends ApplicationEvent {
+public abstract class FileUploadedSpringEvent {
     private final UUID idContract;
 
-    public FileUploadedSpringEvent(Object source, UUID idContract) {
-        super(source);
+    public FileUploadedSpringEvent(UUID idContract) {
         this.idContract = idContract;
     }
 
