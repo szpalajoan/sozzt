@@ -7,8 +7,6 @@ import pl.jkap.sozzt.contract.dto.ContractDataDto;
 import pl.jkap.sozzt.contract.dto.DataInputContractDto;
 import pl.jkap.sozzt.contract.exception.NoScanFileOnConfirmingException;
 
-import static pl.jkap.sozzt.contract.dto.ContractStepEnum.DATA_INPUT_STEP;
-
 @Builder
 @Setter
 @Getter
@@ -44,7 +42,7 @@ class DataInputContract implements Contract {
                 .location(contractData.getLocation())
                 .executive(contractData.getExecutive())
                 .created(contractData.getCreated())
-                .contactStepEnum(DATA_INPUT_STEP)
+                .contactStepEnum(contractData.getContactStepEnum())
                 .build();
     }
 

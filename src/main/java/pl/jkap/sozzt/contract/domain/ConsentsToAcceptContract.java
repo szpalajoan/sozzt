@@ -3,24 +3,25 @@ package pl.jkap.sozzt.contract.domain;
 import lombok.Builder;
 import lombok.Setter;
 import pl.jkap.sozzt.contract.dto.ContractDataDto;
+import pl.jkap.sozzt.contract.exception.MyNotYetImplementedException;
 
-import static pl.jkap.sozzt.contract.dto.ContractStepEnum.LIST_OF_CONSENTS_TO_ADD;
+import static pl.jkap.sozzt.contract.dto.ContractStepEnum.CONSENTS_TO_ACCEPT;
 
 @Setter
 @Builder
-class ListOfConsentsToAddContract implements Contract {
+class ConsentsToAcceptContract implements Contract {
 
     private final ContractData contractData;
 
-    ListOfConsentsToAddContract(ContractData contractData) {
+    ConsentsToAcceptContract(ContractData contractData) {
         this.contractData = contractData;
-        this.contractData.setContactStepEnum(LIST_OF_CONSENTS_TO_ADD);
+        this.contractData.setContactStepEnum(CONSENTS_TO_ACCEPT);
 
     }
 
     @Override
     public ConsentsToAcceptContract confirmStep() {
-        return new ConsentsToAcceptContract(contractData);
+        throw new MyNotYetImplementedException();
     }
 
     @Override

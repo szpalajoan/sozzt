@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Setter;
 import pl.jkap.sozzt.contract.dto.ContractDataDto;
 
-import static pl.jkap.sozzt.contract.dto.ContractStepEnum.DATA_INPUT_STEP;
+import static pl.jkap.sozzt.contract.dto.ContractStepEnum.PRELIMINARY_MAP_TO_VERIFY;
 
 @Setter
 @Builder
@@ -14,6 +14,8 @@ class PreliminaryMapToVerifyContract implements Contract {
 
     PreliminaryMapToVerifyContract(ContractData contractData) {
         this.contractData = contractData;
+        this.contractData.setContactStepEnum(PRELIMINARY_MAP_TO_VERIFY);
+
     }
 
     @Override
@@ -29,7 +31,7 @@ class PreliminaryMapToVerifyContract implements Contract {
                 .location(contractData.getLocation())
                 .executive(contractData.getExecutive())
                 .created(contractData.getCreated())
-                .contactStepEnum(DATA_INPUT_STEP)
+                .contactStepEnum(contractData.getContactStepEnum())
                 .build();
     }
 

@@ -9,18 +9,16 @@ import spock.lang.Specification
 
 class DataInputContractSpec extends Specification implements ContractSample {
 
-    ContractFacade contractFacade = new ContractConfiguration().contractFacade()
-
     def "Should add contract"() {
 
         when: "User add new contract"
         DataInputContractDto dataInputContractDto = contractFacade.addContract(NEW_MEDIUM_VOLTAGE_NETWORK_IN_TARNOW_CONTRACT)
 
         then: "New contract has 'data input' step"
-        dataInputContractDto.contractDataDto.contactStepEnum == ContractStepEnum.DATA_INPUT_STEP
+        dataInputContractDto.contractDataDto.contactStepEnum == ContractStepEnum.DATA_INPUT
 
         and: "scan file isn't uploaded"
-        !contractFacade.getContract(dataInputContractDto.contractDataDto.id)
+        !contractFacade.getContract(dataInputContractDto.contractDataDto.id).scanFromTauronUpload
 
     }
 
@@ -45,7 +43,7 @@ class DataInputContractSpec extends Specification implements ContractSample {
         when: "confirm contract"
         contractFacade.confirmStep(dataInputContractDto.contractDataDto.id)
 
-        then: "contract has WaitingToPreliminaryMapStep"
+        then:
         thrown(NoScanFileOnConfirmingException)
     }
 

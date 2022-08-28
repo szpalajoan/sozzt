@@ -8,7 +8,7 @@ import java.util.UUID;
 
 import static java.util.Objects.requireNonNull;
 
-public class ContractCreator {
+class ContractCreator {
 
     DataInputContract createContract(AddContractDto addContractDto) {
         requireNonNull(addContractDto);
@@ -23,7 +23,7 @@ public class ContractCreator {
                 .id(UUID.randomUUID())
                 .executive(addContractDto.getExecutive())
                 .location(addContractDto.getLocation())
-                .contactStepEnum(ContractStepEnum.DATA_INPUT_STEP)
+                .contactStepEnum(ContractStepEnum.DATA_INPUT)
                 .invoiceNumber(addContractDto.getInvoiceNumber())
                 .created(LocalDateTime.now())
                 .build();
