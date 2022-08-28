@@ -1,6 +1,5 @@
 package pl.jkap.sozzt.contract.domain;
 
-import lombok.AllArgsConstructor;
 import pl.jkap.sozzt.contract.dto.AddContractDto;
 import pl.jkap.sozzt.contract.dto.ContractStepEnum;
 
@@ -9,7 +8,6 @@ import java.util.UUID;
 
 import static java.util.Objects.requireNonNull;
 
-@AllArgsConstructor
 public class ContractCreator {
 
     DataInputContract createContract(AddContractDto addContractDto) {
