@@ -2,9 +2,9 @@ package pl.jkap.sozzt.config.application;
 
 import lombok.AllArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
-import pl.jkap.sozzt.fileContract.event.FileUploadedSpringEvent;
-import pl.jkap.sozzt.fileContract.event.PreliminaryMapUploadedSpringEvent;
-import pl.jkap.sozzt.fileContract.event.ScanFromTauronUploadedSpringEvent;
+import pl.jkap.sozzt.file.event.FileUploadedSpringEvent;
+import pl.jkap.sozzt.file.event.PreliminaryMapUploadedSpringEvent;
+import pl.jkap.sozzt.file.event.ScanFromTauronUploadedSpringEvent;
 
 import java.util.UUID;
 

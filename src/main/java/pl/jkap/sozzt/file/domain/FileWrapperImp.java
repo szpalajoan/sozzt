@@ -1,7 +1,6 @@
-package pl.jkap.sozzt.fileContract.domain;
+package pl.jkap.sozzt.file.domain;
 
 import org.springframework.stereotype.Component;
-
 
 import java.nio.file.Files;
 import java.nio.file.Paths;

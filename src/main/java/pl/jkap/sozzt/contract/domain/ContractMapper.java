@@ -35,7 +35,6 @@ class ContractMapper {
 
     }
 
-
     private ContractData getContractData(ContractEntity contractEntity) {
         return ContractData.builder()
                 .id(contractEntity.getId())

@@ -3,7 +3,7 @@ package pl.jkap.sozzt.contract.domain
 import pl.jkap.sozzt.contract.dto.ContractDataDto
 import pl.jkap.sozzt.contract.dto.ContractStepEnum
 import pl.jkap.sozzt.contract.exception.NoPreliminaryMapOnConfirmingException
-import pl.jkap.sozzt.fileContract.event.PreliminaryMapUploadedSpringEvent
+import pl.jkap.sozzt.file.event.PreliminaryMapUploadedSpringEvent
 import spock.lang.Specification
 
 class PreliminaryMapToUploadContractSpec extends Specification implements ContractSample {

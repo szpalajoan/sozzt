@@ -1,4 +1,4 @@
-package pl.jkap.sozzt.fileContract.exception;
+package pl.jkap.sozzt.file.exception;
 
 public class StorageFileNotFoundException extends StorageException {
 

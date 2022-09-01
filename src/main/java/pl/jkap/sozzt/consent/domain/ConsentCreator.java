@@ -1,21 +1,20 @@
 package pl.jkap.sozzt.consent.domain;
 
-import pl.jkap.sozzt.consent.dto.ConsentDto;
+import pl.jkap.sozzt.consent.dto.AddConsentDto;
 
 import java.util.UUID;
 
 import static java.util.Objects.requireNonNull;
 
 public class ConsentCreator {
-    public Consent createConsent(ConsentDto consentDto) {
-        requireNonNull(consentDto);
+    public Consent createConsent(AddConsentDto addConsentDto) {
+        requireNonNull(addConsentDto);
         return Consent.builder()
                 .id(UUID.randomUUID())
-                .contact(consentDto.getContact())
-                .comment(consentDto.getComment())
+                .contact(addConsentDto.getContact())
                 .status(ConsentStatus.WAITING)
-                .idContract(consentDto.getIdContract())
-                .location(consentDto.getLocation())
+                .idContract(addConsentDto.getIdContract())
+                .location(addConsentDto.getLocation())
                 .build();
     }
 }

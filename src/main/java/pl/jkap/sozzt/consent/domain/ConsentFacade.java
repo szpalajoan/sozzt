@@ -2,6 +2,7 @@ package pl.jkap.sozzt.consent.domain;
 
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import pl.jkap.sozzt.consent.dto.AddConsentDto;
 import pl.jkap.sozzt.consent.dto.ConsentDto;
 import pl.jkap.sozzt.consent.exception.ConsentNotFoundException;
 
@@ -19,9 +20,9 @@ public class ConsentFacade {
     private static final int PAGE_SIZE = 5;
 
 
-    public ConsentDto addConsent(ConsentDto consentDto) {
-        requireNonNull(consentDto);
-        Consent consent = consentCreator.createConsent(consentDto);
+    public ConsentDto addConsent(AddConsentDto addConsentDto) {
+        requireNonNull(addConsentDto);
+        Consent consent = consentCreator.createConsent(addConsentDto);
         return consentRepository.save(consent).dto();
     }
 

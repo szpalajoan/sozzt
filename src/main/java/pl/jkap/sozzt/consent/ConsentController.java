@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import pl.jkap.sozzt.consent.domain.ConsentFacade;
+import pl.jkap.sozzt.consent.dto.AddConsentDto;
 import pl.jkap.sozzt.consent.dto.ConsentDto;
 
 import javax.validation.constraints.Min;
@@ -30,8 +31,8 @@ public class ConsentController {
 
     @PostMapping("/consents")
     @ResponseStatus(HttpStatus.CREATED)
-    public ConsentDto addConsent(@RequestBody ConsentDto consentDto) {
-        return consentFacade.addConsent(consentDto);
+    public ConsentDto addConsent(@RequestBody AddConsentDto addConsentDto) {
+        return consentFacade.addConsent(addConsentDto);
     }
 
     @GetMapping("/consents")

@@ -16,5 +16,4 @@ class PreliminaryMapToVerifyContractSpec extends Specification implements Contra
         then: "contract has list of consents to add step"
         contractFacade.getContract(contractDataDto.id).contractStepEnum == ContractStepEnum.LIST_OF_CONSENTS_TO_ADD.toString()
     }
-
 }

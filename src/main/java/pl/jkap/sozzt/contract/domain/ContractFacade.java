@@ -8,8 +8,8 @@ import pl.jkap.sozzt.contract.dto.ContractDataDto;
 import pl.jkap.sozzt.contract.dto.ContractDtoRepository;
 import pl.jkap.sozzt.contract.dto.DataInputContractDto;
 import pl.jkap.sozzt.contract.exception.ContractNotFoundException;
-import pl.jkap.sozzt.fileContract.event.PreliminaryMapUploadedSpringEvent;
-import pl.jkap.sozzt.fileContract.event.ScanFromTauronUploadedSpringEvent;
+import pl.jkap.sozzt.file.event.PreliminaryMapUploadedSpringEvent;
+import pl.jkap.sozzt.file.event.ScanFromTauronUploadedSpringEvent;
 
 import java.util.List;
 import java.util.UUID;

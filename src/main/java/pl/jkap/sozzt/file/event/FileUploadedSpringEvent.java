@@ -1,4 +1,4 @@
-package pl.jkap.sozzt.fileContract.event;
+package pl.jkap.sozzt.file.event;
 
 
 

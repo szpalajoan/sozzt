@@ -1,29 +1,30 @@
-package pl.jkap.sozzt.fileContract;
+package pl.jkap.sozzt.file;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import pl.jkap.sozzt.fileContract.domain.FileContractFacade;
-import pl.jkap.sozzt.fileContract.domain.FileType;
+import pl.jkap.sozzt.file.domain.FileFacade;
+import pl.jkap.sozzt.file.domain.FileType;
 
 import java.util.UUID;
 
+
 @RestController
 @RequiredArgsConstructor
-public class FileContractController {
+public class FileController {
 
     @Autowired
-    private final FileContractFacade fileContractFacade;
+    private final FileFacade fileFacade;
 
     @PostMapping(value = "/fileContract", consumes = {"multipart/form-data"})
-    public ResponseEntity<String> uploadFileContact(@RequestPart("file") MultipartFile file, @RequestParam UUID idContract, @RequestParam FileType fileType) {
-        fileContractFacade.store(file, idContract, fileType);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    @ResponseStatus(HttpStatus.CREATED)
+    public String uploadFileContact(@RequestPart("file") MultipartFile file, @RequestParam UUID idContract, @RequestParam FileType fileType) {
+        return fileFacade.store(file, idContract, fileType);
     }
 }

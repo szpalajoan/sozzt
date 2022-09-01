@@ -4,7 +4,7 @@ package pl.jkap.sozzt.contract.domain
 import pl.jkap.sozzt.contract.dto.ContractStepEnum
 import pl.jkap.sozzt.contract.dto.DataInputContractDto
 import pl.jkap.sozzt.contract.exception.NoScanFileOnConfirmingException
-import pl.jkap.sozzt.fileContract.event.ScanFromTauronUploadedSpringEvent
+import pl.jkap.sozzt.file.event.ScanFromTauronUploadedSpringEvent
 import spock.lang.Specification
 
 class DataInputContractSpec extends Specification implements ContractSample {

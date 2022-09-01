@@ -1,4 +1,4 @@
-package pl.jkap.sozzt.fileContract.domain;
+package pl.jkap.sozzt.file.domain;
 
 
 import org.springframework.context.ApplicationEventPublisher;
@@ -7,13 +7,12 @@ import org.springframework.context.annotation.Configuration;
 import pl.jkap.sozzt.config.application.ContractSpringEventPublisher;
 
 @Configuration
-public class FileContractConfiguration {
+public class FileConfiguration {
 
     @Bean
-    FileContractFacade fileContractFacade(ApplicationEventPublisher applicationEventPublisher) {
+    FileFacade fileContractFacade(ApplicationEventPublisher applicationEventPublisher) {
         FileWrapper fileWrapper = new FileWrapperImp();
         ContractSpringEventPublisher contractSpringEventPublisher = new ContractSpringEventPublisher(applicationEventPublisher);
-        return new FileContractFacade(new FileSystemStorage(contractSpringEventPublisher, fileWrapper));
+        return new FileFacade(new FileSystemStorage(fileWrapper), contractSpringEventPublisher);
     }
-
 }

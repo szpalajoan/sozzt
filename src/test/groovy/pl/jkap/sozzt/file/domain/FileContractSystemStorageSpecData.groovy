@@ -1,4 +1,4 @@
-package pl.jkap.sozzt.fileContract.domain
+package pl.jkap.sozzt.file.domain
 
 
 import org.springframework.mock.web.MockMultipartFile
@@ -9,14 +9,14 @@ import spock.lang.Specification
 class FileContractSystemStorageSpecData extends Specification implements FileSample {
 
     private FileWrapper fileWrapper
-    private FileContractFacade fileContractFacade
+    private FileFacade fileContractFacade
     private ContractSpringEventPublisher contractSpringEventPublisher
 
 
     void setup() {
         fileWrapper = Stub(FileWrapper.class)
         contractSpringEventPublisher = Mock(ContractSpringEventPublisher.class)
-        fileContractFacade = new FileContractFacade(new FileSystemStorage(contractSpringEventPublisher, fileWrapper))
+        fileContractFacade = new FileFacade(new FileSystemStorage(fileWrapper), contractSpringEventPublisher)
     }
 
 

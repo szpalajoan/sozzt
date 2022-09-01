@@ -1,13 +1,12 @@
-package pl.jkap.sozzt.fileContract.domain;
+package pl.jkap.sozzt.file.domain;
 
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-import pl.jkap.sozzt.config.application.ContractSpringEventPublisher;
-import pl.jkap.sozzt.fileContract.exception.StorageException;
-import pl.jkap.sozzt.fileContract.exception.StorageFileNotFoundException;
+import pl.jkap.sozzt.file.exception.StorageException;
+import pl.jkap.sozzt.file.exception.StorageFileNotFoundException;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -22,12 +21,13 @@ class FileSystemStorage {
     private static final String UPLOAD_FILE_DIR = "upload_dir/";
     private final Path rootLocation = Paths.get(UPLOAD_FILE_DIR);
 
-    private final ContractSpringEventPublisher contractSpringEventPublisher;
-
     private final FileWrapper fileWrapper;
 
+    String prepareFileContractPath(UUID idContract, FileType fileType) {
+        return UPLOAD_FILE_DIR + idContract + "/" + fileType + "/";
+    }
 
-    String store(MultipartFile file, UUID idContract, FileType fileType) {
+    String store(MultipartFile file, String directoriesFile) {
 
         validateFile(file.isEmpty(), "Failed to store empty file ");
         String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
@@ -35,26 +35,13 @@ class FileSystemStorage {
 
         String pathFile;
         try {
-            String directoriesFile = UPLOAD_FILE_DIR + idContract + "/" + fileType + "/";
             pathFile = directoriesFile + createUniqueFileName(fileName, directoriesFile);
             Files.createDirectories(Paths.get(directoriesFile));
             Files.write(Paths.get(pathFile), file.getBytes());
         } catch (IOException e) {
             throw new StorageException("Failed to store file " + fileName, e);
         }
-        sendEventAboutUploadedFileWithGivenType(idContract, fileType);
         return pathFile;
-    }
-
-    private void sendEventAboutUploadedFileWithGivenType(UUID idContract, FileType fileType) {
-        switch (fileType) {
-            case CONTRACT_SCAN_FROM_TAURON:
-                contractSpringEventPublisher.storeScanFromTauron(idContract);
-                break;
-            case PRELIMINARY_MAP:
-                contractSpringEventPublisher.storePreliminaryMap(idContract);
-                break;
-        }
     }
 
     private void validateFile(boolean condition, String throwMessage) {
