@@ -25,6 +25,6 @@ public class FileController {
     @PostMapping(value = "/fileContract", consumes = {"multipart/form-data"})
     @ResponseStatus(HttpStatus.CREATED)
     public String uploadFileContact(@RequestPart("file") MultipartFile file, @RequestParam UUID idContract, @RequestParam FileType fileType) {
-        return fileFacade.store(file, idContract, fileType);
+        return fileFacade.storeFileInRepository(file, idContract, fileType);
     }
 }

@@ -8,13 +8,12 @@ import static java.util.Objects.requireNonNull;
 
 class ContractMapper {
 
-    //    DataInputContract dataInputStepFrom(ContractEntity contractEntity) {
-//        return DataInputContract.builder()
-//                .contractData(getContractData(contractEntity))
-//                .isScanFromTauronUpload(contractEntity.isScanFromTauronUpload())
-//                .build();
-//    }
-    private final ContractMapperInterface mapper = Mappers.getMapper(ContractMapperInterface.class);
+        DataInputContract dataInputStepFrom(ContractEntity contractEntity) {
+        return DataInputContract.builder()
+                .contractData(getContractData(contractEntity))
+                .isScanFromTauronUpload(contractEntity.isScanFromTauronUpload())
+                .build();
+    }
 
     PreliminaryMapToUploadContract preliminaryMapToUploadStepFrom(ContractEntity contractEntity) {
         return PreliminaryMapToUploadContract.builder()
@@ -52,7 +51,7 @@ class ContractMapper {
 
         switch (contractEntity.getContractStepEnum()) {
             case DATA_INPUT: {
-                return mapper.dataInputStepFrom(contractEntity);
+                return dataInputStepFrom(contractEntity);
             }
             case PRELIMINARY_MAP_TO_UPLOAD: {
                 return preliminaryMapToUploadStepFrom(contractEntity);

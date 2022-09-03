@@ -15,7 +15,6 @@ class ListOfConsentsToAddContract implements Contract {
     ListOfConsentsToAddContract(ContractData contractData) {
         this.contractData = contractData;
         this.contractData.setContactStepEnum(LIST_OF_CONSENTS_TO_ADD);
-
     }
 
     @Override

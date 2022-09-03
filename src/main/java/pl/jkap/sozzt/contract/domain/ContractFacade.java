@@ -25,8 +25,6 @@ public class ContractFacade {
     private final ContractRepository contractRepository;
     private final ContractMapper contractMapper;
     private final ContractCreator contractCreator;
-    private final ContractMapperInterface mapper = Mappers.getMapper(ContractMapperInterface.class);
-
 
     public DataInputContractDto addContract(AddContractDto addContractDto) {
         requireNonNull(addContractDto);
@@ -48,7 +46,7 @@ public class ContractFacade {
     public void confirmScanUploaded(UUID idContract) {
         ContractEntity contractEntity = contractRepository.findById(idContract)
                 .orElseThrow(ContractNotFoundException::new);
-        DataInputContract dataInputContract = mapper.dataInputStepFrom(contractEntity);
+        DataInputContract dataInputContract = contractMapper.dataInputStepFrom(contractEntity);
         dataInputContract.setScanFromTauronUpload(true);
         contractEntity.update(dataInputContract);
         contractRepository.save(contractEntity);
