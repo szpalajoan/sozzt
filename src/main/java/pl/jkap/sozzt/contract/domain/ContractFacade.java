@@ -1,6 +1,7 @@
 package pl.jkap.sozzt.contract.domain;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.mapstruct.factory.Mappers;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.PageRequest;
 import pl.jkap.sozzt.contract.dto.AddContractDto;
@@ -17,13 +18,15 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ContractFacade {
 
     private static final int PAGE_SIZE = 5;
     private final ContractRepository contractRepository;
     private final ContractMapper contractMapper;
     private final ContractCreator contractCreator;
+    private final ContractMapperInterface mapper = Mappers.getMapper(ContractMapperInterface.class);
+
 
     public DataInputContractDto addContract(AddContractDto addContractDto) {
         requireNonNull(addContractDto);
@@ -45,7 +48,7 @@ public class ContractFacade {
     public void confirmScanUploaded(UUID idContract) {
         ContractEntity contractEntity = contractRepository.findById(idContract)
                 .orElseThrow(ContractNotFoundException::new);
-        DataInputContract dataInputContract = contractMapper.dataInputStepFrom(contractEntity);
+        DataInputContract dataInputContract = mapper.dataInputStepFrom(contractEntity);
         dataInputContract.setScanFromTauronUpload(true);
         contractEntity.update(dataInputContract);
         contractRepository.save(contractEntity);

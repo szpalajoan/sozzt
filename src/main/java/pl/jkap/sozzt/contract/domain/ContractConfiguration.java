@@ -8,9 +8,7 @@ public class ContractConfiguration {
 
     public ContractFacade contractFacade() {
         ContractRepository contractRepository = new InMemoryContractRepository();
-        ContractMapper contractMapper = new ContractMapper();
-        ContractCreator contractCreator = new ContractCreator();
-        return new ContractFacade(contractRepository, contractMapper, contractCreator);
+        return contractFacade(contractRepository);
     }
 
     @Bean

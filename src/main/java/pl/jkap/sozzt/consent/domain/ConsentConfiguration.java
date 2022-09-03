@@ -8,8 +8,7 @@ public class ConsentConfiguration {
 
     public ConsentFacade consentFacade() {
         ConsentRepository consentRepository = new InMemoryConsentRepository();
-        ConsentCreator consentCreator = new ConsentCreator();
-        return new ConsentFacade(consentRepository, consentCreator);
+        return consentFacade(consentRepository);
     }
 
     @Bean

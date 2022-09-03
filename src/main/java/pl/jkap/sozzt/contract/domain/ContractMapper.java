@@ -1,19 +1,20 @@
 package pl.jkap.sozzt.contract.domain;
 
-import lombok.AllArgsConstructor;
 import org.hibernate.cfg.NotYetImplementedException;
+import org.mapstruct.factory.Mappers;
 
 import static java.util.Objects.requireNonNull;
 
-@AllArgsConstructor
+
 class ContractMapper {
 
-    DataInputContract dataInputStepFrom(ContractEntity contractEntity) {
-        return DataInputContract.builder()
-                .contractData(getContractData(contractEntity))
-                .isScanFromTauronUpload(contractEntity.isScanFromTauronUpload())
-                .build();
-    }
+    //    DataInputContract dataInputStepFrom(ContractEntity contractEntity) {
+//        return DataInputContract.builder()
+//                .contractData(getContractData(contractEntity))
+//                .isScanFromTauronUpload(contractEntity.isScanFromTauronUpload())
+//                .build();
+//    }
+    private final ContractMapperInterface mapper = Mappers.getMapper(ContractMapperInterface.class);
 
     PreliminaryMapToUploadContract preliminaryMapToUploadStepFrom(ContractEntity contractEntity) {
         return PreliminaryMapToUploadContract.builder()
@@ -51,7 +52,7 @@ class ContractMapper {
 
         switch (contractEntity.getContractStepEnum()) {
             case DATA_INPUT: {
-                return dataInputStepFrom(contractEntity);
+                return mapper.dataInputStepFrom(contractEntity);
             }
             case PRELIMINARY_MAP_TO_UPLOAD: {
                 return preliminaryMapToUploadStepFrom(contractEntity);
