@@ -6,7 +6,7 @@ import java.util.UUID;
 
 import static java.util.Objects.requireNonNull;
 
-public class ConsentCreator {
+class ConsentCreator {
     public Consent createConsent(AddConsentDto addConsentDto) {
         requireNonNull(addConsentDto);
         return Consent.builder()

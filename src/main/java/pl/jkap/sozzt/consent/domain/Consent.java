@@ -19,7 +19,7 @@ import java.util.UUID;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Consent {
+class Consent {
     @Id
     private UUID id;
     private UUID idContract;
