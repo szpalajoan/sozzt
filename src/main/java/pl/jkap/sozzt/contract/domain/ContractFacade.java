@@ -1,7 +1,6 @@
 package pl.jkap.sozzt.contract.domain;
 
-import lombok.RequiredArgsConstructor;
-import org.mapstruct.factory.Mappers;
+import lombok.AllArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.PageRequest;
 import pl.jkap.sozzt.contract.dto.AddContractDto;
@@ -18,7 +17,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class ContractFacade {
 
     private static final int PAGE_SIZE = 5;
