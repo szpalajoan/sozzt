@@ -19,7 +19,12 @@ class ListOfConsentsToAddContract implements Contract {
 
     @Override
     public ConsentsToAcceptContract confirmStep() {
-        return new ConsentsToAcceptContract(contractData);
+        return new ConsentsToAcceptContract(contractData, false);
+    }
+
+    @Override
+    public PreliminaryMapToUploadContract withdrawalToNewPreliminaryMapUpload() {
+        return new PreliminaryMapToUploadContract(contractData, false);
     }
 
     @Override

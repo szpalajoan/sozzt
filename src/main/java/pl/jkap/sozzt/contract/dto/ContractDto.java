@@ -16,6 +16,7 @@ public class ContractDto {
     private String executive;
     private boolean isScanFromTauronUpload;
     private boolean isPreliminaryMapUpload;
+    private boolean allConsentAccepted;
     private ContractStepEnum contactStepEnum;
     private LocalDateTime created;
 }

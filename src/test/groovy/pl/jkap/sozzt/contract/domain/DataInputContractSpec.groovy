@@ -4,7 +4,7 @@ package pl.jkap.sozzt.contract.domain
 import pl.jkap.sozzt.contract.dto.ContractStepEnum
 import pl.jkap.sozzt.contract.dto.DataInputContractDto
 import pl.jkap.sozzt.contract.exception.NoScanFileOnConfirmingException
-import pl.jkap.sozzt.file.event.ScanFromTauronUploadedSpringEvent
+import pl.jkap.sozzt.file.event.ScanFromTauronUploadedSpringEventContract
 import spock.lang.Specification
 
 class DataInputContractSpec extends Specification implements ContractSample {
@@ -52,7 +52,7 @@ class DataInputContractSpec extends Specification implements ContractSample {
         DataInputContractDto dataInputContractDto = contractFacade.addContract(NEW_MEDIUM_VOLTAGE_NETWORK_IN_TARNOW_CONTRACT)
 
         when: "Event came about that the scan file from Tauron has been uploaded"
-        contractFacade.uploadedScanFromTauron(new ScanFromTauronUploadedSpringEvent(dataInputContractDto.contractDataDto.id))
+        contractFacade.uploadedScanFromTauron(new ScanFromTauronUploadedSpringEventContract(dataInputContractDto.contractDataDto.id))
 
         then: "Contract have an information that a scan has been uploaded"
         contractFacade.getContract(dataInputContractDto.contractDataDto.id).scanFromTauronUpload

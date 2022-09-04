@@ -16,6 +16,8 @@ public interface ContractDtoRepository {
 
     boolean getPreliminaryMapUpload();
 
+    boolean getAllConsentAccepted();
+
     String getContractStepEnum();
 
     LocalDateTime getCreated();

@@ -60,8 +60,14 @@ class InMemoryContractRepository extends InMemoryRepository<ContractEntity, UUID
             }
 
             @Override
+            public boolean getAllConsentAccepted() {
+                return contractEntity.isAllConsentAccepted();
+            }
+
+            @Override
             public String getContractStepEnum() {
-                return contractEntity.getContractStepEnum().toString();
+                return contractEntity.getContractStepEnum()
+                        .toString();
             }
 
             @Override

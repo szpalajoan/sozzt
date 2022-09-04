@@ -13,6 +13,9 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.UUID;
 
+import static pl.jkap.sozzt.consent.domain.ConsentStatus.ACCEPTED;
+import static pl.jkap.sozzt.consent.domain.ConsentStatus.REJECTED;
+
 @Entity
 @Table(name = "Consent")
 @Builder
@@ -29,6 +32,18 @@ class Consent {
     @Enumerated(EnumType.STRING)
     private ConsentStatus status;
     private String comment;
+
+    void confirmConsent() {
+        status = ACCEPTED;
+    }
+
+    void rejectConsent() {
+        status = REJECTED;
+    }
+
+    void setComment(String comment) {
+        this.comment = comment;
+    }
 
     public ConsentDto dto() {
         return ConsentDto.builder()

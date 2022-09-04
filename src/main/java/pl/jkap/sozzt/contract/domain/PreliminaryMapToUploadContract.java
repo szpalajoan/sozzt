@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import pl.jkap.sozzt.contract.dto.ContractDataDto;
 import pl.jkap.sozzt.contract.exception.NoPreliminaryMapOnConfirmingException;
+import pl.jkap.sozzt.contract.exception.WithdrawalException;
 
 import static pl.jkap.sozzt.contract.dto.ContractStepEnum.PRELIMINARY_MAP_TO_UPLOAD;
 
@@ -29,6 +30,11 @@ class PreliminaryMapToUploadContract implements Contract {
         } else {
             throw new NoPreliminaryMapOnConfirmingException("There is no uploaded preliminary map file.");
         }
+    }
+
+    @Override
+    public PreliminaryMapToUploadContract withdrawalToNewPreliminaryMapUpload() {
+        throw new WithdrawalException("This step can't be withdrawn");
     }
 
     @Override

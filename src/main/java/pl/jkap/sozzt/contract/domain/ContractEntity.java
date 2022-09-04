@@ -39,6 +39,7 @@ class ContractEntity {
 
     private boolean scanFromTauronUpload;
     private boolean preliminaryMapUpload;
+    private boolean allConsentAccepted;
 
     void updateFromContract(Contract contract) {
         setContractData(contract.getContractData());
@@ -61,6 +62,11 @@ class ContractEntity {
     public void update(PreliminaryMapToUploadContract preliminaryMapToUploadContract) {
         setContractData(preliminaryMapToUploadContract.getContractData());
         preliminaryMapUpload = preliminaryMapToUploadContract.isPreliminaryMapUpload();
+    }
+
+    public void update(ConsentsToAcceptContract consentsToAcceptContract) {
+        setContractData(consentsToAcceptContract.getContractData());
+        allConsentAccepted = consentsToAcceptContract.isAllConsentAccepted();
     }
 
 }

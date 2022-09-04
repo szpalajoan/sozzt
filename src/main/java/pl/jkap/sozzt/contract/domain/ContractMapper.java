@@ -1,14 +1,13 @@
 package pl.jkap.sozzt.contract.domain;
 
 import org.hibernate.cfg.NotYetImplementedException;
-import org.mapstruct.factory.Mappers;
 
 import static java.util.Objects.requireNonNull;
 
 
 class ContractMapper {
 
-        DataInputContract dataInputStepFrom(ContractEntity contractEntity) {
+    DataInputContract dataInputStepFrom(ContractEntity contractEntity) {
         return DataInputContract.builder()
                 .contractData(getContractData(contractEntity))
                 .isScanFromTauronUpload(contractEntity.isScanFromTauronUpload())
@@ -23,15 +22,21 @@ class ContractMapper {
     }
 
     PreliminaryMapToVerifyContract preliminaryMapToVerifyStepFrom(ContractEntity contractEntity) {
-        return PreliminaryMapToVerifyContract.builder().contractData(getContractData(contractEntity)).build();
+        return PreliminaryMapToVerifyContract.builder()
+                .contractData(getContractData(contractEntity))
+                .build();
     }
 
-    private Contract listOfConsentsToAddContractStepFrom(ContractEntity contractEntity) {
-        return ListOfConsentsToAddContract.builder().contractData(getContractData(contractEntity)).build();
+    ListOfConsentsToAddContract listOfConsentsToAddContractStepFrom(ContractEntity contractEntity) {
+        return ListOfConsentsToAddContract.builder()
+                .contractData(getContractData(contractEntity))
+                .build();
     }
 
-    private Contract consentsToAcceptContractStepFrom(ContractEntity contractEntity) {
-        return ConsentsToAcceptContract.builder().contractData(getContractData(contractEntity)).build();
+    ConsentsToAcceptContract consentsToAcceptContractStepFrom(ContractEntity contractEntity) {
+        return ConsentsToAcceptContract.builder()
+                .contractData(getContractData(contractEntity))
+                .build();
 
     }
 

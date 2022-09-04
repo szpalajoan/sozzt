@@ -3,7 +3,7 @@ package pl.jkap.sozzt.contract.domain
 import pl.jkap.sozzt.contract.dto.ContractDataDto
 import pl.jkap.sozzt.contract.dto.ContractStepEnum
 import pl.jkap.sozzt.contract.exception.NoPreliminaryMapOnConfirmingException
-import pl.jkap.sozzt.file.event.PreliminaryMapUploadedSpringEvent
+import pl.jkap.sozzt.file.event.PreliminaryMapUploadedSpringEventContract
 import spock.lang.Specification
 
 class PreliminaryMapToUploadContractSpec extends Specification implements ContractSample {
@@ -38,7 +38,7 @@ class PreliminaryMapToUploadContractSpec extends Specification implements Contra
         ContractDataDto contractDataDto = CONTRACT_WITH_PRELIMINARY_MAP_TO_UPLOAD_STEP
 
         when: "Event came about that the preliminary map has been uploaded"
-        contractFacade.uploadedPreliminaryMap(new PreliminaryMapUploadedSpringEvent(contractDataDto.id))
+        contractFacade.uploadedPreliminaryMap(new PreliminaryMapUploadedSpringEventContract(contractDataDto.id))
 
         then: "Contract have an information that preliminary map has been uploaded"
         contractFacade.getContract(contractDataDto.id).preliminaryMapUpload

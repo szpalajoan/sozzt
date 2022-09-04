@@ -10,4 +10,6 @@ interface Contract {
     ContractData getContractData();
 
     ContractDataDto dto();
+
+    PreliminaryMapToUploadContract withdrawalToNewPreliminaryMapUpload();
 }

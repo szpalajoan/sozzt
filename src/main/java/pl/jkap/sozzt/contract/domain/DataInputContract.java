@@ -6,6 +6,7 @@ import lombok.Setter;
 import pl.jkap.sozzt.contract.dto.ContractDataDto;
 import pl.jkap.sozzt.contract.dto.DataInputContractDto;
 import pl.jkap.sozzt.contract.exception.NoScanFileOnConfirmingException;
+import pl.jkap.sozzt.contract.exception.WithdrawalException;
 
 @Builder
 @Setter
@@ -46,11 +47,15 @@ class DataInputContract implements Contract {
                 .build();
     }
 
+    @Override
+    public PreliminaryMapToUploadContract withdrawalToNewPreliminaryMapUpload() {
+        throw new WithdrawalException("This step can't be withdrawn");
+    }
+
     DataInputContractDto dataInputContractDto() {
         return DataInputContractDto.builder()
                 .contractDataDto(dto())
                 .isScanFromTauronUpload(isScanFromTauronUpload)
                 .build();
     }
-
 }

@@ -4,7 +4,8 @@ package pl.jkap.sozzt.file.domain;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import pl.jkap.sozzt.config.application.ContractSpringEventPublisher;
+import pl.jkap.sozzt.config.application.ConsentFileSpringEventPublisher;
+import pl.jkap.sozzt.config.application.ContractFileSpringEventPublisher;
 
 @Configuration
 public class FileConfiguration {
@@ -12,7 +13,9 @@ public class FileConfiguration {
     @Bean
     FileFacade fileContractFacade(ApplicationEventPublisher applicationEventPublisher) {
         FileWrapper fileWrapper = new FileWrapperImp();
-        ContractSpringEventPublisher contractSpringEventPublisher = new ContractSpringEventPublisher(applicationEventPublisher);
-        return new FileFacade(new FileSystemStorage(fileWrapper), contractSpringEventPublisher);
+        ContractFileSpringEventPublisher contractFileSpringEventPublisher = new ContractFileSpringEventPublisher(applicationEventPublisher);
+        ConsentFileSpringEventPublisher consentFileSpringEventPublisher = new ConsentFileSpringEventPublisher(applicationEventPublisher);
+        return new FileFacade(new FileSystemStorage(fileWrapper), contractFileSpringEventPublisher,
+                consentFileSpringEventPublisher);
     }
 }

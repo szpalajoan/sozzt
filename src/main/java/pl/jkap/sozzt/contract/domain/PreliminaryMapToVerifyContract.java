@@ -23,6 +23,11 @@ class PreliminaryMapToVerifyContract implements Contract {
     }
 
     @Override
+    public PreliminaryMapToUploadContract withdrawalToNewPreliminaryMapUpload() {
+        return new PreliminaryMapToUploadContract(contractData, false);
+    }
+
+    @Override
     public ContractDataDto dto() {
         return ContractDataDto.builder()
                 .id(contractData.getId())

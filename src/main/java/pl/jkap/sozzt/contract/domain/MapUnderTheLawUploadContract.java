@@ -4,35 +4,23 @@ import lombok.Builder;
 import lombok.Getter;
 import org.hibernate.cfg.NotYetImplementedException;
 import pl.jkap.sozzt.contract.dto.ContractDataDto;
-import pl.jkap.sozzt.contract.exception.NoScanFileOnConfirmingException;
-import pl.jkap.sozzt.contract.exception.NotAllConsentsAreConfirmedException;
 
-import static pl.jkap.sozzt.contract.dto.ContractStepEnum.CONSENTS_TO_ACCEPT;
+import static pl.jkap.sozzt.contract.dto.ContractStepEnum.MAP_UNDER_THE_LAW_UPLOAD;
 
 @Builder
 @Getter
-class ConsentsToAcceptContract implements Contract {
+class MapUnderTheLawUploadContract implements Contract {
 
     private final ContractData contractData;
-    private boolean allConsentAccepted;
 
-    ConsentsToAcceptContract(ContractData contractData, boolean allConsentAccepted) {
+    MapUnderTheLawUploadContract(ContractData contractData) {
         this.contractData = contractData;
-        this.contractData.setContactStepEnum(CONSENTS_TO_ACCEPT);
-        this.allConsentAccepted = allConsentAccepted;
-    }
-
-    void setAllConsentAccepted() {
-        allConsentAccepted = true;
+        this.contractData.setContactStepEnum(MAP_UNDER_THE_LAW_UPLOAD);
     }
 
     @Override
     public MapUnderTheLawUploadContract confirmStep() {
-        if (allConsentAccepted) {
-            return new MapUnderTheLawUploadContract(this.contractData);
-        } else {
-            throw new NotAllConsentsAreConfirmedException("Not all consents are confirmed.");
-        }
+        throw new NotYetImplementedException();
     }
 
     @Override

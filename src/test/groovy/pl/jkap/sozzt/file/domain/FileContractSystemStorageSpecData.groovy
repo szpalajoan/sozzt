@@ -2,7 +2,7 @@ package pl.jkap.sozzt.file.domain
 
 
 import org.springframework.mock.web.MockMultipartFile
-import pl.jkap.sozzt.config.application.ContractSpringEventPublisher
+import pl.jkap.sozzt.config.application.ContractFileSpringEventPublisher
 import spock.lang.Specification
 
 
@@ -10,13 +10,13 @@ class FileContractSystemStorageSpecData extends Specification implements FileSam
 
     private FileWrapper fileWrapper
     private FileFacade fileContractFacade
-    private ContractSpringEventPublisher contractSpringEventPublisher
+    private ContractFileSpringEventPublisher contractSpringEventPublisher
 
 
     void setup() {
         fileWrapper = Stub(FileWrapper.class)
-        contractSpringEventPublisher = Mock(ContractSpringEventPublisher.class)
-        fileContractFacade = new FileFacade(new FileSystemStorage(fileWrapper), contractSpringEventPublisher)
+        contractSpringEventPublisher = Mock(ContractFileSpringEventPublisher.class)
+        fileContractFacade = new FileFacade(new FileSystemStorage(fileWrapper), contractSpringEventPublisher, consentSpringEventPublisher)
     }
 
 
@@ -26,7 +26,7 @@ class FileContractSystemStorageSpecData extends Specification implements FileSam
         fileWrapper.checkFileExist("upload_dir/1/fil22eName") >> true
 
         MockMultipartFile scanFromTauron = SCAN_FROM_TAURON
-        fileContractFacade.storeFileInRepository(scanFromTauron, idContract, FileType.CONTRACT_SCAN_FROM_TAURON)
+        fileContractFacade.storeContractFileInRepository(scanFromTauron, idContract, FileType.CONTRACT_SCAN_FROM_TAURON)
 
         then: "The scan file is saved"
         fileContractFacade.loadAsResource("fil22eName").filename == "fil22eName"
@@ -49,7 +49,7 @@ class FileContractSystemStorageSpecData extends Specification implements FileSam
 
         when: "add new file"
         MockMultipartFile scanFromTauron = SCAN_FROM_TAURON
-        String pathFile = fileContractFacade.storeFileInRepository(scanFromTauron, sampleIdContract, FileType.CONTRACT_SCAN_FROM_TAURON)
+        String pathFile = fileContractFacade.storeContractFileInRepository(scanFromTauron, sampleIdContract, FileType.CONTRACT_SCAN_FROM_TAURON)
 
         then: " if a file with the same name already exists there is unique name"
         pathFile == newPathName

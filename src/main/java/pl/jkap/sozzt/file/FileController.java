@@ -25,12 +25,12 @@ public class FileController {
     @PostMapping(value = "/contractFile", consumes = {"multipart/form-data"})
     @ResponseStatus(HttpStatus.CREATED)
     public String uploadContractFile(@RequestPart("file") MultipartFile file, @RequestParam UUID idContract, @RequestParam FileType fileType) {
-        return fileFacade.storeFileInRepository(file, idContract, fileType);
+        return fileFacade.storeContractFileInRepository(file, idContract, fileType);
     }
 
     @PostMapping(value = "/consentConfirmationFile", consumes = {"multipart/form-data"})
     @ResponseStatus(HttpStatus.CREATED)
-    public String uploadConsentConfirmationFile(@RequestPart("file") MultipartFile file, @RequestParam UUID idContract, @RequestParam FileType fileType) {
-        return fileFacade.storeFileInRepository(file, idContract, fileType);
+    public String uploadConsentConfirmationFile(@RequestPart("file") MultipartFile file, @RequestParam UUID idConsent, @RequestParam UUID idContract) {
+        return fileFacade.storeConsentConfirmationFileInRepository(file, idConsent, idContract);
     }
 }
