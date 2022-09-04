@@ -15,7 +15,6 @@ class PreliminaryMapToVerifyContract implements Contract {
     PreliminaryMapToVerifyContract(ContractData contractData) {
         this.contractData = contractData;
         this.contractData.setContactStepEnum(PRELIMINARY_MAP_TO_VERIFY);
-
     }
 
     @Override

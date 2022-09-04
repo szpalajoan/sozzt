@@ -27,7 +27,7 @@ class FileSystemStorage {
         return UPLOAD_FILE_DIR + idContract + "/" + fileType + "/";
     }
 
-    String store(MultipartFile file, String directoriesFile) {
+    String storeFile(MultipartFile file, String directoriesFile) {
 
         validateFile(file.isEmpty(), "Failed to store empty file ");
         String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));

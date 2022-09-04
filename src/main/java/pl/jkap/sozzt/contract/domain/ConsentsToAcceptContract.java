@@ -2,8 +2,8 @@ package pl.jkap.sozzt.contract.domain;
 
 import lombok.Builder;
 import lombok.Setter;
+import org.hibernate.cfg.NotYetImplementedException;
 import pl.jkap.sozzt.contract.dto.ContractDataDto;
-import pl.jkap.sozzt.contract.exception.MyNotYetImplementedException;
 
 import static pl.jkap.sozzt.contract.dto.ContractStepEnum.CONSENTS_TO_ACCEPT;
 
@@ -21,7 +21,7 @@ class ConsentsToAcceptContract implements Contract {
 
     @Override
     public ConsentsToAcceptContract confirmStep() {
-        throw new MyNotYetImplementedException();
+        throw new NotYetImplementedException();
     }
 
     @Override

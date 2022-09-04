@@ -26,10 +26,10 @@ public class ContractController {
 
     private final ContractFacade contractFacade;
 
-    @GetMapping("/contracts/{id}")
+    @GetMapping("/contracts/{idContract}")
     @ResponseStatus(HttpStatus.OK)
-    public ContractDtoRepository getContract(@PathVariable UUID id) {
-        return contractFacade.getContract(id);
+    public ContractDtoRepository getContract(@PathVariable UUID idContract) {
+        return contractFacade.getContract(idContract);
     }
 
     @PostMapping("/contracts")
@@ -38,10 +38,10 @@ public class ContractController {
         return contractFacade.addContract(addContractDto);
     }
 
-    @PutMapping("/contracts/confirm_step/{id}")
+    @PutMapping("/contracts/{idContract}/confirm_step")
     @ResponseStatus(HttpStatus.OK)
-    public ContractDataDto confirmContractStep(@PathVariable UUID id) {
-        return contractFacade.confirmStep(id);
+    public ContractDataDto confirmContractStep(@PathVariable UUID idContract) {
+        return contractFacade.confirmStep(idContract);
     }
 
     @GetMapping("/contracts")
