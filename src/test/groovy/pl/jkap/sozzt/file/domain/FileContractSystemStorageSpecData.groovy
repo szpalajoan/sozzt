@@ -26,7 +26,7 @@ class FileContractSystemStorageSpecData extends Specification implements FileSam
         fileWrapper.checkFileExist("upload_dir/1/fil22eName") >> true
 
         MockMultipartFile scanFromTauron = SCAN_FROM_TAURON
-        fileContractFacade.store(scanFromTauron, idContract, FileType.CONTRACT_SCAN_FROM_TAURON)
+        fileContractFacade.storeFileInRepository(scanFromTauron, idContract, FileType.CONTRACT_SCAN_FROM_TAURON)
 
         then: "The scan file is saved"
         fileContractFacade.loadAsResource("fil22eName").filename == "fil22eName"
@@ -49,7 +49,7 @@ class FileContractSystemStorageSpecData extends Specification implements FileSam
 
         when: "add new file"
         MockMultipartFile scanFromTauron = SCAN_FROM_TAURON
-        String pathFile = fileContractFacade.store(scanFromTauron, sampleIdContract, FileType.CONTRACT_SCAN_FROM_TAURON)
+        String pathFile = fileContractFacade.storeFileInRepository(scanFromTauron, sampleIdContract, FileType.CONTRACT_SCAN_FROM_TAURON)
 
         then: " if a file with the same name already exists there is unique name"
         pathFile == newPathName
