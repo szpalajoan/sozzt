@@ -20,7 +20,7 @@ public class FileFacade {
     }
 
     public String storeFileInRepository(MultipartFile file, UUID idContract, FileType fileType) {
-        String pathOfSavedFile = fileSystemStorage.store(file, fileSystemStorage.prepareFileContractPath(idContract, fileType));
+        String pathOfSavedFile = fileSystemStorage.storeFile(file, fileSystemStorage.prepareFileContractPath(idContract, fileType));
         sendEventAboutUploadedFileToContractWithGivenType(idContract, fileType);
         return pathOfSavedFile;
     }
