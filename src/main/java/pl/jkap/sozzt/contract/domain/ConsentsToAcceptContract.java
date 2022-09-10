@@ -15,8 +15,7 @@ class ConsentsToAcceptContract implements Contract {
 
     ConsentsToAcceptContract(ContractData contractData) {
         this.contractData = contractData;
-        this.contractData.setContactStepEnum(CONSENTS_TO_ACCEPT);
-
+        this.contractData.setContractStepEnum(CONSENTS_TO_ACCEPT);
     }
 
     @Override
@@ -37,7 +36,7 @@ class ConsentsToAcceptContract implements Contract {
                 .location(contractData.getLocation())
                 .executive(contractData.getExecutive())
                 .created(contractData.getCreated())
-                .contactStepEnum(contractData.getContactStepEnum())
+                .contactStepEnum(contractData.getContractStepEnum())
                 .build();
     }
 }

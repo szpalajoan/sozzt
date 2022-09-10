@@ -1,6 +1,7 @@
 package pl.jkap.sozzt.contract.domain;
 
 import lombok.AllArgsConstructor;
+import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.PageRequest;
 import pl.jkap.sozzt.contract.dto.AddContractDto;
@@ -22,8 +23,8 @@ public class ContractFacade {
 
     private static final int PAGE_SIZE = 5;
     private final ContractRepository contractRepository;
-    private final ContractMapper contractMapper;
     private final ContractCreator contractCreator;
+    private ContractMapperInterface contractMapper;
 
     public DataInputContractDto addContract(AddContractDto addContractDto) {
         requireNonNull(addContractDto);
@@ -68,7 +69,7 @@ public class ContractFacade {
     public ContractDataDto confirmStep(UUID idContract) {
         ContractEntity contractEntity = contractRepository.findById(idContract)
                 .orElseThrow(ContractNotFoundException::new);
-        Contract contract = contractMapper.from(contractEntity);
+        Contract contract = from(contractEntity);
         Contract confirmContract = contract.confirmStep();
         contractEntity.updateFromContract(confirmContract);
         contractRepository.save(contractEntity);
@@ -78,8 +79,33 @@ public class ContractFacade {
     public List<ContractDataDto> getContracts(int page) {
         return contractRepository.findAll(PageRequest.of(page, PAGE_SIZE))
                 .stream()
-                .map(contractEntity -> contractMapper.from(contractEntity).dto())
+                .map(contractEntity -> from(contractEntity).dto())
                 .collect(Collectors.toList());
+    }
+
+    private Contract from(ContractEntity contractEntity) {
+        requireNonNull(contractEntity);
+
+        switch (contractEntity.getContractStepEnum()) {
+            case DATA_INPUT: {
+                return contractMapper.dataInputStepFrom(contractEntity);
+            }
+            case PRELIMINARY_MAP_TO_UPLOAD: {
+                return contractMapper.preliminaryMapToUploadStepFrom(contractEntity);
+            }
+            case PRELIMINARY_MAP_TO_VERIFY: {
+                return contractMapper.preliminaryMapToVerifyStepFrom(contractEntity);
+            }
+            case LIST_OF_CONSENTS_TO_ADD: {
+                return contractMapper.listOfConsentsToAddContractStepFrom(contractEntity);
+            }
+            case CONSENTS_TO_ACCEPT: {
+                return contractMapper.consentsToAcceptContractStepFrom(contractEntity);
+            }
+            default: {
+                throw new NotYetImplementedException();
+            }
+        }
     }
 
 }

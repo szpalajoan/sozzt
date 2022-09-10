@@ -14,7 +14,7 @@ class ListOfConsentsToAddContract implements Contract {
 
     ListOfConsentsToAddContract(ContractData contractData) {
         this.contractData = contractData;
-        this.contractData.setContactStepEnum(LIST_OF_CONSENTS_TO_ADD);
+        this.contractData.setContractStepEnum(LIST_OF_CONSENTS_TO_ADD);
     }
 
     @Override
@@ -35,7 +35,7 @@ class ListOfConsentsToAddContract implements Contract {
                 .location(contractData.getLocation())
                 .executive(contractData.getExecutive())
                 .created(contractData.getCreated())
-                .contactStepEnum(contractData.getContactStepEnum())
+                .contactStepEnum(contractData.getContractStepEnum())
                 .build();
     }
 }

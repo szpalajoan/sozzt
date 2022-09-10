@@ -1,5 +1,6 @@
 package pl.jkap.sozzt.contract.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,6 +12,7 @@ import java.util.UUID;
 @Builder
 @Getter
 @Setter
+@AllArgsConstructor
 class ContractData {
 
     private UUID id;
@@ -18,8 +20,7 @@ class ContractData {
     private String location;
     private String executive;
     private LocalDateTime created;
-    private Contract contract;
-    private ContractStepEnum contactStepEnum;
+    private ContractStepEnum contractStepEnum;
 }
 
 

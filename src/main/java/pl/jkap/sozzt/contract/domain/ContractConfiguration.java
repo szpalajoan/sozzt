@@ -1,5 +1,6 @@
 package pl.jkap.sozzt.contract.domain;
 
+import org.mapstruct.factory.Mappers;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -13,8 +14,8 @@ public class ContractConfiguration {
 
     @Bean
     ContractFacade contractFacade(ContractRepository contractRepository) {
-        ContractMapper contractMapper = new ContractMapper();
         ContractCreator contractCreator = new ContractCreator();
-        return new ContractFacade(contractRepository, contractMapper, contractCreator);
+        ContractMapperInterface mapper = Mappers.getMapper(ContractMapperInterface.class);
+        return new ContractFacade(contractRepository, contractCreator, mapper);
     }
 }

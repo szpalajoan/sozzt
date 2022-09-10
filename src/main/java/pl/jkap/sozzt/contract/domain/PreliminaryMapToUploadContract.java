@@ -14,17 +14,17 @@ import static pl.jkap.sozzt.contract.dto.ContractStepEnum.PRELIMINARY_MAP_TO_UPL
 class PreliminaryMapToUploadContract implements Contract {
 
     private final ContractData contractData;
-    private boolean isPreliminaryMapUpload;
+    private boolean preliminaryMapUpload;
 
-    PreliminaryMapToUploadContract(ContractData contractData, boolean isPreliminaryMapUpload) {
+    PreliminaryMapToUploadContract(ContractData contractData, boolean preliminaryMapUpload) {
         this.contractData = contractData;
-        this.contractData.setContactStepEnum(PRELIMINARY_MAP_TO_UPLOAD);
-        this.isPreliminaryMapUpload = isPreliminaryMapUpload;
+        this.contractData.setContractStepEnum(PRELIMINARY_MAP_TO_UPLOAD);
+        this.preliminaryMapUpload = preliminaryMapUpload;
     }
 
     @Override
     public PreliminaryMapToVerifyContract confirmStep() {
-        if (isPreliminaryMapUpload) {
+        if (preliminaryMapUpload) {
             return new PreliminaryMapToVerifyContract(this.contractData);
         } else {
             throw new NoPreliminaryMapOnConfirmingException("There is no uploaded preliminary map file.");
@@ -39,7 +39,7 @@ class PreliminaryMapToUploadContract implements Contract {
                 .location(contractData.getLocation())
                 .executive(contractData.getExecutive())
                 .created(contractData.getCreated())
-                .contactStepEnum(contractData.getContactStepEnum())
+                .contactStepEnum(contractData.getContractStepEnum())
                 .build();
     }
 

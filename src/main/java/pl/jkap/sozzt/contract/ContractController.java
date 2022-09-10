@@ -38,7 +38,7 @@ public class ContractController {
         return contractFacade.addContract(addContractDto);
     }
 
-    @PutMapping("/contracts/{idContract}/confirm_step")
+    @PutMapping("/contracts/{idContract}/confirm-step")
     @ResponseStatus(HttpStatus.OK)
     public ContractDataDto confirmContractStep(@PathVariable UUID idContract) {
         return contractFacade.confirmStep(idContract);

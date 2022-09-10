@@ -14,7 +14,7 @@ class ContractCreator {
         requireNonNull(addContractDto);
         return DataInputContract.builder()
                 .contractData(buildContractData(addContractDto))
-                .isScanFromTauronUpload(false)
+                .scanFromTauronUpload(false)
                 .build();
     }
 
@@ -23,7 +23,7 @@ class ContractCreator {
                 .id(UUID.randomUUID())
                 .executive(addContractDto.getExecutive())
                 .location(addContractDto.getLocation())
-                .contactStepEnum(ContractStepEnum.DATA_INPUT)
+                .contractStepEnum(ContractStepEnum.DATA_INPUT)
                 .invoiceNumber(addContractDto.getInvoiceNumber())
                 .created(LocalDateTime.now())
                 .build();
@@ -34,7 +34,7 @@ class ContractCreator {
                 .id(dataInputContract.getContractData().getId())
                 .executive(dataInputContract.getContractData().getExecutive())
                 .location(dataInputContract.getContractData().getLocation())
-                .contractStepEnum(dataInputContract.getContractData().getContactStepEnum())
+                .contractStepEnum(dataInputContract.getContractData().getContractStepEnum())
                 .invoiceNumber(dataInputContract.getContractData().getInvoiceNumber())
                 .scanFromTauronUpload(dataInputContract.isScanFromTauronUpload())
                 .created(LocalDateTime.now())

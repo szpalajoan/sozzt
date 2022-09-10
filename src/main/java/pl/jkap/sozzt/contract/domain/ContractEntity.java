@@ -50,7 +50,7 @@ class ContractEntity {
         this.location = contractData.getLocation();
         this.executive = contractData.getExecutive();
         this.created = contractData.getCreated();
-        this.contractStepEnum = contractData.getContactStepEnum();
+        this.contractStepEnum = contractData.getContractStepEnum();
     }
 
     public void update(DataInputContract dataInputContract) {

@@ -23,15 +23,12 @@ class FileContractSystemStorageSpecData extends Specification implements FileSam
     def "Should add a scan from Tauron with event send"() {
 
         when: "User uploads scan from Tauron"
-        fileWrapper.checkFileExist("upload_dir/1/fil22eName") >> true
+        fileWrapper.checkFileExist("upload_dir/1/fileName") >> true
 
         MockMultipartFile scanFromTauron = SCAN_FROM_TAURON
         fileContractFacade.storeFileInRepository(scanFromTauron, idContract, FileType.CONTRACT_SCAN_FROM_TAURON)
 
-        then: "The scan file is saved"
-        fileContractFacade.loadAsResource("fil22eName").filename == "fil22eName"
-
-        and: "The event about uploading the scan is sent"
+        then: "The event about uploading the scan is sent"
         1 * contractSpringEventPublisher.storeScanFromTauron(idContract)
 
         where:
