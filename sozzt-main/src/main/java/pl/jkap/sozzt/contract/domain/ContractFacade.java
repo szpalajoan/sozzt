@@ -1,20 +1,19 @@
 package pl.jkap.sozzt.contract.domain;
 
+import lombok.Builder;
 import org.springframework.context.event.EventListener;
 import pl.jkap.sozzt.contract.dto.ContractDto;
 import pl.jkap.sozzt.fileContract.event.FileUploadedSpringEvent;
+import pl.jkap.sozzt.instant.InstantProvider;
 
 import static java.util.Objects.requireNonNull;
 
+@Builder
 public class ContractFacade {
 
     private final ContractRepository contractRepository;
     private final ContractCreator contractCreator;
-
-    public ContractFacade(ContractRepository contractRepository, ContractCreator contractCreator) {
-        this.contractCreator = contractCreator;
-        this.contractRepository = contractRepository;
-    }
+    private final InstantProvider instantProvider;
 
     public ContractDto addContract(ContractDto contractDTO) {
         requireNonNull(contractDTO);

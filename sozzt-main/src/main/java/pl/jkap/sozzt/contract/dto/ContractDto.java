@@ -1,13 +1,13 @@
 package pl.jkap.sozzt.contract.dto;
 
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Builder
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode
 public class ContractDto {
     private Long id;

@@ -16,7 +16,7 @@ class ContractSpec extends Specification implements ContractSample {
         ContractDto contract = contractFacade.addContract(MEDIUM_VOLTAGE_NETWORK_IN_TARNOW_CONTRACT)
 
         then: "New contract is added"
-        contract == MEDIUM_VOLTAGE_NETWORK_IN_TARNOW_CONTRACT
+        contract == with(MEDIUM_VOLTAGE_NETWORK_IN_TARNOW_CONTRACT, [contactStep: ContractDto.ContactStepDto.DATA_INPUT_STEP])
 
         and: "Contract step is 'data input'"
         contractFacade.getContract(MEDIUM_VOLTAGE_NETWORK_IN_TARNOW_CONTRACT.id).contactStep == ContractDto.ContactStepDto.DATA_INPUT_STEP
