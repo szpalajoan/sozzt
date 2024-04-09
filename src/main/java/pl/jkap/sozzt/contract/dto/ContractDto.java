@@ -1,27 +1,21 @@
 package pl.jkap.sozzt.contract.dto;
 
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.util.UUID;
 
 @Builder
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode
 public class ContractDto {
-    private Long id;
+    private UUID id;
     private String invoiceNumber;
     private String location;
-    private String executive;
-    private boolean isScanFromTauronUpload;
-    private ContactStepDto contactStep;
-    private LocalDateTime created;
-
-    public enum ContactStepDto {
-        DATA_INPUT_STEP,
-        WAITING_TO_PRELIMINARY_MAP_STEP
-    }
+    private String createdBy;
+    private Instant createdAt;
 }
 
 

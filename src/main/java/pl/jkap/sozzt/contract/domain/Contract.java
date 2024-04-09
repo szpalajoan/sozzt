@@ -1,12 +1,16 @@
 package pl.jkap.sozzt.contract.domain;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.Builder;
 import lombok.Getter;
 import pl.jkap.sozzt.contract.dto.ContractDto;
-import pl.jkap.sozzt.contract.exception.ContractStepNotFoundException;
+import pl.jkap.sozzt.globalvalueobjects.AuditInfo;
 
-import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.util.UUID;
 
 @Entity
 @Builder
@@ -14,11 +18,12 @@ import java.time.LocalDateTime;
 class Contract {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String invoiceNumber;
-    private String location;
-    private String executive;
-    private LocalDateTime created;
+    private UUID id;
+    private InvoiceNumber invoiceNumber;
+    private Location location;
+    private AuditInfo auditInfo;
+    private Instant deadLine;
+
 
     private ContractStep contractStep;
 
@@ -43,25 +48,13 @@ class Contract {
         return true;
     }
 
-    ContractDto.ContactStepDto checkCurrentStepDto() {
-        if (this.getContractStep() instanceof DataInputStep) {
-            return ContractDto.ContactStepDto.DATA_INPUT_STEP;
-        }
-        if (this.getContractStep() instanceof WaitingToPreliminaryMapStep) {
-            return ContractDto.ContactStepDto.WAITING_TO_PRELIMINARY_MAP_STEP;
-        }
-        throw new ContractStepNotFoundException("Contract step not found");
-    }
-
     ContractDto dto() {
         return ContractDto.builder()
                 .id(id)
-                .invoiceNumber(invoiceNumber)
-                .location(location)
-                .executive(executive)
-                .isScanFromTauronUpload(checkIsScanFromTauronUploaded())
-                .contactStep(checkCurrentStepDto())
-                .created(created)
+                .invoiceNumber(invoiceNumber.getInvoiceNumber())
+                .location(location.getLocation())
+                .createdBy(auditInfo.getCreatedBy())
+                .createdAt(auditInfo.getCreatedAt())
                 .build();
     }
 
