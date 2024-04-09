@@ -3,6 +3,7 @@ package pl.jkap.sozzt.contract.dto;
 import lombok.*;
 
 import java.time.Instant;
+import java.util.Optional;
 import java.util.UUID;
 
 @Builder
@@ -10,12 +11,14 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class ContractDto {
+public class CreateContractDto {
     private UUID id;
     private String invoiceNumber;
     private String location;
-    private String createdBy;
-    private Instant createdAt;
+
+    public Optional<UUID> getId() {
+        return Optional.of(id);
+    }
 }
 
 

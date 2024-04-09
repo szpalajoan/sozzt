@@ -3,7 +3,7 @@ package pl.jkap.sozzt.config.application;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
-import pl.jkap.sozzt.fileContract.event.FileUploadedSpringEvent;
+import pl.jkap.sozzt.filecontract.event.FileUploadedSpringEvent;
 
 @Component
 public class ContractSpringEventPublisher {

@@ -1,12 +1,14 @@
 package pl.jkap.sozzt.filecontract.event;
 
-public class FileUploadedSpringEvent {
-    private final long idContract;
+import java.util.UUID;
 
-    public FileUploadedSpringEvent(long idContract) {
+public class FileUploadedSpringEvent {
+    private final UUID idContract;
+
+    public FileUploadedSpringEvent(UUID idContract) {
         this.idContract = idContract;
     }
-    public long getMessage() {
+    public UUID getMessage() {
         return idContract;
     }
 }

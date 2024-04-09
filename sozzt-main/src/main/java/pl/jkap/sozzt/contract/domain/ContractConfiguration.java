@@ -8,7 +8,7 @@ import pl.jkap.sozzt.instant.InstantProvider;
 public class ContractConfiguration {
     @Bean
     ContractFacade contractFacade(ContractRepository contractRepository, InstantProvider instantProvider) {
-        ContractCreator contractCreator = new ContractCreator();
+        ContractCreator contractCreator = new ContractCreator(instantProvider);
         return ContractFacade.builder()
                 .contractRepository(contractRepository)
                 .contractCreator(contractCreator)

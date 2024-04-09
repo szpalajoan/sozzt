@@ -2,7 +2,7 @@ package pl.jkap.sozzt.contract.domain;
 
 import org.springframework.context.event.EventListener;
 import pl.jkap.sozzt.contract.dto.ContractDto;
-import pl.jkap.sozzt.fileContract.event.FileUploadedSpringEvent;
+import pl.jkap.sozzt.filecontract.event.FileUploadedSpringEvent;
 
 import static java.util.Objects.requireNonNull;
 

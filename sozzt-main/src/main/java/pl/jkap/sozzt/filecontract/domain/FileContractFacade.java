@@ -1,8 +1,10 @@
-package pl.jkap.sozzt.fileContract.domain;
+package pl.jkap.sozzt.filecontract.domain;
 
 
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.UUID;
 
 
 public class FileContractFacade {
@@ -14,7 +16,7 @@ public class FileContractFacade {
         this.fileSystemStorage.init();
     }
 
-    public String store(MultipartFile file, long idContract, FileType fileType){
+    public String store(MultipartFile file, UUID idContract, FileType fileType){
         return fileSystemStorage.store(file, idContract, fileType);
     }
 

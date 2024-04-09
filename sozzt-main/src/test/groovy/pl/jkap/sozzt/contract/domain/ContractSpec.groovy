@@ -2,25 +2,22 @@ package pl.jkap.sozzt.contract.domain
 
 import pl.jkap.sozzt.contract.dto.ContractDto
 import pl.jkap.sozzt.contract.exception.NoScanFileOnConfirming
-import pl.jkap.sozzt.fileContract.event.FileUploadedSpringEvent
-import spock.lang.Specification
+import pl.jkap.sozzt.filecontract.event.FileUploadedSpringEvent
+
+class ContractSpec extends ContractBaseSpec {
 
 
-class ContractSpec extends Specification implements ContractSample {
+    def setup(){
+        given: "$MONIKA_CONTRACT_INTRODUCER is logged in"
+            loginUser(MONIKA_CONTRACT_INTRODUCER)
+    }
 
-    ContractFacade contractFacade = new ContractConfiguration().contractFacade()
-
-    def "Should add contract"() {
-
-        when: "User add new contract"
-        ContractDto contract = contractFacade.addContract(MEDIUM_VOLTAGE_NETWORK_IN_TARNOW_CONTRACT)
+    def "Should add new contract"() {
+        when: "$MONIKA_CONTRACT_INTRODUCER add new contract"
+        ContractDto contract = contractFacade.addContract(createdContract(MEDIUM_VOLTAGE_NETWORK_IN_TARNOW_CONTRACT))
 
         then: "New contract is added"
-        contract == with(MEDIUM_VOLTAGE_NETWORK_IN_TARNOW_CONTRACT, [contactStep: ContractDto.ContactStepDto.DATA_INPUT_STEP])
-
-        and: "Contract step is 'data input'"
-        contractFacade.getContract(MEDIUM_VOLTAGE_NETWORK_IN_TARNOW_CONTRACT.id).contactStep == ContractDto.ContactStepDto.DATA_INPUT_STEP
-
+        contract == MEDIUM_VOLTAGE_NETWORK_IN_TARNOW_CONTRACT
     }
 
     def "Should confirm 'data input' step"() {

@@ -1,4 +1,4 @@
-package pl.jkap.sozzt.fileContract.domain;
+package pl.jkap.sozzt.filecontract.domain;
 
 public enum FileType {
     CONTRACT_SCAN_FROM_TAURON,

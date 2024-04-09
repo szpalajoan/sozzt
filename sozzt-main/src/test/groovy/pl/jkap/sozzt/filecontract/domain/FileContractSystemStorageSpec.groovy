@@ -1,4 +1,4 @@
-package pl.jkap.sozzt.fileContract.domain
+package pl.jkap.sozzt.filecontract.domain
 
 
 import org.springframework.mock.web.MockMultipartFile
@@ -6,7 +6,7 @@ import pl.jkap.sozzt.config.application.ContractSpringEventPublisher
 import spock.lang.Specification
 
 
-class FileContractSystemStorageSpec extends Specification implements FileSample{
+class FileContractSystemStorageSpec extends Specification implements FileSample {
 
     private FileWrapper fileWrapper
     private FileContractFacade fileContractFacade

@@ -1,4 +1,4 @@
-package pl.jkap.sozzt.fileContract.domain;
+package pl.jkap.sozzt.filecontract.domain;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -6,8 +6,8 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import pl.jkap.sozzt.config.application.ContractSpringEventPublisher;
-import pl.jkap.sozzt.fileContract.exception.StorageException;
-import pl.jkap.sozzt.fileContract.exception.StorageFileNotFoundException;
+import pl.jkap.sozzt.filecontract.exception.StorageException;
+import pl.jkap.sozzt.filecontract.exception.StorageFileNotFoundException;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -15,6 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
+import java.util.UUID;
 
 class FileSystemStorage {
     private static final String UPLOAD_FILE_DIR = "upload_dir/";
@@ -32,7 +33,7 @@ class FileSystemStorage {
         this.contractSpringEventPublisher = contractSpringEventPublisher;
     }
 
-    String store(MultipartFile file, long idContract, FileType fileType) {
+    String store(MultipartFile file, UUID idContract, FileType fileType) {
         String pathFile;
         if (file.isEmpty()) {
             throw new StorageException("Failed to store empty file ");

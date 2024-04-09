@@ -2,7 +2,7 @@ package pl.jkap.sozzt.contract.domain
 
 import pl.jkap.sozzt.contract.dto.ContractDto
 import pl.jkap.sozzt.contract.exception.NoScanFileOnConfirming
-import pl.jkap.sozzt.fileContract.event.FileUploadedSpringEvent
+import pl.jkap.sozzt.filecontract.event.FileUploadedSpringEvent
 import spock.lang.Specification
 
 

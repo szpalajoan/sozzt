@@ -1,4 +1,4 @@
-package pl.jkap.sozzt.fileContract.domain;
+package pl.jkap.sozzt.filecontract.domain;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -6,8 +6,8 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import pl.jkap.sozzt.config.application.ContractSpringEventPublisher;
-import pl.jkap.sozzt.fileContract.exception.StorageException;
-import pl.jkap.sozzt.fileContract.exception.StorageFileNotFoundException;
+import pl.jkap.sozzt.filecontract.exception.StorageException;
+import pl.jkap.sozzt.filecontract.exception.StorageFileNotFoundException;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
