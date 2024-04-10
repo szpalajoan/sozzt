@@ -19,7 +19,7 @@ class ContractCreator {
         String userName = SecurityContextHolder.getContext().getAuthentication().getName();
         return Contract.builder()
                 .id(createContractDto.getId().orElseGet(UUID::randomUUID))
-                .invoiceNumber(new InvoiceNumber(createContractDto.getInvoiceNumber()))
+                .contractDetails(new ContractDetails(createContractDto.getContractDetailsDto()))
                 .location(new Location(createContractDto.getLocation()))
                 .auditInfo(new AuditInfo(instantProvider.now(), userName))
                 .build();

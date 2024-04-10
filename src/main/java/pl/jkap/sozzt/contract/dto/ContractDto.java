@@ -12,8 +12,8 @@ import java.util.UUID;
 @EqualsAndHashCode
 public class ContractDto {
     private UUID id;
-    private String invoiceNumber;
-    private String location;
+    private ContractDetailsDto contractDetails;
+    private LocationDto location;
     private String createdBy;
     private Instant createdAt;
 }

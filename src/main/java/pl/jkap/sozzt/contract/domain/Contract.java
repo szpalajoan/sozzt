@@ -19,7 +19,7 @@ class Contract {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private UUID id;
-    private InvoiceNumber invoiceNumber;
+    private ContractDetails contractDetails;
     private Location location;
     private AuditInfo auditInfo;
     private Instant deadLine;
@@ -51,8 +51,8 @@ class Contract {
     ContractDto dto() {
         return ContractDto.builder()
                 .id(id)
-                .invoiceNumber(invoiceNumber.getInvoiceNumber())
-                .location(location.getLocation())
+                .contractDetails(contractDetails.dto())
+                .location(location.dto())
                 .createdBy(auditInfo.getCreatedBy())
                 .createdAt(auditInfo.getCreatedAt())
                 .build();

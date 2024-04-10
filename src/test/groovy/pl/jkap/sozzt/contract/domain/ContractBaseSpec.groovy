@@ -5,7 +5,7 @@ import pl.jkap.sozzt.instant.InstantSamples
 import pl.jkap.sozzt.user.UserSample
 import spock.lang.Specification
 
-class ContractBaseSpec extends Specification implements ContractSample, UserSample, InstantSamples {
+class ContractBaseSpec extends Specification implements ContractSample, LocationSample, ContractDetailsSample, UserSample, InstantSamples {
     InstantProvider instantProvider = new InstantProvider()
     ContractFacade contractFacade = new ContractConfiguration().contractFacade(instantProvider)
 
