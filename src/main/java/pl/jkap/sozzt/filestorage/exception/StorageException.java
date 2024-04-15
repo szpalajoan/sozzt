@@ -1,4 +1,4 @@
-package pl.jkap.sozzt.filecontract.exception;
+package pl.jkap.sozzt.filestorage.exception;
 
 public class StorageException extends RuntimeException {
 

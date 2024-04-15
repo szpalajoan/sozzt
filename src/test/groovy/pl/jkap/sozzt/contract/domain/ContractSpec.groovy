@@ -2,7 +2,7 @@ package pl.jkap.sozzt.contract.domain
 
 import pl.jkap.sozzt.contract.dto.ContractDto
 import pl.jkap.sozzt.contract.exception.NoScanFileOnConfirming
-import pl.jkap.sozzt.filecontract.event.FileUploadedSpringEvent
+import pl.jkap.sozzt.filestorage.event.FileUploadedEvent
 
 class ContractSpec extends ContractBaseSpec {
 
@@ -51,7 +51,7 @@ class ContractSpec extends ContractBaseSpec {
         contractFacade.addContract(KRYNICA_CONTRACT)
 
         when: "Event came about that the scan file from Tauron has been uploaded"
-        contractFacade.uploadedScanFromTauron(new FileUploadedSpringEvent(KRYNICA_CONTRACT.id))
+        contractFacade.uploadedScanFromTauron(new FileUploadedEvent(KRYNICA_CONTRACT.id))
 
         then: "Contract have an information that a scan has been uploaded"
         contractFacade.checkIsScanFromTauronUploaded(KRYNICA_CONTRACT.id)

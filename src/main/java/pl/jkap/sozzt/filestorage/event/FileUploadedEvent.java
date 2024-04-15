@@ -1,11 +1,11 @@
-package pl.jkap.sozzt.filecontract.event;
+package pl.jkap.sozzt.filestorage.event;
 
 import java.util.UUID;
 
-public class FileUploadedSpringEvent {
+public class FileUploadedEvent {
     private final UUID idContract;
 
-    public FileUploadedSpringEvent(UUID idContract) {
+    public FileUploadedEvent(UUID idContract) {
         this.idContract = idContract;
     }
     public UUID getMessage() {

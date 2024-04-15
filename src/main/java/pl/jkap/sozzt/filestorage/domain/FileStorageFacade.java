@@ -1,4 +1,4 @@
-package pl.jkap.sozzt.filecontract.domain;
+package pl.jkap.sozzt.filestorage.domain;
 
 
 import org.springframework.core.io.Resource;
@@ -7,11 +7,11 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.UUID;
 
 
-public class FileContractFacade {
+public class FileStorageFacade {
 
     private final FileSystemStorage fileSystemStorage;
 
-    public FileContractFacade(FileSystemStorage fileSystemStorage) {
+    public FileStorageFacade(FileSystemStorage fileSystemStorage) {
         this.fileSystemStorage = fileSystemStorage;
         this.fileSystemStorage.init();
     }

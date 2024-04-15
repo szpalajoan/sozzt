@@ -4,7 +4,7 @@ import lombok.Builder;
 import org.springframework.context.event.EventListener;
 import pl.jkap.sozzt.contract.dto.ContractDto;
 import pl.jkap.sozzt.contract.dto.CreateContractDto;
-import pl.jkap.sozzt.filecontract.event.FileUploadedSpringEvent;
+import pl.jkap.sozzt.filestorage.event.FileUploadedEvent;
 import pl.jkap.sozzt.instant.InstantProvider;
 
 import java.util.UUID;
@@ -30,7 +30,7 @@ public class ContractFacade {
     }
 
     @EventListener
-    public void uploadedScanFromTauron(FileUploadedSpringEvent event) {
+    public void uploadedScanFromTauron(FileUploadedEvent event) {
         confirmScanUploaded(event.getMessage());
     }
 

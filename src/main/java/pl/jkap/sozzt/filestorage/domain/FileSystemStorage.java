@@ -1,13 +1,14 @@
-package pl.jkap.sozzt.filecontract.domain;
+package pl.jkap.sozzt.filestorage.domain;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-import pl.jkap.sozzt.config.application.ContractSpringEventPublisher;
-import pl.jkap.sozzt.filecontract.exception.StorageException;
-import pl.jkap.sozzt.filecontract.exception.StorageFileNotFoundException;
+import pl.jkap.sozzt.filestorage.event.FileContractSpringEventPublisher;
+import pl.jkap.sozzt.filestorage.event.FileUploadedEvent;
+import pl.jkap.sozzt.filestorage.exception.StorageException;
+import pl.jkap.sozzt.filestorage.exception.StorageFileNotFoundException;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -22,15 +23,15 @@ class FileSystemStorage {
     private final Path rootLocation;
 
     @Autowired
-    private final ContractSpringEventPublisher contractSpringEventPublisher;
+    private final FileContractSpringEventPublisher fileContractSpringEventPublisher;
 
 
     private final FileWrapper fileWrapper;
 
-    FileSystemStorage(FileWrapper fileWrapper, ContractSpringEventPublisher contractSpringEventPublisher) {
+    FileSystemStorage(FileWrapper fileWrapper, FileContractSpringEventPublisher fileContractSpringEventPublisher) {
         this.fileWrapper = fileWrapper;
         this.rootLocation = Paths.get(UPLOAD_FILE_DIR);
-        this.contractSpringEventPublisher = contractSpringEventPublisher;
+        this.fileContractSpringEventPublisher = fileContractSpringEventPublisher;
     }
 
     String store(MultipartFile file, UUID idContract, FileType fileType) {
@@ -52,7 +53,7 @@ class FileSystemStorage {
             throw new StorageException("Failed to store file " + fileName, e);
         }
         if (fileType == FileType.CONTRACT_SCAN_FROM_TAURON) {
-            contractSpringEventPublisher.publishCustomEvent(idContract);
+            fileContractSpringEventPublisher.fileUploaded(new FileUploadedEvent(idContract));
         }
         return pathFile;
     }

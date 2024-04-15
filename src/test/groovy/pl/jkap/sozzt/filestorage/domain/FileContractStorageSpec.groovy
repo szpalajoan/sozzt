@@ -1,41 +1,35 @@
-package pl.jkap.sozzt.filecontract.domain
+package pl.jkap.sozzt.filestorage.domain
 
 
 import org.springframework.mock.web.MockMultipartFile
-import pl.jkap.sozzt.config.application.ContractSpringEventPublisher
+import pl.jkap.sozzt.filestorage.event.FileContractSpringEventPublisher
 import spock.lang.Specification
 
 
-class FileContractSystemStorageSpec extends Specification implements FileSample {
+class FileContractStorageSpec extends FileStorageBaseSpec {
 
     private FileWrapper fileWrapper
-    private FileContractFacade fileContractFacade
-    private ContractSpringEventPublisher contractSpringEventPublisher
+    private FileStorageFacade fileContractFacade
+    private FileContractSpringEventPublisher contractSpringEventPublisher
 
 
     void setup() {
-        fileWrapper = Stub(FileWrapper.class)
-        contractSpringEventPublisher = Mock(ContractSpringEventPublisher.class)
-        fileContractFacade = new FileContractFacade(new FileSystemStorage(fileWrapper, contractSpringEventPublisher))
+        fileWrapper = new FileWrapperImpl()
+        contractSpringEventPublisher = Mock(FileContractSpringEventPublisher.class)
+        fileContractFacade = new FileStorageFacade(new FileSystemStorage(fileWrapper, contractSpringEventPublisher))
     }
 
 
-    def "Should add a scan from Tauron with event send"(){
-
-        when: "User uploads scan from Tauron"
-        fileWrapper.checkFileExist("upload_dir/1/fil22eName") >> true
-
-        MockMultipartFile scanFromTauron = SCAN_FROM_TAURON
-        fileContractFacade.store(scanFromTauron, idContract, FileType.CONTRACT_SCAN_FROM_TAURON)
+    def "Should add a scan from Tauron to the contract"(){
+        when: "$MONIKA_CONTRACT_INTRODUCER uploads scan from Tauron"
+            fileContractFacade.store(KRYNICA_CONTRACT_SCAN, idContract, FileType.CONTRACT_SCAN_FROM_TAURON)
 
         then: "The scan file is saved"
-        fileContractFacade.loadAsResource("fil22eName").filename == "fil22eName"
+            fileContractFacade.loadAsResource("fil22eName").filename == "fil22eName"
 
         and: "The event about uploading the scan is sent"
-        1 * contractSpringEventPublisher.publishCustomEvent(idContract)
+        1 * contractSpringEventPublisher.fileUploaded(idContract)
 
-        where:
-        idContract = 1
     }
 
 

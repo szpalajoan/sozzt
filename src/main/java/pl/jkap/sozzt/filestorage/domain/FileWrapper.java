@@ -1,4 +1,4 @@
-package pl.jkap.sozzt.filecontract.domain;
+package pl.jkap.sozzt.filestorage.domain;
 
 public interface FileWrapper {
 
