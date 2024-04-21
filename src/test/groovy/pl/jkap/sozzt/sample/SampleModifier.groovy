@@ -1,4 +1,4 @@
-package pl.jkap.sozzt
+package pl.jkap.sozzt.sample
 
 import java.lang.reflect.Modifier
 

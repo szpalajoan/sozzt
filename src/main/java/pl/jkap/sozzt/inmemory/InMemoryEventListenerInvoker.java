@@ -1,14 +1,27 @@
 package pl.jkap.sozzt.inmemory;
 
+import org.jetbrains.annotations.NotNull;
+import org.reflections.Reflections;
+import org.reflections.scanners.SubTypesScanner;
+import org.reflections.util.ClasspathHelper;
+import org.reflections.util.ConfigurationBuilder;
 import org.springframework.context.event.EventListener;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class InMemoryEventListenerInvoker {
 
-    public static void invokeEvent(Object event) {
+    private final Map<Class<?>, Object> instances = new HashMap<>();
+
+    public InMemoryEventListenerInvoker(@NotNull Object... objects) {
+        for (Object obj : objects) {
+            instances.put(obj.getClass(), obj);
+        }
+    }
+
+    public void invokeEvent(Object event) {
         Class<?> eventClass = event.getClass();
         String methodName = "on" + eventClass.getSimpleName();
         List<Class<?>> listenerClasses = findClassesWithMethod(methodName);
@@ -19,7 +32,10 @@ public class InMemoryEventListenerInvoker {
                     if (method.isAnnotationPresent(EventListener.class) && method.getName().equals(methodName)) {
                         Class<?>[] parameterTypes = method.getParameterTypes();
                         if (parameterTypes.length == 1 && parameterTypes[0].isAssignableFrom(eventClass)) {
-                            method.invoke(listenerClass.getConstructor().newInstance(), event);
+                            if (!instances.containsKey(listenerClass)) {
+                                throw new RuntimeException("Nie znaleziono instancji klasy " + listenerClass.getName() + "dodaj do konsturktora InMemoryEventListenerInvoker");
+                            }
+                            method.invoke(instances.get(listenerClass), event);
                             return;
                         }
                     }
@@ -31,9 +47,9 @@ public class InMemoryEventListenerInvoker {
         }
     }
 
-    public static List<Class<?>> findClassesWithMethod(String methodName) {
+    private List<Class<?>> findClassesWithMethod(String methodName) {
         List<Class<?>> classesWithMethod = new ArrayList<>();
-        for (Class<?> clazz : getAllClasses()) {
+        for (Class<?> clazz : getClassesInPackage()) {
             for (Method method : clazz.getMethods()) {
                 if (method.getName().equals(methodName)) {
                     classesWithMethod.add(clazz);
@@ -44,22 +60,16 @@ public class InMemoryEventListenerInvoker {
         return classesWithMethod;
     }
 
-    private static List<Class<?>> getAllClasses() {
-        List<Class<?>> classes = new ArrayList<>();
-        try {
-            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-            assert classLoader != null;
-            Class<?>[] classesArray = classLoader
-                    .loadClass("pl.jkap.sozzt")
-                    .getDeclaredClasses();
-            for (Class<?> clazz : classesArray) {
-                if (!clazz.isInterface()) {
-                    classes.add(clazz);
-                }
-            }
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return classes;
+
+    private List<Class<?>> getClassesInPackage() {
+        Reflections reflections = new Reflections(new ConfigurationBuilder()
+                .setUrls(ClasspathHelper.forPackage("pl.jkap.sozzt"))
+                .setScanners(new SubTypesScanner(false)));
+
+        Set<Class<?>> classes = reflections.getSubTypesOf(Object.class);
+
+        return classes.stream()
+                .filter(clazz -> clazz.getPackage().getName().contains("pl.jkap.sozzt"))
+                .collect(Collectors.toList());
     }
 }

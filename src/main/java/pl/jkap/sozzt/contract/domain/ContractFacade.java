@@ -4,7 +4,8 @@ import lombok.Builder;
 import org.springframework.context.event.EventListener;
 import pl.jkap.sozzt.contract.dto.ContractDto;
 import pl.jkap.sozzt.contract.dto.CreateContractDto;
-import pl.jkap.sozzt.filestorage.event.FileUploadedEvent;
+import pl.jkap.sozzt.contract.exception.ContractNotFoundException;
+import pl.jkap.sozzt.filestorage.event.ContractScanAddedEvent;
 import pl.jkap.sozzt.instant.InstantProvider;
 
 import java.util.UUID;
@@ -26,32 +27,30 @@ public class ContractFacade {
     }
 
     public ContractDto getContract(UUID id) {
-        return contractRepository.findById(id).dto();
+        return findContract(id).dto();
     }
 
-    @EventListener
-    public void uploadedScanFromTauron(FileUploadedEvent event) {
-        confirmScanUploaded(event.getMessage());
-    }
 
     public ContractDto confirmStep(UUID idContract) {
-        Contract contract = contractRepository.findById(idContract);
+        Contract contract = findContract(idContract);
         contract.confirmStep();
         return contractRepository.save(contract).dto();
     }
 
     public void confirmScanUploaded(UUID idContract) {
-        Contract contract = contractRepository.findById(idContract);
+        Contract contract = findContract(idContract);
         contract.confirmScanUploaded();
         contractRepository.save(contract);
 
     }
-    public boolean checkIsScanFromTauronUploaded(UUID idContract){
-        Contract contract = contractRepository.findById(idContract);
-        return contract.checkIsScanFromTauronUploaded();
+
+    private Contract findContract(UUID id) {
+        return contractRepository.findById(id).orElseThrow(() -> new ContractNotFoundException("Contract not found: " + id));
     }
 
-
-
+    @EventListener
+    public void onContractScanAddedEvent(ContractScanAddedEvent event) {
+        confirmScanUploaded(event.getMessage());
+    }
 
 }

@@ -18,46 +18,33 @@ import java.util.UUID;
 class Contract {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private UUID id;
+    private UUID contractId;
     private ContractDetails contractDetails;
     private Location location;
     private AuditInfo auditInfo;
     private Instant deadLine;
+    private boolean isScanFromTauronUploaded;
 
 
     private ContractStep contractStep;
-
-    void changeStep(ContractStep contractStep) {
-        this.contractStep = contractStep;
-    }
-
     void confirmStep() {
         this.contractStep.confirmStep();
     }
 
     void confirmScanUploaded() {
-        if (this.getContractStep() instanceof DataInputStep) {
-            ((DataInputStep) this.getContractStep()).setScanFromTauronUpload();
-        }
-    }
-
-    boolean checkIsScanFromTauronUploaded() {
-        if (this.getContractStep() instanceof DataInputStep) {
-            return ((DataInputStep) this.getContractStep()).getIsScanFromTauronUpload();
-        }
-        return true;
+        isScanFromTauronUploaded = true;
     }
 
     ContractDto dto() {
         return ContractDto.builder()
-                .id(id)
+                .contractId(contractId)
                 .contractDetails(contractDetails.dto())
                 .location(location.dto())
                 .createdBy(auditInfo.getCreatedBy())
                 .createdAt(auditInfo.getCreatedAt())
+                .isScanFromTauronUploaded(isScanFromTauronUploaded)
                 .build();
     }
-
 
 }
 

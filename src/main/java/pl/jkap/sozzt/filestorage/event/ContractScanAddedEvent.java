@@ -2,10 +2,10 @@ package pl.jkap.sozzt.filestorage.event;
 
 import java.util.UUID;
 
-public class FileUploadedEvent {
+public class ContractScanAddedEvent {
     private final UUID idContract;
 
-    public FileUploadedEvent(UUID idContract) {
+    public ContractScanAddedEvent(UUID idContract) {
         this.idContract = idContract;
     }
     public UUID getMessage() {

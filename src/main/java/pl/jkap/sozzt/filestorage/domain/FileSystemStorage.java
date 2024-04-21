@@ -1,12 +1,9 @@
 package pl.jkap.sozzt.filestorage.domain;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-import pl.jkap.sozzt.filestorage.event.FileContractSpringEventPublisher;
-import pl.jkap.sozzt.filestorage.event.FileUploadedEvent;
 import pl.jkap.sozzt.filestorage.exception.StorageException;
 import pl.jkap.sozzt.filestorage.exception.StorageFileNotFoundException;
 
@@ -16,25 +13,19 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
-import java.util.UUID;
 
 class FileSystemStorage {
     private static final String UPLOAD_FILE_DIR = "upload_dir/";
     private final Path rootLocation;
 
-    @Autowired
-    private final FileContractSpringEventPublisher fileContractSpringEventPublisher;
+    //private final FileWrapper fileWrapper;
 
-
-    private final FileWrapper fileWrapper;
-
-    FileSystemStorage(FileWrapper fileWrapper, FileContractSpringEventPublisher fileContractSpringEventPublisher) {
-        this.fileWrapper = fileWrapper;
+    FileSystemStorage() { //FileWrapper fileWrapper
+        //this.fileWrapper = fileWrapper;
         this.rootLocation = Paths.get(UPLOAD_FILE_DIR);
-        this.fileContractSpringEventPublisher = fileContractSpringEventPublisher;
     }
 
-    String store(MultipartFile file, UUID idContract, FileType fileType) {
+    String store(MultipartFile file, String path) {
         String pathFile;
         if (file.isEmpty()) {
             throw new StorageException("Failed to store empty file ");
@@ -45,15 +36,12 @@ class FileSystemStorage {
             throw new StorageException("Cannot store file with relative path outside current directory " + fileName);
         }
         try {
-            String directoriesFile = UPLOAD_FILE_DIR + idContract + "/" + fileType + "/";
+            String directoriesFile = UPLOAD_FILE_DIR + path;
             pathFile = directoriesFile + createUniqueFileName(fileName, directoriesFile);
             Files.createDirectories(Paths.get(directoriesFile));
             Files.write(Paths.get(pathFile), file.getBytes());
         } catch (IOException e) {
             throw new StorageException("Failed to store file " + fileName, e);
-        }
-        if (fileType == FileType.CONTRACT_SCAN_FROM_TAURON) {
-            fileContractSpringEventPublisher.fileUploaded(new FileUploadedEvent(idContract));
         }
         return pathFile;
     }
@@ -62,7 +50,7 @@ class FileSystemStorage {
         int additionalNameDistinction = 1;
 
         StringBuilder fileNameBuilder = new StringBuilder(fileName);
-        while (fileWrapper.checkFileExist(directoriesFile + fileNameBuilder)) {
+        while (checkFileExist(directoriesFile + fileNameBuilder)) { //fileWrapper.
             fileNameBuilder = new StringBuilder( fileName +" (" + additionalNameDistinction + ")"  );
             additionalNameDistinction++;
         }
@@ -95,5 +83,10 @@ class FileSystemStorage {
         } catch (IOException e) {
             throw new StorageException("Could not initialize storage", e);
         }
+    }
+
+    //TODO tety
+    public boolean checkFileExist(String pathFile) {
+        return Files.exists(Paths.get(pathFile));
     }
 }

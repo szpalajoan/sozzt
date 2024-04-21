@@ -1,6 +1,6 @@
 package pl.jkap.sozzt.contract.domain
 
-import pl.jkap.sozzt.SampleModifier
+import pl.jkap.sozzt.sample.SampleModifier
 import pl.jkap.sozzt.contract.dto.ContractDetailsDto
 import pl.jkap.sozzt.contract.dto.ContractDto
 import pl.jkap.sozzt.contract.dto.CreateContractDto
@@ -18,11 +18,12 @@ trait ContractSample implements UserSample, LocationSample, ContractDetailsSampl
 
     private ContractDto createContractDto(UUID id, ContractDetailsDto contractDetailsDto, LocationDto location){
         return ContractDto.builder()
-        .id(id)
+        .contractId(id)
         .contractDetails(contractDetailsDto)
         .location(location)
         .createdBy(MONIKA_CONTRACT_INTRODUCER.name)
         .createdAt(NOW)
+        .isScanFromTauronUploaded(false)
         .build()
     }
 
@@ -30,9 +31,9 @@ trait ContractSample implements UserSample, LocationSample, ContractDetailsSampl
         return SampleModifier.with(ContractDto.class, contractDto, properties)
     }
 
-    CreateContractDto createdContract(ContractDto contractDto) {
+    CreateContractDto toCreateContractDto(ContractDto contractDto) {
         return CreateContractDto.builder()
-                .id(contractDto.id)
+                .contractId(contractDto.contractId)
                 .contractDetailsDto(contractDto.contractDetails)
                 .location(contractDto.location)
                 .build()

@@ -11,11 +11,12 @@ import java.util.UUID;
 @AllArgsConstructor
 @EqualsAndHashCode
 public class ContractDto {
-    private UUID id;
+    private UUID contractId;
     private ContractDetailsDto contractDetails;
     private LocationDto location;
     private String createdBy;
     private Instant createdAt;
+    private boolean isScanFromTauronUploaded;
 }
 
 

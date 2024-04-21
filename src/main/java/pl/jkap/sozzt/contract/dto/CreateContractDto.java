@@ -11,13 +11,13 @@ import java.util.UUID;
 @AllArgsConstructor
 @EqualsAndHashCode
 public class CreateContractDto {
-    private UUID id;
+    private UUID contractId;
     private String invoiceNumber;
     private LocationDto location;
     private ContractDetailsDto contractDetailsDto;
 
-    public Optional<UUID> getId() {
-        return Optional.of(id);
+    public Optional<UUID> getContractId() {
+        return Optional.of(contractId);
     }
 }
 
