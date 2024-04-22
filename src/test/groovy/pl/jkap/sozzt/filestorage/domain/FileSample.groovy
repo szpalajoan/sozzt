@@ -2,6 +2,7 @@ package pl.jkap.sozzt.filestorage.domain
 
 import org.springframework.mock.web.MockMultipartFile
 import org.springframework.web.multipart.MultipartFile
+import pl.jkap.sozzt.contract.domain.ContractSample
 import pl.jkap.sozzt.sample.SampleModifier
 import pl.jkap.sozzt.contract.dto.ContractDto
 import pl.jkap.sozzt.filestorage.dto.AddContractScanFileDto
@@ -10,7 +11,7 @@ import pl.jkap.sozzt.filestorage.dto.FileDto
 import java.nio.file.Files
 import java.nio.file.Paths
 
-trait FileSample {
+trait FileSample implements ContractSample{
 
 
     MultipartFile KRYNICA_CONTRACT_SCAN_FILE = new MockMultipartFile("KRYNICA_CONTRACT", "KRYNICA_CONTRACT.pdf", "application/pdf", Files.readAllBytes(Paths.get("src/test/resources/contract/KRYNICA_CONTRACT.pdf")))
@@ -19,6 +20,8 @@ trait FileSample {
     FileDto KRYNICA_CONTRACT_SCAN = FileDto.builder()
             .fileId(UUID.fromString("4fb55d25-7e7c-4bea-9c78-cb000f9b823a"))
             .fileName(KRYNICA_CONTRACT_SCAN_FILE.getOriginalFilename())
+            .objectId(KRYNICA_CONTRACT.contractId)
+            .fileType(FileDto.FileTypeDto.CONTRACT_SCAN_FROM_TAURON)
             .build()
 
     FileDto with(FileDto fileDto, Map<String, Object> properties) {

@@ -1,28 +1,63 @@
 package pl.jkap.sozzt.filestorage.domain
 
 import pl.jkap.sozzt.filestorage.dto.FileDto
+import pl.jkap.sozzt.filestorage.exception.FileNotFoundException
+
+import java.nio.file.Files
 
 class FileContractStorageSpec extends FileStorageBaseSpec {
 
-    def "Should add a scan from Tauron to the contract"(){
+    FileDto addedFileDto
+
+    def cleanup(){
+        if(addedFileDto != null){
+            fileStorageFacade.deleteFile(addedFileDto.fileId)
+        }
+    }
+
+    def "Should add a scan from Tauron to contract"(){
         given: "$MONIKA_CONTRACT_INTRODUCER is logged in"
             loginUser(MONIKA_CONTRACT_INTRODUCER)
         and: "there is a $KRYNICA_CONTRACT contract added by $MONIKA_CONTRACT_INTRODUCER"
-            def x = KRYNICA_CONTRACT
             contractFacade.addContract(toCreateContractDto(KRYNICA_CONTRACT))
         when: "$MONIKA_CONTRACT_INTRODUCER uploads $KRYNICA_CONTRACT_SCAN_FILE to $KRYNICA_CONTRACT contract"
-            FileDto fileDto = fileStorageFacade.addContractScan(toAddContractScanFileDto(KRYNICA_CONTRACT_SCAN, KRYNICA_CONTRACT_SCAN_FILE, KRYNICA_CONTRACT))
+            addedFileDto = fileStorageFacade.addContractScan(toAddContractScanFileDto(KRYNICA_CONTRACT_SCAN, KRYNICA_CONTRACT_SCAN_FILE, KRYNICA_CONTRACT))
         then: "$KRYNICA_CONTRACT_SCAN_FILE is added to $KRYNICA_CONTRACT contract"
-            fileDto == KRYNICA_CONTRACT_SCAN
-            //pobierz plik
-            //sprawdz czy plik dodany do kontraktu
-        and: "The event about uploading the scan is sent"
-       // 1 * contractSpringEventPublisher.fileUploaded(idContract)
-
+            addedFileDto == KRYNICA_CONTRACT_SCAN
+            Files.readAllBytes(fileStorageFacade.downloadFile(addedFileDto.getFileId())) == KRYNICA_CONTRACT_SCAN_FILE.getBytes()
+            contractFacade.getContract(KRYNICA_CONTRACT.contractId) == with(KRYNICA_CONTRACT, [isScanFromTauronUploaded : true])
     }
 
 
-//    def "should change file name to a unique name if there is already a file with the same name as the added file"() {
+    def "Should delete a scan from Tauron from contract"(){
+        given: "$MONIKA_CONTRACT_INTRODUCER is logged in"
+            loginUser(MONIKA_CONTRACT_INTRODUCER)
+        and: "there is a $KRYNICA_CONTRACT contract added by $MONIKA_CONTRACT_INTRODUCER"
+            contractFacade.addContract(toCreateContractDto(KRYNICA_CONTRACT))
+        and: "$MONIKA_CONTRACT_INTRODUCER uploads $KRYNICA_CONTRACT_SCAN_FILE to $KRYNICA_CONTRACT contract"
+            FileDto addedFileDto = fileStorageFacade.addContractScan(toAddContractScanFileDto(KRYNICA_CONTRACT_SCAN, KRYNICA_CONTRACT_SCAN_FILE, KRYNICA_CONTRACT))
+        when: "$MONIKA_CONTRACT_INTRODUCER deletes $KRYNICA_CONTRACT_SCAN_FILE"
+            fileStorageFacade.deleteFile(addedFileDto.fileId)
+        then: "$KRYNICA_CONTRACT_SCAN_FILE is deleted"
+            contractFacade.getContract(KRYNICA_CONTRACT.contractId) == with(KRYNICA_CONTRACT, [isScanFromTauronUploaded : false])
+    }
+
+    def "Should not be able to download deleted file"(){
+        given: "$MONIKA_CONTRACT_INTRODUCER is logged in"
+            loginUser(MONIKA_CONTRACT_INTRODUCER)
+        and: "there is a $KRYNICA_CONTRACT contract added by $MONIKA_CONTRACT_INTRODUCER"
+            contractFacade.addContract(toCreateContractDto(KRYNICA_CONTRACT))
+        and: "$MONIKA_CONTRACT_INTRODUCER uploads $KRYNICA_CONTRACT_SCAN_FILE to $KRYNICA_CONTRACT contract"
+            FileDto addedFileDto = fileStorageFacade.addContractScan(toAddContractScanFileDto(KRYNICA_CONTRACT_SCAN, KRYNICA_CONTRACT_SCAN_FILE, KRYNICA_CONTRACT))
+        and: "$MONIKA_CONTRACT_INTRODUCER deletes $KRYNICA_CONTRACT_SCAN_FILE"
+            fileStorageFacade.deleteFile(addedFileDto.fileId)
+        when: "$MONIKA_CONTRACT_INTRODUCER download $KRYNICA_CONTRACT_SCAN_FILE"
+            fileStorageFacade.downloadFile(addedFileDto.getFileId())
+        then: "$KRYNICA_CONTRACT_SCAN_FILE is not available"
+            thrown(FileNotFoundException)
+    }
+
+    //    def "should change file name to a unique name if there is already a file with the same name as the added file"() {
 //
 //        given: "there are files with name "
 //        fileWrapper.checkFileExist("upload_dir/1/CONTRACT_SCAN_FROM_TAURON/scan_123321") >> fileFirstExist

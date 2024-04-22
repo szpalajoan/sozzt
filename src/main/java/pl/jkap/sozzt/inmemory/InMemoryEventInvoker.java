@@ -5,17 +5,19 @@ import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class InMemoryEventListenerInvoker {
+public class InMemoryEventInvoker implements ApplicationEventPublisher {
 
     private final Map<Class<?>, Object> instances = new HashMap<>();
 
-    public InMemoryEventListenerInvoker(@NotNull Object... objects) {
+    public InMemoryEventInvoker(@NotNull Object... objects) {
         for (Object obj : objects) {
             instances.put(obj.getClass(), obj);
         }
@@ -71,5 +73,15 @@ public class InMemoryEventListenerInvoker {
         return classes.stream()
                 .filter(clazz -> clazz.getPackage().getName().contains("pl.jkap.sozzt"))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public void publishEvent(ApplicationEvent event) {
+        invokeEvent(event);
+    }
+
+    @Override
+    public void publishEvent(Object event) {
+        invokeEvent(event);
     }
 }

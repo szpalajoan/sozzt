@@ -7,11 +7,11 @@ import org.springframework.context.annotation.Configuration;
 public class FileStorageConfigurator {
 
     @Bean
-    public FileStorageFacade fileStorageFacade(FileRepository fileRepository, FileContractSpringEventPublisher fileContractSpringEventPublisher) {
-        return new FileStorageFacade(new FileSystemStorage(), fileRepository, fileContractSpringEventPublisher);
+    public FileStorageFacade fileStorageFacade(FileRepository fileRepository, FileEventPublisher fileEventPublisher) {
+        return new FileStorageFacade(new FileSystemStorage(), fileRepository, fileEventPublisher);
     }
 
-    public FileStorageFacade fileStorageFacade(FileContractSpringEventPublisherStub contractSpringEventPublisher) {
+    public FileStorageFacade fileStorageFacade(FileEventPublisherStub contractSpringEventPublisher) {
         return fileStorageFacade(new InMemoryFileRepository(), contractSpringEventPublisher);
     }
 }

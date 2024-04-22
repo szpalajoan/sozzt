@@ -6,6 +6,7 @@ import pl.jkap.sozzt.contract.dto.ContractDto;
 import pl.jkap.sozzt.contract.dto.CreateContractDto;
 import pl.jkap.sozzt.contract.exception.ContractNotFoundException;
 import pl.jkap.sozzt.filestorage.event.ContractScanAddedEvent;
+import pl.jkap.sozzt.filestorage.event.ContractScanDeletedEvent;
 import pl.jkap.sozzt.instant.InstantProvider;
 
 import java.util.UUID;
@@ -37,11 +38,16 @@ public class ContractFacade {
         return contractRepository.save(contract).dto();
     }
 
-    public void confirmScanUploaded(UUID idContract) {
-        Contract contract = findContract(idContract);
+    public void scanUploaded(UUID contractId) {
+        Contract contract = findContract(contractId);
         contract.confirmScanUploaded();
         contractRepository.save(contract);
+    }
 
+    private void scanDeleted(UUID contractId) {
+        Contract contract = findContract(contractId);
+        contract.scanDeleted();
+        contractRepository.save(contract);
     }
 
     private Contract findContract(UUID id) {
@@ -50,7 +56,12 @@ public class ContractFacade {
 
     @EventListener
     public void onContractScanAddedEvent(ContractScanAddedEvent event) {
-        confirmScanUploaded(event.getMessage());
+        scanUploaded(event.getContractId());
+    }
+
+    @EventListener
+    public void onContractScanDeletedEvent(ContractScanDeletedEvent event) {
+        scanDeleted(event.getContractId());
     }
 
 }

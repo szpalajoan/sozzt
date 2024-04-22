@@ -35,6 +35,10 @@ class Contract {
         isScanFromTauronUploaded = true;
     }
 
+    void scanDeleted() {
+        isScanFromTauronUploaded = false;
+    }
+
     ContractDto dto() {
         return ContractDto.builder()
                 .contractId(contractId)
@@ -45,6 +49,7 @@ class Contract {
                 .isScanFromTauronUploaded(isScanFromTauronUploaded)
                 .build();
     }
+
 
 }
 

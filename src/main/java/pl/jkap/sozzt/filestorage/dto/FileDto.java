@@ -10,6 +10,11 @@ import java.util.UUID;
 @AllArgsConstructor
 @EqualsAndHashCode
 public class FileDto {
+    public enum FileTypeDto {
+        CONTRACT_SCAN_FROM_TAURON
+    }
     private UUID fileId;
     private String fileName;
+    private UUID objectId;
+    private FileTypeDto fileType;
 }
