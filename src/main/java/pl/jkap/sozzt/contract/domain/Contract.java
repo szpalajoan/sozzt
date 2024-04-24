@@ -16,13 +16,14 @@ import java.util.UUID;
 @Builder
 @Getter
 class Contract {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private UUID contractId;
     private ContractDetails contractDetails;
     private Location location;
     private AuditInfo auditInfo;
     private Instant deadLine;
+    private ContractProgress contractProgress;
     private boolean isScanFromTauronUploaded;
 
 
