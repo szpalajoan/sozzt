@@ -14,4 +14,8 @@ public class TerrainVisionConfiguration {
                 .instantProvider(instantProvider)
                 .build();
     }
+
+    public TerrainVisionFacade terrainVisionFacade(InstantProvider instantProvider) {
+        return terrainVisionFacade(new InMemoryTerrainVisionRepository(), instantProvider);
+    }
 }

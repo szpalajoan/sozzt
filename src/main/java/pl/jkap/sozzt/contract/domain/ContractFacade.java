@@ -10,7 +10,6 @@ import pl.jkap.sozzt.filestorage.event.ContractScanAddedEvent;
 import pl.jkap.sozzt.filestorage.event.ContractScanDeletedEvent;
 import pl.jkap.sozzt.instant.InstantProvider;
 
-import java.util.Optional;
 import java.util.UUID;
 
 import static java.util.Objects.requireNonNull;
@@ -43,7 +42,7 @@ public class ContractFacade {
         return contractRepository.save(contract).dto();
     }
 
-    public ContractDto confirmContract(UUID contractId) {
+    public ContractDto finalizeIntroduction(UUID contractId) {
         Contract contract = findContract(contractId);
         return null;
     }
