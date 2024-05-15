@@ -3,8 +3,9 @@ package pl.jkap.sozzt.contract.domain
 import pl.jkap.sozzt.contract.dto.ContractDto
 import pl.jkap.sozzt.contract.exception.NoScanFileOnConfirming
 import pl.jkap.sozzt.filestorage.event.ContractScanAddedEvent
+import pl.jkap.sozzt.sample.SozztSpecification
 
-class ContractSpec extends ContractBaseSpec {
+class ContractSpec extends SozztSpecification {
 
 
     def setup(){

@@ -14,7 +14,8 @@ import static java.util.Objects.requireNonNull;
 class ContractCreator {
 
     private InstantProvider instantProvider;
-    Contract from(CreateContractDto createContractDto){
+
+    Contract from(CreateContractDto createContractDto) {
         requireNonNull(createContractDto);
         String userName = SecurityContextHolder.getContext().getAuthentication().getName();
         return Contract.builder()

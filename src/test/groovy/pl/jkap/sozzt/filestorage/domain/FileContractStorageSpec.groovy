@@ -2,10 +2,11 @@ package pl.jkap.sozzt.filestorage.domain
 
 import pl.jkap.sozzt.filestorage.dto.FileDto
 import pl.jkap.sozzt.filestorage.exception.FileNotFoundException
+import pl.jkap.sozzt.sample.SozztSpecification
 
 import java.nio.file.Files
 
-class FileContractStorageSpec extends FileStorageBaseSpec {
+class FileContractStorageSpec extends SozztSpecification {
 
     FileDto addedFileDto
 

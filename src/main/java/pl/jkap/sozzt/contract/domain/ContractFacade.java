@@ -20,6 +20,7 @@ public class ContractFacade {
 
     private final ContractRepository contractRepository;
     private final ContractCreator contractCreator;
+    private final ContractStepCreator contractStepCreator;
     private final InstantProvider instantProvider;
 
     public ContractDto addContract(CreateContractDto createContractDto) {
@@ -36,14 +37,9 @@ public class ContractFacade {
     }
 
 
-    public ContractDto confirmStep(UUID idContract) {
-
-        contract.confirmStep();
-        return contractRepository.save(contract).dto();
-    }
-
     public ContractDto finalizeIntroduction(UUID contractId) {
         Contract contract = findContract(contractId);
+        contract.createSteps(contractStepCreator);
         return null;
     }
 

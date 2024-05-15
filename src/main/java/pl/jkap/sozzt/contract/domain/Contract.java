@@ -10,6 +10,8 @@ import pl.jkap.sozzt.contract.dto.ContractDto;
 import pl.jkap.sozzt.globalvalueobjects.AuditInfo;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.UUID;
 
 @Entity
@@ -25,12 +27,8 @@ class Contract {
     private Instant deadLine;
     private ContractProgress contractProgress;
     private boolean isScanFromTauronUploaded;
+    private Collection<ContractStep> contractSteps;
 
-
-    private ContractStep contractStep;
-    void confirmStep() {
-        this.contractStep.confirmStep();
-    }
 
     void confirmScanUploaded() {
         isScanFromTauronUploaded = true;
@@ -52,6 +50,9 @@ class Contract {
     }
 
 
+    void createSteps(ContractStepCreator contractStepCreator) {
+        contractSteps.add(contractStepCreator.createTerrainVisionStep(contractId, contractDetails.getOrderDate()));
+    }
 }
 
 

@@ -1,4 +1,4 @@
-package pl.jkap.sozzt.terrainvision.dto;
+package pl.jkap.sozzt.preliminaryplanning.dto;
 
 import lombok.*;
 
@@ -10,8 +10,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class AddTerrainVisionDto {
+public class PreliminaryPlanDto {
 
-    private UUID terrainVisionId;
-    private Instant deadLine;
+    private UUID preliminaryPlanId;
+    private Instant deadline;
 }
