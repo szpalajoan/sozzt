@@ -4,6 +4,7 @@ import pl.jkap.sozzt.contract.domain.ContractConfiguration
 import pl.jkap.sozzt.contract.domain.ContractDetailsSample
 import pl.jkap.sozzt.contract.domain.ContractFacade
 import pl.jkap.sozzt.contract.domain.ContractSample
+import pl.jkap.sozzt.contract.domain.ContractStepCreator
 import pl.jkap.sozzt.contract.domain.LocationSample
 import pl.jkap.sozzt.filestorage.domain.FileEventPublisherStub
 import pl.jkap.sozzt.filestorage.domain.FileSample
@@ -24,10 +25,15 @@ class SozztSpecification extends Specification implements FileSample, Preliminar
         ContractSample, LocationSample, ContractDetailsSample,
         UserSample, InstantSamples {
     InstantProvider instantProvider = new InstantProvider()
-    ContractFacade contractFacade = new ContractConfiguration().contractFacade(instantProvider)
-    FileStorageFacade fileStorageFacade = new FileStorageConfigurator().fileStorageFacade(new FileEventPublisherStub(contractFacade))
+
     TerrainVisionFacade terrainVisionFacade = new TerrainVisionConfiguration().terrainVisionFacade(instantProvider)
     PreliminaryPlanFacade preliminaryPlanFacade = new PreliminaryPlanConfiguration().preliminaryPlanFacade()
+    ContractStepCreator contractStepCreator = ContractStepCreator.builder()
+            .preliminaryPlanFacade(preliminaryPlanFacade)
+            .terrainVisionFacade(terrainVisionFacade)
+            .build()
+    ContractFacade contractFacade = new ContractConfiguration().contractFacade(contractStepCreator, instantProvider)
+    FileStorageFacade fileStorageFacade = new FileStorageConfigurator().fileStorageFacade(new FileEventPublisherStub(contractFacade))
 
     def setup() {
         instantProvider.useFixedClock(NOW)

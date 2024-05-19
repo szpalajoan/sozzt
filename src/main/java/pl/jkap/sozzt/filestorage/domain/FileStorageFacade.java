@@ -45,6 +45,23 @@ public class FileStorageFacade {
         return newfile.dto();
     }
 
+    public FileDto addPreliminaryMap(AddPreliminaryMapFileDto addPreliminaryMapFileDto) {
+        UUID fileId = addPreliminaryMapFileDto.getFileId().orElseGet(UUID::randomUUID);
+        checkFileNotExists(fileId);
+        String path = calculatePath(FileType.PRELIMINARY_MAP, addPreliminaryMapFileDto.getPreliminaryPlanId());
+        String savedFilePath = fileSystemStorage.store(addPreliminaryMapFileDto.getFile(), path);
+        File newfile = File.builder()
+                .fileId(fileId)
+                .fileName(addPreliminaryMapFileDto.getFile().getOriginalFilename())
+                .fileType(FileType.PRELIMINARY_MAP)
+                .objectId(addPreliminaryMapFileDto.getPreliminaryPlanId())
+                .path(savedFilePath)
+                .build();
+        fileRepository.save(newfile);
+        fileEventPublisher.preliminaryMapUploaded(new PreliminaryMapUploadedEvent( addPreliminaryMapFileDto.getPreliminaryPlanId()));
+        return newfile.dto();
+    }
+
     private String calculatePath(FileType fileType, UUID contractId) {
         return  contractId + "/" + fileType + "/";
     }

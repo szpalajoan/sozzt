@@ -7,13 +7,13 @@ import org.springframework.context.annotation.Configuration;
 public class PreliminaryPlanConfiguration {
 
     @Bean
-    PreliminaryPlanFacade preliminaryPlanningFacade(PreliminaryPlanRepository preliminaryPlanningRepository) {
+    PreliminaryPlanFacade preliminaryPlanningFacade(PreliminaryPlanRepository preliminaryPlanRepository) {
         return PreliminaryPlanFacade.builder()
-                .preliminaryPlanningRepository(preliminaryPlanningRepository)
+                .preliminaryPlanningRepository(preliminaryPlanRepository)
                 .build();
     }
 
-    PreliminaryPlanFacade preliminaryPlanFacade() {
-        return preliminaryPlanningFacade(null);
+    public PreliminaryPlanFacade preliminaryPlanFacade() {
+        return preliminaryPlanningFacade(new InMemoryPreliminaryPlanRepository());
     }
 }

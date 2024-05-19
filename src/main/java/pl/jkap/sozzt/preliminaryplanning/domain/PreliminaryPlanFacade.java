@@ -14,10 +14,10 @@ import java.util.UUID;
 public class PreliminaryPlanFacade {
     private PreliminaryPlanRepository preliminaryPlanningRepository;
 
-    public PreliminaryPlanDto addPreliminaryPlanning(AddPreliminaryPlanDto addPreliminaryPlanDto) {
+    public void addPreliminaryPlan(AddPreliminaryPlanDto addPreliminaryPlanDto) {
         PreliminaryPlan preliminaryPlan = new PreliminaryPlan(addPreliminaryPlanDto.getPreliminaryPlanId(), addPreliminaryPlanDto.getDeadline());
         log.info("Preliminary planning added: {}", preliminaryPlan);
-        return preliminaryPlanningRepository.save(preliminaryPlan).dto();
+        preliminaryPlanningRepository.save(preliminaryPlan);
     }
 
     PreliminaryPlanDto getPreliminaryPlan(UUID preliminaryPlanId) {

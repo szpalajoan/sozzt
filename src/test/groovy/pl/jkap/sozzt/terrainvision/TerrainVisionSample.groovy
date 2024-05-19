@@ -1,5 +1,15 @@
 package pl.jkap.sozzt.terrainvision
 
-trait TerrainVisionSample {
+import pl.jkap.sozzt.contract.domain.ContractSample
+import pl.jkap.sozzt.terrainvision.dto.TerrainVisionDto
+
+import java.time.Duration
+
+trait TerrainVisionSample implements ContractSample{
+
+    TerrainVisionDto NEW_KRYNICA_TERRAIN_VISION = TerrainVisionDto.builder()
+            .terrainVisionId(KRYNICA_CONTRACT.contractId)
+            .deadline(KRYNICA_CONTRACT.contractDetails.orderDate + Duration.ofDays(3))
+            .build()
 
 }

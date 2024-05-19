@@ -6,6 +6,7 @@ import pl.jkap.sozzt.contract.dto.CreateContractDto;
 import pl.jkap.sozzt.globalvalueobjects.AuditInfo;
 import pl.jkap.sozzt.instant.InstantProvider;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 import static java.util.Objects.requireNonNull;
@@ -23,6 +24,7 @@ class ContractCreator {
                 .contractDetails(new ContractDetails(createContractDto.getContractDetailsDto()))
                 .location(new Location(createContractDto.getLocation()))
                 .auditInfo(new AuditInfo(instantProvider.now(), userName))
+                .contractSteps(new ArrayList<>())
                 .build();
     }
 

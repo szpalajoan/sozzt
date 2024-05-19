@@ -18,18 +18,15 @@ public class TerrainVisionFacade {
     public TerrainVisionDto getTerrainVision(UUID terrainVisionId) {
         TerrainVision terrainVision = terrainVisionRepository.findById(terrainVisionId)
                 .orElseThrow(() -> new TerrainVisionNotFoundException("TerrainVision not found: " + terrainVisionId));
-        return TerrainVisionDto.builder()
-                .terrainVisionId(terrainVision.getTerrainVisionId())
-                .build();
+        return terrainVision.dto();
     }
 
-    public TerrainVisionDto addTerrainVision(AddTerrainVisionDto addTerrainVisionDto) {
+    public void addTerrainVision(AddTerrainVisionDto addTerrainVisionDto) {
         TerrainVision terrainVision = TerrainVision.builder()
+                .terrainVisionId(addTerrainVisionDto.getTerrainVisionId())
+                .deadline(addTerrainVisionDto.getDeadLine())
                 .build();
         terrainVisionRepository.save(terrainVision);
-        return TerrainVisionDto.builder()
-                .terrainVisionId(terrainVision.getTerrainVisionId())
-                .build();
     }
 
 }

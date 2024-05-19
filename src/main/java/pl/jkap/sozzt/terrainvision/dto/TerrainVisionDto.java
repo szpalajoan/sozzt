@@ -2,6 +2,7 @@ package pl.jkap.sozzt.terrainvision.dto;
 
 import lombok.*;
 
+import java.time.Instant;
 import java.util.UUID;
 
 @Builder
@@ -12,5 +13,7 @@ import java.util.UUID;
 public class TerrainVisionDto {
 
     private UUID terrainVisionId;
+    private boolean allPhotosUploaded;
+    private Instant deadline;
 
 }

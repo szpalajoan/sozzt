@@ -16,6 +16,8 @@ class TerrainVisionSpec extends SozztSpecification {
         when: "$KRYNICA_CONTRACT is completly introduced by $MONIKA_CONTRACT_INTRODUCER"
             contractFacade.finalizeIntroduction(KRYNICA_CONTRACT.contractId)
         then: "Terrain vision is added"
-            terrainVisionFacade.getTerrainVision(KRYNICA_CONTRACT.contractId)
+            terrainVisionFacade.getTerrainVision(KRYNICA_CONTRACT.contractId) == NEW_KRYNICA_TERRAIN_VISION
     }
+
+
 }

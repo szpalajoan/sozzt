@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.Builder;
 import lombok.Getter;
+import pl.jkap.sozzt.terrainvision.dto.TerrainVisionDto;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -15,9 +16,15 @@ class TerrainVision {
 
     @Id
     private UUID terrainVisionId;
-    private UUID contractId;
-    private boolean isPreliminaryMapUploaded;
-    private String googleMapUrl;
     private boolean allPhotosUploaded;
-    private Instant deadLine;
+    private Instant deadline;
+
+
+    public TerrainVisionDto dto() {
+        return TerrainVisionDto.builder()
+                .terrainVisionId(terrainVisionId)
+                .allPhotosUploaded(allPhotosUploaded)
+                .deadline(deadline)
+                .build();
+    }
 }

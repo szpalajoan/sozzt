@@ -51,6 +51,7 @@ class Contract {
 
 
     void createSteps(ContractStepCreator contractStepCreator) {
+        contractSteps.add(contractStepCreator.createPreliminaryPlanStep(contractId, contractDetails.getOrderDate()));
         contractSteps.add(contractStepCreator.createTerrainVisionStep(contractId, contractDetails.getOrderDate()));
     }
 }
