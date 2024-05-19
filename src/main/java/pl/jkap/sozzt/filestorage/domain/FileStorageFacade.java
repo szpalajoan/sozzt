@@ -18,9 +18,9 @@ public class FileStorageFacade {
     private final FileRepository fileRepository;
     private final FileEventPublisher fileEventPublisher;
 
-    public FileStorageFacade(FileSystemStorage fileSystemStorage,
-                             FileRepository fileRepository,
-                             FileEventPublisher fileEventPublisher) {
+    FileStorageFacade(FileSystemStorage fileSystemStorage,
+                      FileRepository fileRepository,
+                      FileEventPublisher fileEventPublisher) {
         this.fileSystemStorage = fileSystemStorage;
         this.fileSystemStorage.init();
         this.fileRepository = fileRepository;
