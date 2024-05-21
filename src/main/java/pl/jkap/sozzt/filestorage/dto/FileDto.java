@@ -11,7 +11,8 @@ import java.util.UUID;
 @EqualsAndHashCode
 public class FileDto {
     public enum FileTypeDto {
-        CONTRACT_SCAN_FROM_TAURON
+        CONTRACT_SCAN_FROM_TAURON,
+        PRELIMINARY_MAP
     }
     private UUID fileId;
     private String fileName;

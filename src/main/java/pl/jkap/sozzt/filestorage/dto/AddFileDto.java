@@ -11,11 +11,11 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class AddContractScanFileDto {
+public class AddFileDto {
 
     private UUID fileId;
     private MultipartFile file;
-    private UUID contractId;
+    private UUID objectId;
 
     public Optional<UUID> getFileId() {
         return Optional.of(fileId);

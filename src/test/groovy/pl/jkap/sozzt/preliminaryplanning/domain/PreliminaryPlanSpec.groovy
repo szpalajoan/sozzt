@@ -21,7 +21,7 @@ class PreliminaryPlanSpec extends SozztSpecification {
         and: "There is a $KRYNICA_PRELIMINARY_PLAN preliminary plan"
             addCompletelyIntroduceContract(contractFacade, KRYNICA_CONTRACT)
         when: "$MONIKA_CONTRACT_INTRODUCER uploads $KRYNICA_CONTRACT_SCAN_FILE to $KRYNICA_PRELIMINARY_PLAN preliminary plan"
-            fileStorageFacade.addContractScan(toAddContractScanFileDto(KRYNICA_CONTRACT_SCAN, KRYNICA_CONTRACT_SCAN_FILE, KRYNICA_CONTRACT))
+            fileStorageFacade.addPreliminaryMap(toAddContractScanFileDto(KRYNICA_PRELIMINARY_MAP, KRYNICA_PRELIMINARY_MAP_FILE, KRYNICA_CONTRACT))
         then: "$KRYNICA_PRELIMINARY_PLAN preliminary plan has a preliminary map uploaded"
             preliminaryPlanFacade.getPreliminaryPlan(KRYNICA_CONTRACT.contractId) == with(KRYNICA_PRELIMINARY_PLAN, [isPreliminaryMapUploaded : true])
     }

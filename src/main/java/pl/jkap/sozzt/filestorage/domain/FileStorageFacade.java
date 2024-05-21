@@ -1,16 +1,16 @@
 package pl.jkap.sozzt.filestorage.domain;
 
-
-import pl.jkap.sozzt.filestorage.dto.AddContractScanFileDto;
+import org.springframework.web.multipart.MultipartFile;
+import pl.jkap.sozzt.filestorage.dto.AddFileDto;
 import pl.jkap.sozzt.filestorage.dto.FileDto;
 import pl.jkap.sozzt.filestorage.event.ContractScanAddedEvent;
 import pl.jkap.sozzt.filestorage.event.ContractScanDeletedEvent;
+import pl.jkap.sozzt.filestorage.event.PreliminaryMapUploadedEvent;
 import pl.jkap.sozzt.filestorage.exception.FileAlreadyExistsException;
 import pl.jkap.sozzt.filestorage.exception.FileNotFoundException;
 
 import java.nio.file.Path;
 import java.util.UUID;
-
 
 public class FileStorageFacade {
 
@@ -27,39 +27,53 @@ public class FileStorageFacade {
         this.fileEventPublisher = fileEventPublisher;
     }
 
-
-    public FileDto addContractScan(AddContractScanFileDto addContractScanFileDto){
-        UUID fileId = addContractScanFileDto.getFileId().orElseGet(UUID::randomUUID);
-        checkFileNotExists(fileId);
-        String path = calculatePath(FileType.CONTRACT_SCAN_FROM_TAURON, addContractScanFileDto.getContractId());
-        String savedFilePath = fileSystemStorage.store(addContractScanFileDto.getFile(), path);
-        File newfile = File.builder()
-                .fileId(fileId)
-                .fileName(addContractScanFileDto.getFile().getOriginalFilename())
-                .fileType(FileType.CONTRACT_SCAN_FROM_TAURON)
-                .objectId(addContractScanFileDto.getContractId())
-                .path(savedFilePath)
-                .build();
-        fileRepository.save(newfile);
-        fileEventPublisher.contractScanUploaded(new ContractScanAddedEvent( addContractScanFileDto.getContractId()));
-        return newfile.dto();
+    public FileDto addContractScan(AddFileDto addContractScanDto) {
+        File addedFile = addFile(
+                addContractScanDto.getFileId().orElseGet(UUID::randomUUID),
+                addContractScanDto.getFile(),
+                FileType.CONTRACT_SCAN_FROM_TAURON,
+                addContractScanDto.getObjectId()
+        );
+        fileEventPublisher.contractScanUploaded(new ContractScanAddedEvent(addedFile.getObjectId()));
+        return addedFile.dto();
     }
 
-    public FileDto addPreliminaryMap(AddPreliminaryMapFileDto addPreliminaryMapFileDto) {
-        UUID fileId = addPreliminaryMapFileDto.getFileId().orElseGet(UUID::randomUUID);
+    public FileDto addPreliminaryMap(AddFileDto addPreliminaryMapFileDto) {
+        File addedFile = addFile(
+                addPreliminaryMapFileDto.getFileId().orElseGet(UUID::randomUUID),
+                addPreliminaryMapFileDto.getFile(),
+                FileType.PRELIMINARY_MAP,
+                addPreliminaryMapFileDto.getObjectId()
+        );
+        fileEventPublisher.preliminaryMapUploaded(new PreliminaryMapUploadedEvent(addedFile.getObjectId()));
+        return addedFile.dto();
+    }
+
+    private File addFile(UUID fileId, MultipartFile file, FileType fileType, UUID objectId) {
         checkFileNotExists(fileId);
-        String path = calculatePath(FileType.PRELIMINARY_MAP, addPreliminaryMapFileDto.getPreliminaryPlanId());
-        String savedFilePath = fileSystemStorage.store(addPreliminaryMapFileDto.getFile(), path);
-        File newfile = File.builder()
+        String path = calculatePath(fileType, objectId);
+        String savedFilePath = fileSystemStorage.store(file, path);
+        File newFile = File.builder()
                 .fileId(fileId)
-                .fileName(addPreliminaryMapFileDto.getFile().getOriginalFilename())
-                .fileType(FileType.PRELIMINARY_MAP)
-                .objectId(addPreliminaryMapFileDto.getPreliminaryPlanId())
+                .fileName(file.getOriginalFilename())
+                .fileType(fileType)
+                .objectId(objectId)
                 .path(savedFilePath)
                 .build();
-        fileRepository.save(newfile);
-        fileEventPublisher.preliminaryMapUploaded(new PreliminaryMapUploadedEvent( addPreliminaryMapFileDto.getPreliminaryPlanId()));
-        return newfile.dto();
+        fileRepository.save(newFile);
+        publishEvent(objectId, fileType);
+        return newFile;
+    }
+
+    private void publishEvent(UUID objectId, FileType fileType) {
+        switch (fileType) {
+            case CONTRACT_SCAN_FROM_TAURON:
+                fileEventPublisher.contractScanUploaded(new ContractScanAddedEvent(objectId));
+                break;
+            case PRELIMINARY_MAP:
+                fileEventPublisher.preliminaryMapUploaded(new PreliminaryMapUploadedEvent(objectId));
+                break;
+        }
     }
 
     private String calculatePath(FileType fileType, UUID contractId) {

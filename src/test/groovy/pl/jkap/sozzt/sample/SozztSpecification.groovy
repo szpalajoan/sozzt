@@ -33,7 +33,7 @@ class SozztSpecification extends Specification implements FileSample, Preliminar
             .terrainVisionFacade(terrainVisionFacade)
             .build()
     ContractFacade contractFacade = new ContractConfiguration().contractFacade(contractStepCreator, instantProvider)
-    FileStorageFacade fileStorageFacade = new FileStorageConfigurator().fileStorageFacade(new FileEventPublisherStub(contractFacade))
+    FileStorageFacade fileStorageFacade = new FileStorageConfigurator().fileStorageFacade(new FileEventPublisherStub(contractFacade, preliminaryPlanFacade))
 
     def setup() {
         instantProvider.useFixedClock(NOW)

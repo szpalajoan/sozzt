@@ -35,4 +35,8 @@ class PreliminaryPlan {
                 .deadline(deadline)
                 .build();
     }
+
+    public void confirmMapUploaded() {
+        this.isPreliminaryMapUploaded = true;
+    }
 }

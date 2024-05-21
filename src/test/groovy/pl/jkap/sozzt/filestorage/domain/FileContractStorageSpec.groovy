@@ -11,7 +11,7 @@ class FileContractStorageSpec extends SozztSpecification {
     FileDto addedFileDto
 
     def cleanup(){
-        if(addedFileDto != null){
+        if(addedFileDto != null) {
             fileStorageFacade.deleteFile(addedFileDto.fileId)
         }
     }
@@ -43,7 +43,7 @@ class FileContractStorageSpec extends SozztSpecification {
             contractFacade.getContract(KRYNICA_CONTRACT.contractId) == with(KRYNICA_CONTRACT, [isScanFromTauronUploaded : false])
     }
 
-    def "Should not be able to download deleted file"(){
+    def "Should not be able to download deleted file"() {
         given: "$MONIKA_CONTRACT_INTRODUCER is logged in"
             loginUser(MONIKA_CONTRACT_INTRODUCER)
         and: "there is a $KRYNICA_CONTRACT contract added by $MONIKA_CONTRACT_INTRODUCER"
@@ -57,6 +57,10 @@ class FileContractStorageSpec extends SozztSpecification {
         then: "$KRYNICA_CONTRACT_SCAN_FILE is not available"
             thrown(FileNotFoundException)
     }
+
+    // add tests for preliminary map
+
+
 
     //    def "should change file name to a unique name if there is already a file with the same name as the added file"() {
 //

@@ -9,7 +9,7 @@ public class PreliminaryPlanConfiguration {
     @Bean
     PreliminaryPlanFacade preliminaryPlanningFacade(PreliminaryPlanRepository preliminaryPlanRepository) {
         return PreliminaryPlanFacade.builder()
-                .preliminaryPlanningRepository(preliminaryPlanRepository)
+                .preliminaryPlanRepository(preliminaryPlanRepository)
                 .build();
     }
 
