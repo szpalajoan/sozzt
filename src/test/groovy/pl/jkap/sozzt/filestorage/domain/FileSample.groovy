@@ -5,7 +5,6 @@ import org.springframework.web.multipart.MultipartFile
 import pl.jkap.sozzt.contract.domain.ContractSample
 import pl.jkap.sozzt.preliminaryplanning.domain.PreliminaryPlanSample
 import pl.jkap.sozzt.sample.SampleModifier
-import pl.jkap.sozzt.contract.dto.ContractDto
 import pl.jkap.sozzt.filestorage.dto.AddFileDto
 import pl.jkap.sozzt.filestorage.dto.FileDto
 
@@ -37,11 +36,11 @@ trait FileSample implements ContractSample, PreliminaryPlanSample {
         return SampleModifier.with(FileDto.class, fileDto, properties)
     }
 
-    AddFileDto toAddContractScanFileDto(FileDto fileDto, MultipartFile file, ContractDto contractDto) {
+    AddFileDto toAddFileDto(FileDto fileDto, MultipartFile file, UUID objectId) {
         return AddFileDto
                 .builder()
                 .fileId(fileDto.getFileId())
-                .objectId(contractDto.getContractId())
+                .objectId(objectId)
                 .file(file)
                 .build()
     }

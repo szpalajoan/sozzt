@@ -67,7 +67,6 @@ class FileSystemStorage {
         }
     }
 
-    //TODO tety
     private boolean checkFileExist(String pathFile) {
         return Files.exists(Paths.get(pathFile));
     }
