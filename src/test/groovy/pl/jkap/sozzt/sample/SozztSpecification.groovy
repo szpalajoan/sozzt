@@ -1,6 +1,5 @@
 package pl.jkap.sozzt.sample
 
-import org.springframework.web.multipart.MultipartFile
 import pl.jkap.sozzt.contract.domain.ContractConfiguration
 import pl.jkap.sozzt.contract.domain.ContractDetailsSample
 import pl.jkap.sozzt.contract.domain.ContractFacade
@@ -12,6 +11,7 @@ import pl.jkap.sozzt.filestorage.domain.FileEventPublisherStub
 import pl.jkap.sozzt.filestorage.domain.FileSample
 import pl.jkap.sozzt.filestorage.domain.FileStorageConfigurator
 import pl.jkap.sozzt.filestorage.domain.FileStorageFacade
+import pl.jkap.sozzt.filestorage.domain.PreparedFile
 import pl.jkap.sozzt.filestorage.dto.FileDto
 import pl.jkap.sozzt.instant.InstantProvider
 import pl.jkap.sozzt.instant.InstantSamples
@@ -29,7 +29,7 @@ class SozztSpecification extends Specification implements FileSample, Preliminar
         ContractSample, LocationSample, ContractDetailsSample,
         UserSample, InstantSamples {
 
-    Collection<FileDto> addedFiles = []
+    Collection<UUID> addedFileIds = []
 
     InstantProvider instantProvider = new InstantProvider()
     TerrainVisionFacade terrainVisionFacade = new TerrainVisionConfiguration().terrainVisionFacade(instantProvider)
@@ -46,21 +46,32 @@ class SozztSpecification extends Specification implements FileSample, Preliminar
     }
 
     def cleanup(){
-        addedFiles.each { FileDto addedFileDto ->
-            fileStorageFacade.deleteFile(addedFileDto.fileId)
+        addedFileIds.each { UUID addedFileId ->
+            fileStorageFacade.deleteFile(addedFileId)
         }
     }
 
-    FileDto addContractScan(FileDto addedFileDto, MultipartFile file, ContractDto contractDto) {
-        FileDto addedFile = fileStorageFacade.addContractScan(toAddFileDto(addedFileDto, file, contractDto.contractId))
-        addedFiles.add(addedFile)
+    ContractDto addCompletelyIntroduceContract(ContractDto createContractDto, PreparedFile preparedFile) {
+        contractFacade.addContract(toCreateContractDto(createContractDto))
+        addContractScan(preparedFile, createContractDto)
+        return contractFacade.finalizeIntroduction(createContractDto.contractId)
+    }
+
+    FileDto addContractScan(PreparedFile preparedFile, ContractDto contractDto) {
+        FileDto addedFile = fileStorageFacade.addContractScan(toAddFileDto(preparedFile.metadata, preparedFile.fileAsMultipartFile, contractDto.contractId))
+        addedFileIds.add(addedFile.fileId)
         return addedFile
     }
 
-    FileDto addPreliminaryMap(FileDto addedFileDto, MultipartFile file, PreliminaryPlanDto preliminaryPlanDto) {
-        FileDto addedFile = fileStorageFacade.addPreliminaryMap(toAddFileDto(addedFileDto, file, preliminaryPlanDto.preliminaryPlanId))
-        addedFiles.add(addedFile)
-        return addedFileDto
+    FileDto addPreliminaryMap(PreparedFile preparedFile, PreliminaryPlanDto preliminaryPlanDto) {
+        FileDto addedFile = fileStorageFacade.addPreliminaryMap(toAddFileDto(preparedFile.metadata, preparedFile.fileAsMultipartFile, preliminaryPlanDto.preliminaryPlanId))
+        addedFileIds.add(addedFile.fileId)
+        return addedFile
+    }
+
+    void deleteFile(UUID fileId) {
+        fileStorageFacade.deleteFile(fileId)
+        addedFileIds.remove(fileId)
     }
 
 }

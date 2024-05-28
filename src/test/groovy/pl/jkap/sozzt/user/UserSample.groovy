@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.User
 
 trait UserSample {
     UsernamePasswordAuthenticationToken MONIKA_CONTRACT_INTRODUCER = createUser("Monika", "CONTRACT_INTRODUCER")
+    UsernamePasswordAuthenticationToken DAREK_PRELIMINARY_PLANER = createUser("Darek", "PRELIMINARY_PLANER")
 
     UsernamePasswordAuthenticationToken createUser(String name, String role) {
         User user = new User(name, new Random().nextLong().toString(), List.of(new SimpleGrantedAuthority(role)))

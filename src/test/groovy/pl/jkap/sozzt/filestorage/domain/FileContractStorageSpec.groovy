@@ -8,17 +8,15 @@ import java.nio.file.Files
 
 class FileContractStorageSpec extends SozztSpecification {
 
-    FileDto addedFileDto
-
-    def "Should add a scan from Tauron to contract"(){
+    def "Should add a scan from Tauron to contract"() {
         given: "$MONIKA_CONTRACT_INTRODUCER is logged in"
             loginUser(MONIKA_CONTRACT_INTRODUCER)
         and: "there is a $KRYNICA_CONTRACT contract added by $MONIKA_CONTRACT_INTRODUCER"
             contractFacade.addContract(toCreateContractDto(KRYNICA_CONTRACT))
         when: "$MONIKA_CONTRACT_INTRODUCER uploads $KRYNICA_CONTRACT_SCAN_FILE to $KRYNICA_CONTRACT contract"
-            addedFileDto = addContractScan(KRYNICA_CONTRACT_SCAN, KRYNICA_CONTRACT_SCAN_FILE, KRYNICA_CONTRACT)
+            FileDto addedFileDto = addContractScan(KRYNICA_CONTRACT_SCAN, KRYNICA_CONTRACT)
         then: "$KRYNICA_CONTRACT_SCAN_FILE is added to $KRYNICA_CONTRACT contract"
-            addedFileDto == KRYNICA_CONTRACT_SCAN
+            addedFileDto == KRYNICA_CONTRACT_SCAN_METADATA
             Files.readAllBytes(fileStorageFacade.downloadFile(addedFileDto.getFileId())) == KRYNICA_CONTRACT_SCAN_FILE.getBytes()
             contractFacade.getContract(KRYNICA_CONTRACT.contractId) == with(KRYNICA_CONTRACT, [isScanFromTauronUploaded : true])
     }
@@ -30,9 +28,9 @@ class FileContractStorageSpec extends SozztSpecification {
         and: "there is a $KRYNICA_CONTRACT contract added by $MONIKA_CONTRACT_INTRODUCER"
             contractFacade.addContract(toCreateContractDto(KRYNICA_CONTRACT))
         and: "$MONIKA_CONTRACT_INTRODUCER uploads $KRYNICA_CONTRACT_SCAN_FILE to $KRYNICA_CONTRACT contract"
-            FileDto addedFileDto = addContractScan(KRYNICA_CONTRACT_SCAN, KRYNICA_CONTRACT_SCAN_FILE, KRYNICA_CONTRACT)
+            FileDto addedFileDto = addContractScan(KRYNICA_CONTRACT_SCAN, KRYNICA_CONTRACT)
         when: "$MONIKA_CONTRACT_INTRODUCER deletes $KRYNICA_CONTRACT_SCAN_FILE"
-            fileStorageFacade.deleteFile(addedFileDto.fileId)
+            deleteFile(addedFileDto.fileId)
         then: "$KRYNICA_CONTRACT_SCAN_FILE is deleted"
             contractFacade.getContract(KRYNICA_CONTRACT.contractId) == with(KRYNICA_CONTRACT, [isScanFromTauronUploaded : false])
     }
@@ -42,17 +40,42 @@ class FileContractStorageSpec extends SozztSpecification {
             loginUser(MONIKA_CONTRACT_INTRODUCER)
         and: "there is a $KRYNICA_CONTRACT contract added by $MONIKA_CONTRACT_INTRODUCER"
             contractFacade.addContract(toCreateContractDto(KRYNICA_CONTRACT))
-        and: "$MONIKA_CONTRACT_INTRODUCER uploads $KRYNICA_CONTRACT_SCAN_FILE to $KRYNICA_CONTRACT contract"
-            FileDto addedFileDto = addContractScan(KRYNICA_CONTRACT_SCAN, KRYNICA_CONTRACT_SCAN_FILE, KRYNICA_CONTRACT)
+        and: "$MONIKA_CONTRACT_INTRODUCER uploads $KRYNICA_CONTRACT_SCAN_FILE to $KRYNICA_CONTRACT"
+            FileDto addedFileDto = addContractScan(KRYNICA_CONTRACT_SCAN, KRYNICA_CONTRACT)
         and: "$MONIKA_CONTRACT_INTRODUCER deletes $KRYNICA_CONTRACT_SCAN_FILE"
-            fileStorageFacade.deleteFile(addedFileDto.fileId)
+            deleteFile(addedFileDto.fileId)
         when: "$MONIKA_CONTRACT_INTRODUCER download $KRYNICA_CONTRACT_SCAN_FILE"
             fileStorageFacade.downloadFile(addedFileDto.getFileId())
         then: "$KRYNICA_CONTRACT_SCAN_FILE is not available"
             thrown(FileNotFoundException)
     }
 
-    // add tests for preliminary map
+    def "should not be able to delete not existing file"() {
+        given: "$MONIKA_CONTRACT_INTRODUCER is logged in"
+            loginUser(MONIKA_CONTRACT_INTRODUCER)
+        and: "there is a $KRYNICA_CONTRACT contract added by $MONIKA_CONTRACT_INTRODUCER"
+            contractFacade.addContract(toCreateContractDto(KRYNICA_CONTRACT))
+        and: "$MONIKA_CONTRACT_INTRODUCER uploads $KRYNICA_CONTRACT_SCAN_FILE to $KRYNICA_CONTRACT"
+            FileDto addedFileDto = addContractScan(KRYNICA_CONTRACT_SCAN, KRYNICA_CONTRACT)
+        and: "$MONIKA_CONTRACT_INTRODUCER delete $KRYNICA_CONTRACT_SCAN_FILE"
+            deleteFile(addedFileDto.fileId)
+        when: "$MONIKA_CONTRACT_INTRODUCER try to delete $KRYNICA_CONTRACT_SCAN_FILE once again"
+            deleteFile(addedFileDto.fileId)
+        then: "$KRYNICA_CONTRACT_SCAN_FILE is not available"
+            thrown(FileNotFoundException)
+    }
+
+    def "Should add a preliminary map to a preliminary plan"() {
+        given: "There is a $KRYNICA_PRELIMINARY_PLAN"
+            loginUser(MONIKA_CONTRACT_INTRODUCER)
+            addCompletelyIntroduceContract(KRYNICA_CONTRACT, KRYNICA_CONTRACT_SCAN)
+        when: "$DAREK_PRELIMINARY_PLANER uploads $KRYNICA_PRELIMINARY_MAP to $KRYNICA_PRELIMINARY_PLAN"
+            FileDto addedPreliminaryMap = addPreliminaryMap(KRYNICA_PRELIMINARY_MAP, KRYNICA_PRELIMINARY_PLAN)
+        then: "$KRYNICA_PRELIMINARY_MAP is added to $KRYNICA_PRELIMINARY_PLAN"
+            addedPreliminaryMap == KRYNICA_PRELIMINARY_MAP_METADATA
+            Files.readAllBytes(fileStorageFacade.downloadFile(addedPreliminaryMap.getFileId())) == KRYNICA_CONTRACT_SCAN_FILE.getBytes()
+        //TODO powinien nie przechodzic bo ma zla sciezke, ale czy w tescie mam i powinienem miec sciezke ? :O
+    }
 
 
         // TODO test nie da sie usunąc nie istniejącego pliku

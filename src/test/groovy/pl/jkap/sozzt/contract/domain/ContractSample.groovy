@@ -39,9 +39,4 @@ trait ContractSample implements UserSample, LocationSample, ContractDetailsSampl
                 .build()
     }
 
-    ContractDto addCompletelyIntroduceContract(ContractFacade contractFacade, ContractDto createContractDto) {
-        contractFacade.addContract(toCreateContractDto(createContractDto))
-        //todo tu jeszcze plik musi być dodany i napisz na to test
-        return contractFacade.finalizeIntroduction(createContractDto.contractId)
-    }
 }
