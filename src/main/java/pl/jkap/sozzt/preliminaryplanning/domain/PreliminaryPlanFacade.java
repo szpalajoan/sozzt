@@ -4,6 +4,7 @@ package pl.jkap.sozzt.preliminaryplanning.domain;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
+import pl.jkap.sozzt.filestorage.event.PreliminaryMapDeletedEvent;
 import pl.jkap.sozzt.filestorage.event.PreliminaryMapUploadedEvent;
 import pl.jkap.sozzt.preliminaryplanning.dto.AddPreliminaryPlanDto;
 import pl.jkap.sozzt.preliminaryplanning.dto.PreliminaryPlanDto;
@@ -28,17 +29,28 @@ public class PreliminaryPlanFacade {
                 .dto();
     }
 
-    private void preliminaryPlanUploaded(UUID preliminaryPlanId) {
+    private void preliminaryMapAdded(UUID preliminaryPlanId) {
         PreliminaryPlan preliminaryPlan = preliminaryPlanRepository.findById(preliminaryPlanId)
                 .orElseThrow(() -> new PreliminaryPlanNotFoundException("Preliminary planning not found: " + preliminaryPlanId));
-        preliminaryPlan.confirmMapUploaded();
+        preliminaryPlan.confirmMapAdded();
+        preliminaryPlanRepository.save(preliminaryPlan);
+    }
+
+    private void preliminaryPlanMapDeleted(UUID preliminaryPlanId) {
+        PreliminaryPlan preliminaryPlan = preliminaryPlanRepository.findById(preliminaryPlanId)
+                .orElseThrow(() -> new PreliminaryPlanNotFoundException("Preliminary planning not found: " + preliminaryPlanId));
+        preliminaryPlan.confirmMapDeleted();
         preliminaryPlanRepository.save(preliminaryPlan);
     }
 
     @EventListener
     public void onPreliminaryMapUploadedEvent(PreliminaryMapUploadedEvent event) {
-        preliminaryPlanUploaded(event.getPreliminaryPlanId());
+        preliminaryMapAdded(event.getPreliminaryPlanId());
     }
 
+    @EventListener
+    public void onPreliminaryMapDeletedEvent(PreliminaryMapDeletedEvent event) {
+        preliminaryPlanMapDeleted(event.getPreliminaryPlanId());
+    }
 
 }

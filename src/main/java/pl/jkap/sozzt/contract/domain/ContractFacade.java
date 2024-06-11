@@ -9,6 +9,8 @@ import pl.jkap.sozzt.contract.exception.ContractNotFoundException;
 import pl.jkap.sozzt.filestorage.event.ContractScanAddedEvent;
 import pl.jkap.sozzt.filestorage.event.ContractScanDeletedEvent;
 import pl.jkap.sozzt.instant.InstantProvider;
+import pl.jkap.sozzt.contractsecurity.domain.ContractSecurityFacade;
+import pl.jkap.sozzt.contractsecurity.dto.AddSecurityContractDto;
 
 import java.util.UUID;
 
@@ -18,6 +20,7 @@ import static java.util.Objects.requireNonNull;
 @Builder
 public class ContractFacade {
 
+    private final ContractSecurityFacade contractSecurityFacade;
     private final ContractRepository contractRepository;
     private final ContractCreator contractCreator;
     private final ContractStepCreator contractStepCreator;
@@ -25,9 +28,11 @@ public class ContractFacade {
 
     public ContractDto addContract(CreateContractDto createContractDto) {
         requireNonNull(createContractDto);
+        contractSecurityFacade.checkCanAddContract();
         Contract contract = contractCreator.from(createContractDto);
         contract = contractRepository.save(contract);
         ContractDto addedContract = contract.dto();
+        contractSecurityFacade.addSecurityContract(new AddSecurityContractDto(contract.getContractId()));
         log.info("Contract created: {}", addedContract);
         return addedContract;
     }

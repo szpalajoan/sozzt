@@ -1,8 +1,6 @@
 package pl.jkap.sozzt.contract.domain;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,7 +8,6 @@ import pl.jkap.sozzt.contract.dto.ContractDto;
 import pl.jkap.sozzt.globalvalueobjects.AuditInfo;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
 

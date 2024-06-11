@@ -7,6 +7,8 @@ import pl.jkap.sozzt.contract.domain.ContractSample
 import pl.jkap.sozzt.contract.domain.ContractStepCreator
 import pl.jkap.sozzt.contract.domain.LocationSample
 import pl.jkap.sozzt.contract.dto.ContractDto
+import pl.jkap.sozzt.contractsecurity.domain.ContractSecurityConfiguration
+import pl.jkap.sozzt.contractsecurity.domain.ContractSecurityFacade
 import pl.jkap.sozzt.filestorage.domain.FileEventPublisherStub
 import pl.jkap.sozzt.filestorage.domain.FileSample
 import pl.jkap.sozzt.filestorage.domain.FileStorageConfigurator
@@ -32,14 +34,15 @@ class SozztSpecification extends Specification implements FileSample, Preliminar
     Collection<UUID> addedFileIds = []
 
     InstantProvider instantProvider = new InstantProvider()
+    ContractSecurityFacade contractSecurityFacade = new ContractSecurityConfiguration().contractSecurityFacade()
     TerrainVisionFacade terrainVisionFacade = new TerrainVisionConfiguration().terrainVisionFacade(instantProvider)
     PreliminaryPlanFacade preliminaryPlanFacade = new PreliminaryPlanConfiguration().preliminaryPlanFacade()
     ContractStepCreator contractStepCreator = ContractStepCreator.builder()
             .preliminaryPlanFacade(preliminaryPlanFacade)
             .terrainVisionFacade(terrainVisionFacade)
             .build()
-    ContractFacade contractFacade = new ContractConfiguration().contractFacade(contractStepCreator, instantProvider)
-    FileStorageFacade fileStorageFacade = new FileStorageConfigurator().fileStorageFacade(new FileEventPublisherStub(contractFacade, preliminaryPlanFacade))
+    ContractFacade contractFacade = new ContractConfiguration().contractFacade(contractStepCreator,contractSecurityFacade, instantProvider)
+    FileStorageFacade fileStorageFacade = new FileStorageConfigurator().fileStorageFacade(contractSecurityFacade, new FileEventPublisherStub(contractFacade, preliminaryPlanFacade))
 
     def setup() {
         instantProvider.useFixedClock(NOW)
@@ -53,17 +56,18 @@ class SozztSpecification extends Specification implements FileSample, Preliminar
 
     ContractDto addCompletelyIntroduceContract(ContractDto createContractDto, PreparedFile preparedFile) {
         contractFacade.addContract(toCreateContractDto(createContractDto))
-        addContractScan(preparedFile, createContractDto)
+        addContractScan(preparedFile, createContractDto.contractId)
         return contractFacade.finalizeIntroduction(createContractDto.contractId)
     }
 
-    FileDto addContractScan(PreparedFile preparedFile, ContractDto contractDto) {
-        FileDto addedFile = fileStorageFacade.addContractScan(toAddFileDto(preparedFile.metadata, preparedFile.fileAsMultipartFile, contractDto.contractId))
+    FileDto addContractScan(PreparedFile preparedFile, UUID contractId) {
+        FileDto addedFile = fileStorageFacade.addContractScan(toAddFileDto(preparedFile.metadata, preparedFile.fileAsMultipartFile, contractId))
         addedFileIds.add(addedFile.fileId)
         return addedFile
     }
 
-    FileDto addPreliminaryMap(PreparedFile preparedFile, PreliminaryPlanDto preliminaryPlanDto) {
+    FileDto uploadPreliminaryMap(PreparedFile preparedFile, PreliminaryPlanDto preliminaryPlanDto) {
+        contractSecurityFacade.checkCanAddPreliminaryMap(preliminaryPlanDto.getPreliminaryPlanId())
         FileDto addedFile = fileStorageFacade.addPreliminaryMap(toAddFileDto(preparedFile.metadata, preparedFile.fileAsMultipartFile, preliminaryPlanDto.preliminaryPlanId))
         addedFileIds.add(addedFile.fileId)
         return addedFile

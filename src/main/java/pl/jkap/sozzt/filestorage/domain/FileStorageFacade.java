@@ -1,10 +1,13 @@
 package pl.jkap.sozzt.filestorage.domain;
 
+import lombok.Builder;
 import org.springframework.web.multipart.MultipartFile;
+import pl.jkap.sozzt.contractsecurity.domain.ContractSecurityFacade;
 import pl.jkap.sozzt.filestorage.dto.AddFileDto;
 import pl.jkap.sozzt.filestorage.dto.FileDto;
 import pl.jkap.sozzt.filestorage.event.ContractScanAddedEvent;
 import pl.jkap.sozzt.filestorage.event.ContractScanDeletedEvent;
+import pl.jkap.sozzt.filestorage.event.PreliminaryMapDeletedEvent;
 import pl.jkap.sozzt.filestorage.event.PreliminaryMapUploadedEvent;
 import pl.jkap.sozzt.filestorage.exception.FileAlreadyExistsException;
 import pl.jkap.sozzt.filestorage.exception.FileNotFoundException;
@@ -14,13 +17,17 @@ import java.util.UUID;
 
 public class FileStorageFacade {
 
+    private final ContractSecurityFacade contractSecurityFacade;
     private final FileSystemStorage fileSystemStorage;
     private final FileRepository fileRepository;
     private final FileEventPublisher fileEventPublisher;
 
-    FileStorageFacade(FileSystemStorage fileSystemStorage,
+    @Builder
+    FileStorageFacade(ContractSecurityFacade contractSecurityFacade,
+                      FileSystemStorage fileSystemStorage,
                       FileRepository fileRepository,
                       FileEventPublisher fileEventPublisher) {
+        this.contractSecurityFacade = contractSecurityFacade;
         this.fileSystemStorage = fileSystemStorage;
         this.fileSystemStorage.init();
         this.fileRepository = fileRepository;
@@ -28,6 +35,7 @@ public class FileStorageFacade {
     }
 
     public FileDto addContractScan(AddFileDto addContractScanDto) {
+        contractSecurityFacade.checkCanAddContractScan(addContractScanDto.getObjectId());
         File addedFile = addFile(
                 addContractScanDto.getFileId().orElseGet(UUID::randomUUID),
                 addContractScanDto.getFile(),
@@ -39,13 +47,13 @@ public class FileStorageFacade {
     }
 
     public FileDto addPreliminaryMap(AddFileDto addPreliminaryMapFileDto) {
+
         File addedFile = addFile(
                 addPreliminaryMapFileDto.getFileId().orElseGet(UUID::randomUUID),
                 addPreliminaryMapFileDto.getFile(),
                 FileType.PRELIMINARY_MAP,
                 addPreliminaryMapFileDto.getObjectId()
         );
-        fileEventPublisher.preliminaryMapUploaded(new PreliminaryMapUploadedEvent(addedFile.getObjectId()));
         return addedFile.dto();
     }
 
@@ -94,7 +102,18 @@ public class FileStorageFacade {
     public void deleteFile(UUID fileId) {
         File file = fileRepository.findById(fileId).orElseThrow(() -> new FileNotFoundException("File with id " + fileId + " not found"));
         fileSystemStorage.delete(file.getPath());
+        publishDeletedFileEvent(file);
         fileRepository.delete(file);
-        fileEventPublisher.contractScanDeleted(new ContractScanDeletedEvent(file.getObjectId()));
+    }
+
+    private void publishDeletedFileEvent(File file) {
+        switch (file.getFileType()) {
+            case CONTRACT_SCAN_FROM_TAURON:
+                fileEventPublisher.contractScanDeleted(new ContractScanDeletedEvent(file.getObjectId()));
+                break;
+            case PRELIMINARY_MAP:
+                fileEventPublisher.preliminaryMapDeleted(new PreliminaryMapDeletedEvent(file.getObjectId()));
+                break;
+        }
     }
 }

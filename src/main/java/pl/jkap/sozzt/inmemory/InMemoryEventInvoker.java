@@ -35,7 +35,7 @@ public class InMemoryEventInvoker implements ApplicationEventPublisher {
                         Class<?>[] parameterTypes = method.getParameterTypes();
                         if (parameterTypes.length == 1 && parameterTypes[0].isAssignableFrom(eventClass)) {
                             if (!instances.containsKey(listenerClass)) {
-                                throw new RuntimeException("Nie znaleziono instancji klasy " + listenerClass.getName() + " dodaj do konsturktora InMemoryEventListenerInvoker");
+                                throw new RuntimeException("Not found instance of class " + listenerClass.getName() + " add it to InMemoryEventListenerInvoker");
                             }
                             method.invoke(instances.get(listenerClass), event);
                             return;
@@ -43,7 +43,7 @@ public class InMemoryEventInvoker implements ApplicationEventPublisher {
                     }
                 }
             }
-            System.out.println("Nie znaleziono metody obsługującej zdarzenie.");
+            System.out.println("The event handling method was not found: " + eventClass.getName());
         } catch (Exception e) {
             e.printStackTrace();
         }

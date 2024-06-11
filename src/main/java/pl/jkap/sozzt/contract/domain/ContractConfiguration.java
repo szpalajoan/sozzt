@@ -2,6 +2,7 @@ package pl.jkap.sozzt.contract.domain;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import pl.jkap.sozzt.contractsecurity.domain.ContractSecurityFacade;
 import pl.jkap.sozzt.instant.InstantProvider;
 import pl.jkap.sozzt.preliminaryplanning.domain.PreliminaryPlanFacade;
 import pl.jkap.sozzt.terrainvision.domain.TerrainVisionFacade;
@@ -17,17 +18,21 @@ public class ContractConfiguration {
                 .build();
     }
     @Bean
-    ContractFacade contractFacade(ContractStepCreator contractStepCreator, ContractRepository contractRepository, InstantProvider instantProvider) {
+    ContractFacade contractFacade(ContractStepCreator contractStepCreator,
+                                  ContractSecurityFacade contractSecurityFacade,
+                                  ContractRepository contractRepository,
+                                  InstantProvider instantProvider) {
         ContractCreator contractCreator = new ContractCreator(instantProvider);
         return ContractFacade.builder()
                 .contractRepository(contractRepository)
+                .contractSecurityFacade(contractSecurityFacade)
                 .contractCreator(contractCreator)
                 .contractStepCreator(contractStepCreator)
                 .instantProvider(instantProvider)
                 .build();
     }
 
-    public ContractFacade contractFacade(ContractStepCreator contractStepCreator, InstantProvider instantProvider){
-        return contractFacade(contractStepCreator, new InMemoryContractRepository(), instantProvider);
+    public ContractFacade contractFacade(ContractStepCreator contractStepCreator, ContractSecurityFacade contractSecurityFacade, InstantProvider instantProvider){
+        return contractFacade(contractStepCreator, contractSecurityFacade, new InMemoryContractRepository(), instantProvider);
     }
 }

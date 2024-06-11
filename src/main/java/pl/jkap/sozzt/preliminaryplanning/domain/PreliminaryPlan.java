@@ -36,7 +36,11 @@ class PreliminaryPlan {
                 .build();
     }
 
-    public void confirmMapUploaded() {
+    void confirmMapAdded() {
         this.isPreliminaryMapUploaded = true;
+    }
+
+    void confirmMapDeleted() {
+        this.isPreliminaryMapUploaded = false;
     }
 }
