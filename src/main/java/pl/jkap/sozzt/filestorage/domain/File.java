@@ -1,15 +1,19 @@
 package pl.jkap.sozzt.filestorage.domain;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import lombok.Builder;
 import lombok.Getter;
 import pl.jkap.sozzt.filestorage.dto.FileDto;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 @Getter
 @Builder
-class File {
-
+@Entity
+class File implements Serializable {
+    @Id
     private final UUID fileId;
     private final String fileName;
     private final UUID objectId;

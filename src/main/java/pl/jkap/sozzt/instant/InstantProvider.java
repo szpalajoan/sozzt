@@ -1,8 +1,11 @@
 package pl.jkap.sozzt.instant;
 
+import org.springframework.context.annotation.Configuration;
+
 import java.time.Clock;
 import java.time.Instant;
 
+@Configuration
 public class InstantProvider {
     private Clock clock = Clock.systemDefaultZone();
 

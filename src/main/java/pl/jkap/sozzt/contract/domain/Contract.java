@@ -1,12 +1,12 @@
 package pl.jkap.sozzt.contract.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import pl.jkap.sozzt.contract.dto.ContractDto;
 import pl.jkap.sozzt.globalvalueobjects.AuditInfo;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.UUID;
@@ -14,16 +14,22 @@ import java.util.UUID;
 @Entity
 @Builder
 @Getter
-class Contract {
+class Contract implements Serializable {
 
     @Id
     private UUID contractId;
+    @Embedded
     private ContractDetails contractDetails;
+    @Embedded
     private Location location;
+    @Embedded
     private AuditInfo auditInfo;
     private Instant deadLine;
+    @Embedded
     private ContractProgress contractProgress;
     private boolean isScanFromTauronUploaded;
+
+    @OneToMany
     private Collection<ContractStep> contractSteps;
 
 

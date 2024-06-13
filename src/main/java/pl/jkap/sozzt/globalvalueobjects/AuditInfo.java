@@ -1,11 +1,18 @@
 package pl.jkap.sozzt.globalvalueobjects;
 
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import lombok.Getter;
 
 import java.time.Instant;
+import java.util.UUID;
 
+@Embeddable
 @Getter
 public class AuditInfo {
+
     private final Instant createdAt;
     private final String createdBy;
     private final Instant updatedAt;
