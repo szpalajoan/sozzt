@@ -10,4 +10,6 @@ interface FileRepository extends CrudRepository<File, UUID> {
 
 
     boolean existsById(@NotNull UUID fileId);
+
+    boolean existsByObjectIdAndFileType(UUID objectId, FileType fileType);
 }

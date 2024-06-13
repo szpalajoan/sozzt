@@ -47,7 +47,8 @@ public class FileStorageFacade {
     }
 
     public FileDto addPreliminaryMap(AddFileDto addPreliminaryMapFileDto) {
-
+        contractSecurityFacade.checkCanAddPreliminaryMap(addPreliminaryMapFileDto.getObjectId());
+        checkPreliminaryMapNotExists(addPreliminaryMapFileDto);
         File addedFile = addFile(
                 addPreliminaryMapFileDto.getFileId().orElseGet(UUID::randomUUID),
                 addPreliminaryMapFileDto.getFile(),
@@ -55,6 +56,12 @@ public class FileStorageFacade {
                 addPreliminaryMapFileDto.getObjectId()
         );
         return addedFile.dto();
+    }
+
+    private void checkPreliminaryMapNotExists(AddFileDto addPreliminaryMapFileDto) {
+        if(fileRepository.existsByObjectIdAndFileType(addPreliminaryMapFileDto.getObjectId(), FileType.PRELIMINARY_MAP)) {
+            throw new FileAlreadyExistsException("Preliminary map already exists");
+        }
     }
 
     private File addFile(UUID fileId, MultipartFile file, FileType fileType, UUID objectId) {

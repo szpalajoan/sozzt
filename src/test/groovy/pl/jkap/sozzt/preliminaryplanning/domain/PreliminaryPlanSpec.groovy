@@ -2,6 +2,7 @@ package pl.jkap.sozzt.preliminaryplanning.domain
 
 import pl.jkap.sozzt.contractsecurity.exception.UnauthorizedPreliminaryMapAdditionException
 import pl.jkap.sozzt.filestorage.dto.FileDto
+import pl.jkap.sozzt.filestorage.exception.FileAlreadyExistsException
 import pl.jkap.sozzt.preliminaryplanning.exception.PreliminaryPlanNotFoundException
 import pl.jkap.sozzt.sample.SozztSpecification
 
@@ -62,14 +63,17 @@ class PreliminaryPlanSpec extends SozztSpecification {
             thrown(UnauthorizedPreliminaryMapAdditionException)
     }
 
-    def "Should not upload preliminary map to preliminary plan when it is already uploaded"() { //TODO zastanów sie czy jest ten case i nad implementacja
+    def "Should not upload preliminary map to preliminary plan when it is already uploaded"() {
         given: "There is a $KRYNICA_PRELIMINARY_PLAN preliminary plan"
             addCompletelyIntroduceContract(KRYNICA_CONTRACT, KRYNICA_CONTRACT_SCAN)
+        and: "$DAREK_PRELIMINARY_PLANER is logged in"
+            loginUser(DAREK_PRELIMINARY_PLANER)
+        and: "$KRYNICA_PRELIMINARY_MAP is uploaded to $KRYNICA_PRELIMINARY_PLAN preliminary plan"
             uploadPreliminaryMap(KRYNICA_PRELIMINARY_MAP, KRYNICA_PRELIMINARY_PLAN)
-        when: "$MONIKA_CONTRACT_INTRODUCER uploads $KRYNICA_PRELIMINARY_MAP to $KRYNICA_PRELIMINARY_PLAN preliminary plan"
+        when: "$DAREK_PRELIMINARY_PLANER try to uploads $KRYNICA_PRELIMINARY_MAP to $KRYNICA_PRELIMINARY_PLAN preliminary plan again"
             uploadPreliminaryMap(KRYNICA_PRELIMINARY_MAP, KRYNICA_PRELIMINARY_PLAN)
-        then: "$KRYNICA_PRELIMINARY_PLAN preliminary plan has a preliminary map uploaded"
-            preliminaryPlanFacade.getPreliminaryPlan(KRYNICA_PRELIMINARY_PLAN.preliminaryPlanId) == with(KRYNICA_PRELIMINARY_PLAN, [isPreliminaryMapUploaded : true])
+        then: "$KRYNICA_PRELIMINARY_MAP is not uploaded again"
+            thrown(FileAlreadyExistsException)
     }
 
     // TODO: czy tylko Darek moze dodawac mapy czy ktoś jeszcze

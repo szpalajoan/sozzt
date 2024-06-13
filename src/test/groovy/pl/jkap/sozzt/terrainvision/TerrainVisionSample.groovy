@@ -9,7 +9,7 @@ trait TerrainVisionSample implements ContractSample{
 
     TerrainVisionDto NEW_KRYNICA_TERRAIN_VISION = TerrainVisionDto.builder()
             .terrainVisionId(KRYNICA_CONTRACT.contractId)
-            .deadline(KRYNICA_CONTRACT.contractDetails.orderDate + Duration.ofDays(3))
+            .deadline(KRYNICA_CONTRACT.contractDetails.orderDate + Duration.ofDays(21))
             .build()
 
 }

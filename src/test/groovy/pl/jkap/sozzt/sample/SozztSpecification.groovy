@@ -67,7 +67,6 @@ class SozztSpecification extends Specification implements FileSample, Preliminar
     }
 
     FileDto uploadPreliminaryMap(PreparedFile preparedFile, PreliminaryPlanDto preliminaryPlanDto) {
-        contractSecurityFacade.checkCanAddPreliminaryMap(preliminaryPlanDto.getPreliminaryPlanId())
         FileDto addedFile = fileStorageFacade.addPreliminaryMap(toAddFileDto(preparedFile.metadata, preparedFile.fileAsMultipartFile, preliminaryPlanDto.preliminaryPlanId))
         addedFileIds.add(addedFile.fileId)
         return addedFile

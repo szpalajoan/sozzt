@@ -30,7 +30,7 @@ public class ContractStepCreator {
                 .terrainVisionId(contractId)
                 .deadLine(contractOrderDate.plus(Duration.ofDays(21)))
                 .build());
-        return new ContractStep(contractId, ContractStepType.TERRAIN_VISION, ContractStepStatus.IN_PROGRESS);
+        return new ContractStep(contractId, ContractStepType.TERRAIN_VISION, ContractStepStatus.ON_HOLD);
     }
 
 }

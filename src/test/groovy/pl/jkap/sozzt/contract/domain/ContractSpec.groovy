@@ -2,6 +2,7 @@ package pl.jkap.sozzt.contract.domain
 
 import pl.jkap.sozzt.contract.dto.ContractDto
 import pl.jkap.sozzt.contractsecurity.exception.UnauthorizedContractAdditionException
+import pl.jkap.sozzt.contractsecurity.exception.UnauthorizedContractScanAdditionException
 import pl.jkap.sozzt.sample.SozztSpecification
 
 class ContractSpec extends SozztSpecification {
@@ -45,7 +46,7 @@ class ContractSpec extends SozztSpecification {
         when: "$DAREK_PRELIMINARY_PLANER adds contract scan"
             addContractScan(KRYNICA_CONTRACT_SCAN, KRYNICA_CONTRACT.contractId)
         then: "Contract scan is not added"
-            thrown(UnauthorizedContractAdditionException)
+            thrown(UnauthorizedContractScanAdditionException)
     }
     //todo test finalize introduction
 }
