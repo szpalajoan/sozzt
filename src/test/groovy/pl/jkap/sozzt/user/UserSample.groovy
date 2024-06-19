@@ -6,7 +6,7 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.User
 
 trait UserSample {
-    UsernamePasswordAuthenticationToken MONIKA_CONTRACT_INTRODUCER = createUser("Monika", "CONTRACT_INTRODUCER")
+    UsernamePasswordAuthenticationToken MONIKA_CONTRACT_INTRODUCER = createUser("Monika", "ROLE_CONTRACT_INTRODUCER")
     UsernamePasswordAuthenticationToken DAREK_PRELIMINARY_PLANER = createUser("Darek", "PRELIMINARY_PLANER")
 
     UsernamePasswordAuthenticationToken createUser(String name, String role) {

@@ -20,13 +20,15 @@ public class ContractSecurityFacade {
     }
 
     public void checkCanAddContract() {
-        if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream().noneMatch(role -> role.getAuthority().equals("CONTRACT_INTRODUCER"))) {
+        if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                .noneMatch(role -> role.getAuthority().equals("ROLE_CONTRACT_INTRODUCER"))) {
             throw new UnauthorizedContractAdditionException("Contract addition not allowed");
         }
     }
 
     public void checkCanAddContractScan(UUID objectId) {
-        if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream().noneMatch(role -> role.getAuthority().equals("CONTRACT_INTRODUCER"))) {
+        if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                .noneMatch(role -> role.getAuthority().equals("ROLE_CONTRACT_INTRODUCER"))) {
             throw new UnauthorizedContractScanAdditionException("Contract scan addition not allowed");
         }
         if(!contractSecurityRepository.existsById(objectId)) {
@@ -35,7 +37,8 @@ public class ContractSecurityFacade {
     }
 
     public void checkCanAddPreliminaryMap(UUID uuid) {
-        if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream().noneMatch(role -> role.getAuthority().equals("PRELIMINARY_PLANER"))) {
+        if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                .noneMatch(role -> role.getAuthority().equals("PRELIMINARY_PLANER"))) {
             throw new UnauthorizedPreliminaryMapAdditionException("preliminary map addition not allowed");
         }
         if(!contractSecurityRepository.existsById(uuid)) {

@@ -11,18 +11,18 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/contracts/")
 public class ContactController {
 
     private final ContractFacade contractFacade;
 
-    @GetMapping("/contracts/{idContract}")
+    @GetMapping("{idContract}")
     @ResponseStatus(HttpStatus.OK)
     public ContractDto getContract(@PathVariable UUID idContract) {
         return contractFacade.getContract(idContract);
     }
 
-    @PostMapping("/contracts")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ContractDto addContract(@RequestBody CreateContractDto addContractDto) {
         return contractFacade.addContract(addContractDto);

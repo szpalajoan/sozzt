@@ -8,7 +8,9 @@ public class ContractSecurityConfiguration {
 
     @Bean
     ContractSecurityFacade contractSecurityFacade(ContractSecurityRepository contractSecurityRepository) {
-        return new ContractSecurityFacade(contractSecurityRepository);
+        //return new ContractSecurityFacade(contractSecurityRepository);
+        return new ContractSecurityFacade(new InMemoryContractSecurity());
+
     }
 
     public ContractSecurityFacade contractSecurityFacade() {
