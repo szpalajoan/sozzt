@@ -11,7 +11,8 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/contracts/")
+@RequestMapping("/api/contract/")
+@SuppressWarnings("unused")
 public class ContactController {
 
     private final ContractFacade contractFacade;
