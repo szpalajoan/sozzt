@@ -7,6 +7,7 @@ import pl.jkap.sozzt.contract.domain.ContractFacade;
 import pl.jkap.sozzt.contract.dto.ContractDto;
 import pl.jkap.sozzt.contract.dto.CreateContractDto;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -27,6 +28,12 @@ public class ContactController {
     @ResponseStatus(HttpStatus.CREATED)
     public ContractDto addContract(@RequestBody CreateContractDto addContractDto) {
         return contractFacade.addContract(addContractDto);
+    }
+
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public List<ContractDto> getContracts() {
+        return contractFacade.getContracts();
     }
 
 }

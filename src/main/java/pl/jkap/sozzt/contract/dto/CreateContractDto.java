@@ -17,7 +17,7 @@ public class CreateContractDto {
     private ContractDetailsDto contractDetailsDto;
 
     public Optional<UUID> getContractId() {
-        return Optional.of(contractId);
+        return Optional.ofNullable(contractId);
     }
 }
 

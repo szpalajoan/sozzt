@@ -22,15 +22,17 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(AbstractHttpConfigurer::disable)
+                .cors(withDefaults())
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("**").hasRole("USER")
+                        .requestMatchers("/api/**").hasRole("USER")
                         .anyRequest().authenticated()
                 )
+                .httpBasic(withDefaults())
                 .formLogin(withDefaults())
                 .logout(withDefaults());
         return http.build();
     }
+
 
     @Bean
     public UserDetailsService userDetailsService() {

@@ -1,7 +1,6 @@
 package pl.jkap.sozzt.contract.domain;
 
 import jakarta.persistence.Embeddable;
-import jakarta.persistence.Entity;
 import pl.jkap.sozzt.contract.dto.ContractDetailsDto;
 
 import java.time.Instant;
