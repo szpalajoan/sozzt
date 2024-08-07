@@ -12,7 +12,7 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/contract/")
+@RequestMapping("/api/contracts/")
 @SuppressWarnings("unused")
 public class ContactController {
 
