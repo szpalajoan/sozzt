@@ -1,9 +1,11 @@
 package pl.jkap.sozzt.contract.domain;
 
+import jakarta.persistence.Embeddable;
 import lombok.Getter;
 import pl.jkap.sozzt.contract.dto.LocationDto;
 
 @Getter
+@Embeddable
 class Location {
     private final String region;
     private final String district;

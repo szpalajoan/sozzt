@@ -24,7 +24,7 @@ public class ContractConfiguration {
                                   InstantProvider instantProvider) {
         ContractCreator contractCreator = new ContractCreator(instantProvider);
         return ContractFacade.builder()
-                .contractRepository(contractRepository)
+                .contractRepository(new InMemoryContractRepository())
                 .contractSecurityFacade(contractSecurityFacade)
                 .contractCreator(contractCreator)
                 .contractStepCreator(contractStepCreator)

@@ -12,6 +12,8 @@ import pl.jkap.sozzt.instant.InstantProvider;
 import pl.jkap.sozzt.contractsecurity.domain.ContractSecurityFacade;
 import pl.jkap.sozzt.contractsecurity.dto.AddSecurityContractDto;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import static java.util.Objects.requireNonNull;
@@ -39,6 +41,13 @@ public class ContractFacade {
 
     public ContractDto getContract(UUID id) {
         return findContract(id).dto();
+    }
+
+    public List<ContractDto> getContracts() {
+        Iterable<Contract> contracts = contractRepository.findAll();
+        List<ContractDto> contractDtos = new ArrayList<>();
+        contracts.forEach(contract -> contractDtos.add(contract.dto()));
+        return contractDtos;
     }
 
 

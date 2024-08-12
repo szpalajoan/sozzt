@@ -1,11 +1,14 @@
 package pl.jkap.sozzt.globalvalueobjects;
 
+import jakarta.persistence.Embeddable;
 import lombok.Getter;
 
 import java.time.Instant;
 
+@Embeddable
 @Getter
 public class AuditInfo {
+
     private final Instant createdAt;
     private final String createdBy;
     private final Instant updatedAt;
