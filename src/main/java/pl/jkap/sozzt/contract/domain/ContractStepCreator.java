@@ -13,24 +13,26 @@ import java.util.UUID;
 @Builder
 public class ContractStepCreator {
 
-    private TerrainVisionFacade terrainVisionFacade;
-    private PreliminaryPlanFacade preliminaryPlanFacade;
+    private final TerrainVisionFacade terrainVisionFacade;
+    private final PreliminaryPlanFacade preliminaryPlanFacade;
 
 
     ContractStep createPreliminaryPlanStep(UUID contractId, Instant contractOrderDate) {
+        Instant deadline = contractOrderDate.plus(Duration.ofDays(3));
         preliminaryPlanFacade.addPreliminaryPlan(AddPreliminaryPlanDto.builder()
                 .preliminaryPlanId(contractId)
-                .deadline(contractOrderDate.plus(Duration.ofDays(3)))
+                .deadline(deadline)
                 .build());
-        return new ContractStep(contractId, ContractStepType.PRELIMINARY_PLAN, ContractStepStatus.IN_PROGRESS);
+        return new ContractStep(contractId, ContractStepType.PRELIMINARY_PLAN, ContractStepStatus.IN_PROGRESS, deadline);
     }
 
     ContractStep createTerrainVisionStep(UUID contractId, Instant contractOrderDate) {
+        Instant deadline = contractOrderDate.plus(Duration.ofDays(21));
         terrainVisionFacade.addTerrainVision(AddTerrainVisionDto.builder()
                 .terrainVisionId(contractId)
-                .deadLine(contractOrderDate.plus(Duration.ofDays(21)))
+                .deadLine(deadline)
                 .build());
-        return new ContractStep(contractId, ContractStepType.TERRAIN_VISION, ContractStepStatus.ON_HOLD);
+        return new ContractStep(contractId, ContractStepType.TERRAIN_VISION, ContractStepStatus.ON_HOLD, deadline);
     }
 
 }

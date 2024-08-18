@@ -5,6 +5,7 @@ import pl.jkap.sozzt.contract.domain.ContractDetailsSample
 import pl.jkap.sozzt.contract.domain.ContractFacade
 import pl.jkap.sozzt.contract.domain.ContractSample
 import pl.jkap.sozzt.contract.domain.ContractStepCreator
+import pl.jkap.sozzt.contract.domain.ContractStepSample
 import pl.jkap.sozzt.contract.domain.LocationSample
 import pl.jkap.sozzt.contract.dto.ContractDto
 import pl.jkap.sozzt.contractsecurity.domain.ContractSecurityConfiguration
@@ -28,7 +29,7 @@ import pl.jkap.sozzt.user.UserSample
 import spock.lang.Specification
 
 class SozztSpecification extends Specification implements FileSample, PreliminaryPlanSample, TerrainVisionSample,
-        ContractSample, LocationSample, ContractDetailsSample,
+        ContractSample, LocationSample, ContractDetailsSample, ContractStepSample,
         UserSample, InstantSamples {
 
     Collection<UUID> addedFileIds = []
@@ -37,11 +38,7 @@ class SozztSpecification extends Specification implements FileSample, Preliminar
     ContractSecurityFacade contractSecurityFacade = new ContractSecurityConfiguration().contractSecurityFacade()
     TerrainVisionFacade terrainVisionFacade = new TerrainVisionConfiguration().terrainVisionFacade(instantProvider)
     PreliminaryPlanFacade preliminaryPlanFacade = new PreliminaryPlanConfiguration().preliminaryPlanFacade()
-    ContractStepCreator contractStepCreator = ContractStepCreator.builder()
-            .preliminaryPlanFacade(preliminaryPlanFacade)
-            .terrainVisionFacade(terrainVisionFacade)
-            .build()
-    ContractFacade contractFacade = new ContractConfiguration().contractFacade(contractStepCreator,contractSecurityFacade, instantProvider)
+    ContractFacade contractFacade = new ContractConfiguration().contractFacade(contractSecurityFacade, preliminaryPlanFacade, terrainVisionFacade, instantProvider)
     FileStorageFacade fileStorageFacade = new FileStorageConfigurator().fileStorageFacade(contractSecurityFacade, new FileEventPublisherStub(contractFacade, preliminaryPlanFacade))
 
     def setup() {
@@ -57,7 +54,7 @@ class SozztSpecification extends Specification implements FileSample, Preliminar
     ContractDto addCompletelyIntroduceContract(ContractDto createContractDto, PreparedFile preparedFile) {
         contractFacade.addContract(toCreateContractDto(createContractDto))
         addContractScan(preparedFile, createContractDto.contractId)
-        return contractFacade.finalizeIntroduction(createContractDto.contractId)
+        return contractFacade.finalizeContractIntroduction(createContractDto.contractId)
     }
 
     FileDto addContractScan(PreparedFile preparedFile, UUID contractId) {

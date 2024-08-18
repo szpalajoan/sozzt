@@ -3,10 +3,7 @@ package pl.jkap.sozzt.contractsecurity.domain;
 import lombok.Builder;
 import org.springframework.security.core.context.SecurityContextHolder;
 import pl.jkap.sozzt.contractsecurity.dto.AddSecurityContractDto;
-import pl.jkap.sozzt.contractsecurity.exception.ContractSecurityNotFoundException;
-import pl.jkap.sozzt.contractsecurity.exception.UnauthorizedContractAdditionException;
-import pl.jkap.sozzt.contractsecurity.exception.UnauthorizedContractScanAdditionException;
-import pl.jkap.sozzt.contractsecurity.exception.UnauthorizedPreliminaryMapAdditionException;
+import pl.jkap.sozzt.contractsecurity.exception.*;
 
 import java.util.UUID;
 
@@ -26,13 +23,13 @@ public class ContractSecurityFacade {
         }
     }
 
-    public void checkCanAddContractScan(UUID objectId) {
+    public void checkCanAddContractScan(UUID contractId) {
         if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
                 .noneMatch(role -> role.getAuthority().equals("ROLE_CONTRACT_INTRODUCER"))) {
             throw new UnauthorizedContractScanAdditionException("Contract scan addition not allowed");
         }
-        if(!contractSecurityRepository.existsById(objectId)) {
-            throw new ContractSecurityNotFoundException("Contract security not found: " + objectId);
+        if(!contractSecurityRepository.existsById(contractId)) {
+            throw new ContractSecurityNotFoundException("Contract security not found: " + contractId);
         }
     }
 
@@ -43,6 +40,20 @@ public class ContractSecurityFacade {
         }
         if(!contractSecurityRepository.existsById(uuid)) {
             throw new ContractSecurityNotFoundException("Contract security not found: " + uuid);
+        }
+    }
+
+    public void checkCanFinalizeContractIntroduction() {
+        if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                .noneMatch(role -> role.getAuthority().equals("ROLE_CONTRACT_INTRODUCER"))) {
+            throw new UnauthorizedContractFinalizeException("Contract introduction is not allowed");
+        }
+    }
+
+    public void checkCanFinalizePreliminaryPlan(UUID contractId) {
+        if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                .noneMatch(role -> role.getAuthority().equals("PRELIMINARY_PLANER"))) {
+            throw new UnauthorizedPreliminaryMapAdditionException("finalize preliminary plan is not allowed");
         }
     }
 }

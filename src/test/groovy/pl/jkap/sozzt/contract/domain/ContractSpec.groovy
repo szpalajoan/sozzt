@@ -1,7 +1,9 @@
 package pl.jkap.sozzt.contract.domain
 
 import pl.jkap.sozzt.contract.dto.ContractDto
+import pl.jkap.sozzt.contract.exception.ContractFinalizeException
 import pl.jkap.sozzt.contractsecurity.exception.UnauthorizedContractAdditionException
+import pl.jkap.sozzt.contractsecurity.exception.UnauthorizedContractFinalizeException
 import pl.jkap.sozzt.contractsecurity.exception.UnauthorizedContractScanAdditionException
 import pl.jkap.sozzt.sample.SozztSpecification
 
@@ -48,5 +50,37 @@ class ContractSpec extends SozztSpecification {
         then: "Contract scan is not added"
             thrown(UnauthorizedContractScanAdditionException)
     }
-    //todo test finalize introduction
+
+    def "should finalize contract introduction"() {
+        given: "There is a $KRYNICA_CONTRACT added by $MONIKA_CONTRACT_INTRODUCER"
+            contractFacade.addContract(toCreateContractDto(KRYNICA_CONTRACT))
+        and: "contract scan is added"
+            addContractScan(KRYNICA_CONTRACT_SCAN, KRYNICA_CONTRACT.contractId)
+        when: "$MONIKA_CONTRACT_INTRODUCER finalize introduction"
+            contractFacade.finalizeContractIntroduction(KRYNICA_CONTRACT.contractId)
+        then: "Contract is introduced"
+            contractFacade.getContract(KRYNICA_CONTRACT.contractId) == INTRODUCED_KRYNICA_CONTRACT
+    }
+
+    def "should not finalize contract introduction if does not have permission"() {
+        given: "There is a $KRYNICA_CONTRACT added by $MONIKA_CONTRACT_INTRODUCER"
+            contractFacade.addContract(toCreateContractDto(KRYNICA_CONTRACT))
+        and: "contract scan is added"
+            addContractScan(KRYNICA_CONTRACT_SCAN, KRYNICA_CONTRACT.contractId)
+        and: "$DAREK_PRELIMINARY_PLANER is logged in"
+            loginUser(DAREK_PRELIMINARY_PLANER)
+        when: "$DAREK_PRELIMINARY_PLANER finalize introduction"
+            contractFacade.finalizeContractIntroduction(KRYNICA_CONTRACT.contractId)
+        then: "Contract is not introduced"
+            thrown(UnauthorizedContractFinalizeException)
+    }
+
+    def "should not finalize contract introduction if scan is not uploaded"() {
+        given: "There is a $KRYNICA_CONTRACT added by $MONIKA_CONTRACT_INTRODUCER"
+            contractFacade.addContract(toCreateContractDto(KRYNICA_CONTRACT))
+        when: "$MONIKA_CONTRACT_INTRODUCER finalize introduction"
+            contractFacade.finalizeContractIntroduction(KRYNICA_CONTRACT.contractId)
+        then: "Contract is not introduced"
+            thrown(ContractFinalizeException)
+    }
 }

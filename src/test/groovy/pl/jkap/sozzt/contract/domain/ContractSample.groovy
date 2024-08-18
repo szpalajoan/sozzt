@@ -1,33 +1,33 @@
 package pl.jkap.sozzt.contract.domain
 
-import pl.jkap.sozzt.sample.SampleModifier
-import pl.jkap.sozzt.contract.dto.ContractDetailsDto
 import pl.jkap.sozzt.contract.dto.ContractDto
 import pl.jkap.sozzt.contract.dto.CreateContractDto
-import pl.jkap.sozzt.contract.dto.LocationDto
 import pl.jkap.sozzt.instant.InstantSamples
+import pl.jkap.sozzt.sample.SampleModifier
 import pl.jkap.sozzt.user.UserSample
 
-trait ContractSample implements UserSample, LocationSample, ContractDetailsSample, InstantSamples {
+import static pl.jkap.sozzt.contract.dto.ContractStepDto.ContractStepStatusDto.DONE
+import static pl.jkap.sozzt.contract.dto.ContractStepDto.ContractStepStatusDto.IN_PROGRESS
+
+trait ContractSample implements UserSample, LocationSample, ContractDetailsSample, ContractStepSample, InstantSamples {
 
     UUID FAKE_CONTRACT_ID = UUID.fromString("9ceccf5b-aaee-4d2c-86cb-d778624598fc")
 
-    ContractDto KRYNICA_CONTRACT = createContractDto(
-            UUID.fromString("21c4aaa0-4a11-4f83-aa2e-504e23d14495"),
-            KRYNICA_CONTRACT_DETAILS,
-            KRYNICA_LOCATION,
-    )
+    ContractDto KRYNICA_CONTRACT = with(new ContractDto(), [contractId              : UUID.fromString("21c4aaa0-4a11-4f83-aa2e-504e23d14495"),
+                                                            contractDetails         : KRYNICA_CONTRACT_DETAILS,
+                                                            location                : KRYNICA_LOCATION,
+                                                            createdBy               : MONIKA_CONTRACT_INTRODUCER.name,
+                                                            createdAt               : NOW,
+                                                            isScanFromTauronUploaded: false,
+                                                            contractSteps           : []])
 
-    private ContractDto createContractDto(UUID id, ContractDetailsDto contractDetailsDto, LocationDto location) {
-        return ContractDto.builder()
-        .contractId(id)
-        .contractDetails(contractDetailsDto)
-        .location(location)
-        .createdBy(MONIKA_CONTRACT_INTRODUCER.name)
-        .createdAt(NOW)
-        .isScanFromTauronUploaded(false)
-        .build()
-    }
+    ContractDto INTRODUCED_KRYNICA_CONTRACT = with(KRYNICA_CONTRACT, [isScanFromTauronUploaded: true,
+                                                                      contractSteps           : [KRYNICA_CONTRACT_PRELIMINARY_PLAN_STEP, KRYNICA_CONTRACT_TERRAIN_VISION_STEP]])
+
+    ContractDto COMPLETED_PRELIMINARY_PLAN_KRYNICA_CONTRACT = with(INTRODUCED_KRYNICA_CONTRACT, [
+            contractSteps: [with(KRYNICA_CONTRACT_PRELIMINARY_PLAN_STEP, [contractStepStatus: DONE]),
+                            with(KRYNICA_CONTRACT_TERRAIN_VISION_STEP, [contractStepStatus: IN_PROGRESS])]])
+
 
     ContractDto with(ContractDto contractDto, Map<String, Object> properties) {
         return SampleModifier.with(ContractDto.class, contractDto, properties)

@@ -10,29 +10,36 @@ import pl.jkap.sozzt.terrainvision.domain.TerrainVisionFacade;
 @Configuration
 public class ContractConfiguration {
 
+
+
     @Bean
-    public ContractStepCreator contractStepCreator(PreliminaryPlanFacade preliminaryPlanFacade, TerrainVisionFacade terrainVisionFacade) {
-        return ContractStepCreator.builder()
-                .preliminaryPlanFacade(preliminaryPlanFacade)
-                .terrainVisionFacade(terrainVisionFacade)
-                .build();
-    }
-    @Bean
-    ContractFacade contractFacade(ContractStepCreator contractStepCreator,
-                                  ContractSecurityFacade contractSecurityFacade,
+    ContractFacade contractFacade(ContractSecurityFacade contractSecurityFacade,
+                                  PreliminaryPlanFacade preliminaryPlanFacade,
+                                  TerrainVisionFacade terrainVisionFacade,
                                   ContractRepository contractRepository,
                                   InstantProvider instantProvider) {
         ContractCreator contractCreator = new ContractCreator(instantProvider);
         return ContractFacade.builder()
                 .contractRepository(new InMemoryContractRepository())
                 .contractSecurityFacade(contractSecurityFacade)
+                .preliminaryPlanFacade(preliminaryPlanFacade)
                 .contractCreator(contractCreator)
-                .contractStepCreator(contractStepCreator)
+                .contractStepCreator(contractStepCreator(preliminaryPlanFacade, terrainVisionFacade))
                 .instantProvider(instantProvider)
                 .build();
     }
 
-    public ContractFacade contractFacade(ContractStepCreator contractStepCreator, ContractSecurityFacade contractSecurityFacade, InstantProvider instantProvider){
-        return contractFacade(contractStepCreator, contractSecurityFacade, new InMemoryContractRepository(), instantProvider);
+    public ContractFacade contractFacade(ContractSecurityFacade contractSecurityFacade,
+                                         PreliminaryPlanFacade preliminaryPlanFacade,
+                                         TerrainVisionFacade terrainVisionFacade,
+                                         InstantProvider instantProvider){
+        return contractFacade(contractSecurityFacade, preliminaryPlanFacade, terrainVisionFacade, new InMemoryContractRepository(), instantProvider);
+    }
+
+    private ContractStepCreator contractStepCreator(PreliminaryPlanFacade preliminaryPlanFacade, TerrainVisionFacade terrainVisionFacade) {
+        return ContractStepCreator.builder()
+                .preliminaryPlanFacade(preliminaryPlanFacade)
+                .terrainVisionFacade(terrainVisionFacade)
+                .build();
     }
 }

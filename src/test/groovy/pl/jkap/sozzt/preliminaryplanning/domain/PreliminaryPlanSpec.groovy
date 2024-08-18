@@ -15,10 +15,8 @@ class PreliminaryPlanSpec extends SozztSpecification {
     }
 
     def "should add preliminary plan"() {
-        given: "There is a $KRYNICA_CONTRACT added by $MONIKA_CONTRACT_INTRODUCER"
-            contractFacade.addContract(toCreateContractDto(KRYNICA_CONTRACT))
         when: "$KRYNICA_CONTRACT is completely introduced by $MONIKA_CONTRACT_INTRODUCER"
-            contractFacade.finalizeIntroduction(KRYNICA_CONTRACT.contractId)
+            addCompletelyIntroduceContract(KRYNICA_CONTRACT, KRYNICA_CONTRACT_SCAN)
         then: "Preliminary plan is added"
             preliminaryPlanFacade.getPreliminaryPlan(KRYNICA_CONTRACT.contractId) == KRYNICA_PRELIMINARY_PLAN
     }
@@ -76,6 +74,34 @@ class PreliminaryPlanSpec extends SozztSpecification {
             thrown(FileAlreadyExistsException)
     }
 
-    // TODO: czy tylko Darek moze dodawac mapy czy ktoś jeszcze
-    // TODO: przypadek gdy nie ma kontraktu
+    def "should add google map url to preliminary plan"() {
+        given: "There is a $KRYNICA_PRELIMINARY_PLAN preliminary plan"
+            addCompletelyIntroduceContract(KRYNICA_CONTRACT, KRYNICA_CONTRACT_SCAN)
+        and: "$DAREK_PRELIMINARY_PLANER is logged in"
+            loginUser(DAREK_PRELIMINARY_PLANER)
+        when: "$DAREK_PRELIMINARY_PLANER adds $KRYNICA_GOOGLE_MAP_URL to $KRYNICA_PRELIMINARY_PLAN preliminary plan"
+            preliminaryPlanFacade.addGoogleMapUrl(KRYNICA_PRELIMINARY_PLAN.preliminaryPlanId, KRYNICA_GOOGLE_MAP_URL)
+        then: "$KRYNICA_PRELIMINARY_PLAN preliminary plan has google map url added"
+            preliminaryPlanFacade.getPreliminaryPlan(KRYNICA_PRELIMINARY_PLAN.preliminaryPlanId) == with(KRYNICA_PRELIMINARY_PLAN, [googleMapUrl : KRYNICA_GOOGLE_MAP_URL])
+    }
+
+    def "Should not add google map url to preliminary plan when preliminary plan does not exist"() {
+        when: "$DAREK_PRELIMINARY_PLANER  try to add $KRYNICA_GOOGLE_MAP_URL to not existing $KRYNICA_PRELIMINARY_PLAN preliminary plan"
+            preliminaryPlanFacade.addGoogleMapUrl(KRYNICA_PRELIMINARY_PLAN.preliminaryPlanId, KRYNICA_GOOGLE_MAP_URL)
+        then: "$KRYNICA_GOOGLE_MAP_URL is not added"
+            thrown(PreliminaryPlanNotFoundException)
+    }
+
+    def "Should update google map url to preliminary plan when google map url is already added"() {
+        given: "There is a $KRYNICA_PRELIMINARY_PLAN preliminary plan"
+            addCompletelyIntroduceContract(KRYNICA_CONTRACT, KRYNICA_CONTRACT_SCAN)
+        and: "$DAREK_PRELIMINARY_PLANER is logged in"
+            loginUser(DAREK_PRELIMINARY_PLANER)
+        and: "$KRYNICA_GOOGLE_MAP_URL is added to $KRYNICA_PRELIMINARY_PLAN preliminary plan"
+            preliminaryPlanFacade.addGoogleMapUrl(KRYNICA_PRELIMINARY_PLAN.preliminaryPlanId, KRYNICA_GOOGLE_MAP_URL)
+        when: "$DAREK_PRELIMINARY_PLANER add new $UPDATED_KRYNICA_GOOGLE_MAP_URL to $KRYNICA_PRELIMINARY_PLAN preliminary plan again"
+            preliminaryPlanFacade.addGoogleMapUrl(KRYNICA_PRELIMINARY_PLAN.preliminaryPlanId, UPDATED_KRYNICA_GOOGLE_MAP_URL)
+        then: "google map url for $KRYNICA_PRELIMINARY_PLAN is updated to $UPDATED_KRYNICA_GOOGLE_MAP_URL"
+            preliminaryPlanFacade.getPreliminaryPlan(KRYNICA_PRELIMINARY_PLAN.preliminaryPlanId) == with(KRYNICA_PRELIMINARY_PLAN, [googleMapUrl : UPDATED_KRYNICA_GOOGLE_MAP_URL])
+    }
 }

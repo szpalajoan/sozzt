@@ -23,6 +23,19 @@ public class PreliminaryPlanFacade {
         preliminaryPlanRepository.save(preliminaryPlan);
     }
 
+    public void addGoogleMapUrl(UUID preliminaryPlanId, String googleMapUrl) {
+        PreliminaryPlan preliminaryPlan = preliminaryPlanRepository.findById(preliminaryPlanId)
+                .orElseThrow(() -> new PreliminaryPlanNotFoundException("Preliminary planning not found: " + preliminaryPlanId));
+        preliminaryPlan.addGoogleMapUrl(googleMapUrl);
+        preliminaryPlanRepository.save(preliminaryPlan);
+    }
+
+    public boolean isPreliminaryPlanCompleted(UUID preliminaryPlanId) {
+        PreliminaryPlan preliminaryPlan = preliminaryPlanRepository.findById(preliminaryPlanId)
+                .orElseThrow(() -> new PreliminaryPlanNotFoundException("Preliminary planning not found: " + preliminaryPlanId));
+        return preliminaryPlan.isCompleted();
+    }
+
     PreliminaryPlanDto getPreliminaryPlan(UUID preliminaryPlanId) {
         return preliminaryPlanRepository.findById(preliminaryPlanId)
                 .orElseThrow(() -> new PreliminaryPlanNotFoundException("Preliminary planning not found: " + preliminaryPlanId))
@@ -44,13 +57,14 @@ public class PreliminaryPlanFacade {
     }
 
     @EventListener
+    @SuppressWarnings("unused")
     public void onPreliminaryMapUploadedEvent(PreliminaryMapUploadedEvent event) {
         preliminaryMapAdded(event.getPreliminaryPlanId());
     }
 
     @EventListener
+    @SuppressWarnings("unused")
     public void onPreliminaryMapDeletedEvent(PreliminaryMapDeletedEvent event) {
         preliminaryPlanMapDeleted(event.getPreliminaryPlanId());
     }
-
 }

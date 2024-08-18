@@ -5,6 +5,7 @@ import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 import pl.jkap.sozzt.preliminaryplanning.dto.PreliminaryPlanDto;
 
 import java.time.Instant;
@@ -14,6 +15,7 @@ import java.util.UUID;
 @Builder
 @Getter
 @AllArgsConstructor
+@ToString
 class PreliminaryPlan {
 
     @Id
@@ -42,5 +44,13 @@ class PreliminaryPlan {
 
     void confirmMapDeleted() {
         this.isPreliminaryMapUploaded = false;
+    }
+
+    void addGoogleMapUrl(String googleMapUrl) {
+        this.googleMapUrl = googleMapUrl;
+    }
+
+    public boolean isCompleted() {
+        return isPreliminaryMapUploaded && googleMapUrl != null;
     }
 }

@@ -5,12 +5,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import pl.jkap.sozzt.contract.dto.ContractDto;
 import pl.jkap.sozzt.contract.dto.CreateContractDto;
+import pl.jkap.sozzt.contract.exception.ContractFinalizeException;
 import pl.jkap.sozzt.contract.exception.ContractNotFoundException;
+import pl.jkap.sozzt.contract.exception.ContractStepFinalizeException;
 import pl.jkap.sozzt.filestorage.event.ContractScanAddedEvent;
 import pl.jkap.sozzt.filestorage.event.ContractScanDeletedEvent;
 import pl.jkap.sozzt.instant.InstantProvider;
 import pl.jkap.sozzt.contractsecurity.domain.ContractSecurityFacade;
 import pl.jkap.sozzt.contractsecurity.dto.AddSecurityContractDto;
+import pl.jkap.sozzt.preliminaryplanning.domain.PreliminaryPlanFacade;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +29,7 @@ public class ContractFacade {
     private final ContractRepository contractRepository;
     private final ContractCreator contractCreator;
     private final ContractStepCreator contractStepCreator;
+    private final PreliminaryPlanFacade preliminaryPlanFacade;
     private final InstantProvider instantProvider;
 
     public ContractDto addContract(CreateContractDto createContractDto) {
@@ -51,10 +55,26 @@ public class ContractFacade {
     }
 
 
-    public ContractDto finalizeIntroduction(UUID contractId) {
+    public void finalizeContractIntroduction(UUID contractId) {
+        contractSecurityFacade.checkCanFinalizeContractIntroduction();
         Contract contract = findContract(contractId);
+        if(!contract.isContractCompleted()) {
+            throw new ContractFinalizeException("Contract is not completed: " + contractId);
+        }
         contract.createSteps(contractStepCreator);
-        return null;
+        contractRepository.save(contract);
+        log.info("Contract finalized: {}", contract);
+    }
+
+    public void finalizePreliminaryPlan(UUID contractId) {
+        contractSecurityFacade.checkCanFinalizePreliminaryPlan(contractId);
+        if(!preliminaryPlanFacade.isPreliminaryPlanCompleted(contractId)) {
+            throw new ContractStepFinalizeException("Preliminary plan is not completed: " + contractId);
+        }
+        Contract contract = findContract(contractId);
+        contract.finalizePreliminaryPlan();
+        contractRepository.save(contract);
+        log.info("Preliminary plan finalized: {}", contract);
     }
 
     public void scanUploaded(UUID contractId) {
@@ -74,11 +94,13 @@ public class ContractFacade {
     }
 
     @EventListener
+    @SuppressWarnings("unused")
     public void onContractScanAddedEvent(ContractScanAddedEvent event) {
         scanUploaded(event.getContractId());
     }
 
     @EventListener
+    @SuppressWarnings("unused")
     public void onContractScanDeletedEvent(ContractScanDeletedEvent event) {
         scanDeleted(event.getContractId());
     }
