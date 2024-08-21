@@ -29,4 +29,7 @@ public class TerrainVisionFacade {
         terrainVisionRepository.save(terrainVision);
     }
 
+    public void beginTerrainVision(UUID contractId) {
+
+    }
 }

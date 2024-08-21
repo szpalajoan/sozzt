@@ -50,7 +50,7 @@ public class ContractSecurityFacade {
         }
     }
 
-    public void checkCanFinalizePreliminaryPlan(UUID contractId) {
+    public void checkCanFinalizePreliminaryPlan() {
         if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
                 .noneMatch(role -> role.getAuthority().equals("PRELIMINARY_PLANER"))) {
             throw new UnauthorizedPreliminaryMapAdditionException("finalize preliminary plan is not allowed");

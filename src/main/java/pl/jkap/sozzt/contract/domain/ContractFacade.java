@@ -14,6 +14,7 @@ import pl.jkap.sozzt.instant.InstantProvider;
 import pl.jkap.sozzt.contractsecurity.domain.ContractSecurityFacade;
 import pl.jkap.sozzt.contractsecurity.dto.AddSecurityContractDto;
 import pl.jkap.sozzt.preliminaryplanning.domain.PreliminaryPlanFacade;
+import pl.jkap.sozzt.terrainvision.domain.TerrainVisionFacade;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +31,7 @@ public class ContractFacade {
     private final ContractCreator contractCreator;
     private final ContractStepCreator contractStepCreator;
     private final PreliminaryPlanFacade preliminaryPlanFacade;
+    private final TerrainVisionFacade terrainVisionFacade;
     private final InstantProvider instantProvider;
 
     public ContractDto addContract(CreateContractDto createContractDto) {
@@ -67,12 +69,9 @@ public class ContractFacade {
     }
 
     public void finalizePreliminaryPlan(UUID contractId) {
-        contractSecurityFacade.checkCanFinalizePreliminaryPlan(contractId);
-        if(!preliminaryPlanFacade.isPreliminaryPlanCompleted(contractId)) {
-            throw new ContractStepFinalizeException("Preliminary plan is not completed: " + contractId);
-        }
+        contractSecurityFacade.checkCanFinalizePreliminaryPlan();
         Contract contract = findContract(contractId);
-        contract.finalizePreliminaryPlan();
+        contract.finalizePreliminaryPlan(preliminaryPlanFacade, terrainVisionFacade);
         contractRepository.save(contract);
         log.info("Preliminary plan finalized: {}", contract);
     }

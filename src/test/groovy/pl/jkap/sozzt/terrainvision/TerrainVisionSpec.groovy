@@ -1,5 +1,6 @@
 package pl.jkap.sozzt.terrainvision
 
+import pl.jkap.sozzt.sample.ExpectedStageSample
 import pl.jkap.sozzt.sample.SozztSpecification
 
 class TerrainVisionSpec extends SozztSpecification {
@@ -9,9 +10,9 @@ class TerrainVisionSpec extends SozztSpecification {
     }
 
     def "should add terrain vision"() {
-        when: "$KRYNICA_CONTRACT is completly introduced by $MONIKA_CONTRACT_INTRODUCER"
-            addCompletelyIntroduceContract(KRYNICA_CONTRACT, KRYNICA_CONTRACT_SCAN)
-        then: "Terrain vision is added"
+        when: "preliminary plan is completed"
+            addKrynicaContractOnStage(ExpectedStageSample.COMPLETE_PRELIMINARY_PLAN)
+        then: "Terrain vision is started"
             terrainVisionFacade.getTerrainVision(KRYNICA_CONTRACT.contractId) == NEW_KRYNICA_TERRAIN_VISION
     }
 

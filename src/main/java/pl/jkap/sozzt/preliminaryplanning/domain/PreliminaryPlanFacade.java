@@ -8,6 +8,7 @@ import pl.jkap.sozzt.filestorage.event.PreliminaryMapDeletedEvent;
 import pl.jkap.sozzt.filestorage.event.PreliminaryMapUploadedEvent;
 import pl.jkap.sozzt.preliminaryplanning.dto.AddPreliminaryPlanDto;
 import pl.jkap.sozzt.preliminaryplanning.dto.PreliminaryPlanDto;
+import pl.jkap.sozzt.preliminaryplanning.exception.PreliminaryPlanFinalizeException;
 import pl.jkap.sozzt.preliminaryplanning.exception.PreliminaryPlanNotFoundException;
 
 import java.util.UUID;
@@ -30,10 +31,12 @@ public class PreliminaryPlanFacade {
         preliminaryPlanRepository.save(preliminaryPlan);
     }
 
-    public boolean isPreliminaryPlanCompleted(UUID preliminaryPlanId) {
+    public void finalizePreliminaryPlan(UUID preliminaryPlanId) {
         PreliminaryPlan preliminaryPlan = preliminaryPlanRepository.findById(preliminaryPlanId)
                 .orElseThrow(() -> new PreliminaryPlanNotFoundException("Preliminary planning not found: " + preliminaryPlanId));
-        return preliminaryPlan.isCompleted();
+        if(preliminaryPlan.isCompleted()) {
+            throw new PreliminaryPlanFinalizeException("Preliminary plan is not completed yet: " + preliminaryPlanId);
+        }
     }
 
     PreliminaryPlanDto getPreliminaryPlan(UUID preliminaryPlanId) {
@@ -67,4 +70,5 @@ public class PreliminaryPlanFacade {
     public void onPreliminaryMapDeletedEvent(PreliminaryMapDeletedEvent event) {
         preliminaryPlanMapDeleted(event.getPreliminaryPlanId());
     }
+
 }
