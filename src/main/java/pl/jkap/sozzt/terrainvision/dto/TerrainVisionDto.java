@@ -12,8 +12,15 @@ import java.util.UUID;
 @EqualsAndHashCode
 public class TerrainVisionDto {
 
+    public enum TerrainVisionStatus {
+        HOLD,
+        IN_PROGRESS,
+        DONE
+    }
+
     private UUID terrainVisionId;
     private boolean allPhotosUploaded;
     private Instant deadline;
+    private TerrainVisionStatus terrainVisionStatus;
 
 }

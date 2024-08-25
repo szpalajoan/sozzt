@@ -23,7 +23,7 @@ public class ContractStepCreator {
                 .preliminaryPlanId(contractId)
                 .deadline(deadline)
                 .build());
-        return new ContractStep(contractId, ContractStepType.PRELIMINARY_PLAN, ContractStepStatus.IN_PROGRESS, deadline);
+        return new ContractStep(ContractStepType.PRELIMINARY_PLAN, ContractStepStatus.IN_PROGRESS, deadline);
     }
 
     ContractStep createTerrainVisionStep(UUID contractId, Instant contractOrderDate) {
@@ -32,7 +32,7 @@ public class ContractStepCreator {
                 .terrainVisionId(contractId)
                 .deadLine(deadline)
                 .build());
-        return new ContractStep(contractId, ContractStepType.TERRAIN_VISION, ContractStepStatus.ON_HOLD, deadline);
+        return new ContractStep(ContractStepType.TERRAIN_VISION, ContractStepStatus.ON_HOLD, deadline);
     }
 
 }

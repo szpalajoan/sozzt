@@ -3,6 +3,7 @@ package pl.jkap.sozzt.preliminaryplanning.domain
 import pl.jkap.sozzt.contractsecurity.exception.UnauthorizedPreliminaryMapAdditionException
 import pl.jkap.sozzt.filestorage.dto.FileDto
 import pl.jkap.sozzt.filestorage.exception.FileAlreadyExistsException
+import pl.jkap.sozzt.preliminaryplanning.exception.PreliminaryPlanAccessException
 import pl.jkap.sozzt.preliminaryplanning.exception.PreliminaryPlanNotFoundException
 import pl.jkap.sozzt.sample.SozztSpecification
 
@@ -86,10 +87,23 @@ class PreliminaryPlanSpec extends SozztSpecification {
     }
 
     def "Should not add google map url to preliminary plan when preliminary plan does not exist"() {
+        given: "$DAREK_PRELIMINARY_PLANER is logged in"
+            loginUser(DAREK_PRELIMINARY_PLANER)
         when: "$DAREK_PRELIMINARY_PLANER  try to add $KRYNICA_GOOGLE_MAP_URL to not existing $KRYNICA_PRELIMINARY_PLAN preliminary plan"
             preliminaryPlanFacade.addGoogleMapUrl(KRYNICA_PRELIMINARY_PLAN.preliminaryPlanId, KRYNICA_GOOGLE_MAP_URL)
         then: "$KRYNICA_GOOGLE_MAP_URL is not added"
             thrown(PreliminaryPlanNotFoundException)
+    }
+
+    def "Should not add google map url to preliminary plan when user is not privileged"() {
+        given: "There is a $KRYNICA_PRELIMINARY_PLAN preliminary plan"
+            addCompletelyIntroduceContract(KRYNICA_CONTRACT, KRYNICA_CONTRACT_SCAN)
+        and: "$MONIKA_CONTRACT_INTRODUCER is logged in"
+            loginUser(MONIKA_CONTRACT_INTRODUCER)
+        when: "$MONIKA_CONTRACT_INTRODUCER  try to add $KRYNICA_GOOGLE_MAP_URL to $KRYNICA_PRELIMINARY_PLAN preliminary plan"
+            preliminaryPlanFacade.addGoogleMapUrl(KRYNICA_PRELIMINARY_PLAN.preliminaryPlanId, KRYNICA_GOOGLE_MAP_URL)
+        then: "$KRYNICA_GOOGLE_MAP_URL is not added"
+            thrown(PreliminaryPlanAccessException)
     }
 
     def "Should update google map url to preliminary plan when google map url is already added"() {

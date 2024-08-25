@@ -1,6 +1,7 @@
 package pl.jkap.sozzt.preliminaryplanning.domain
 
-import pl.jkap.sozzt.contract.exception.ContractStepFinalizeException
+
+import pl.jkap.sozzt.preliminaryplanning.exception.PreliminaryPlanFinalizeException
 import pl.jkap.sozzt.sample.SozztSpecification
 
 class FinalizePreliminaryPlanSpec extends SozztSpecification {
@@ -36,7 +37,7 @@ class FinalizePreliminaryPlanSpec extends SozztSpecification {
         when: "$DAREK_PRELIMINARY_PLANER finalize $KRYNICA_PRELIMINARY_PLAN preliminary plan"
             contractFacade.finalizePreliminaryPlan(KRYNICA_PRELIMINARY_PLAN.preliminaryPlanId)
         then: "$KRYNICA_PRELIMINARY_PLAN preliminary plan is not finalized"
-            thrown(ContractStepFinalizeException)
+            thrown(PreliminaryPlanFinalizeException)
     }
 
     def "Should not finalize preliminary plan when google map url is not added"() {
@@ -49,7 +50,18 @@ class FinalizePreliminaryPlanSpec extends SozztSpecification {
         when: "$DAREK_PRELIMINARY_PLANER finalize $KRYNICA_PRELIMINARY_PLAN preliminary plan"
             contractFacade.finalizePreliminaryPlan(KRYNICA_PRELIMINARY_PLAN.preliminaryPlanId)
         then: "$KRYNICA_PRELIMINARY_PLAN preliminary plan is not finalized"
-            thrown(ContractStepFinalizeException)
+            thrown(PreliminaryPlanFinalizeException)
+    }
+
+    def "Should not finalize preliminary plan when user is not privileged"() {
+        given: "There is a $KRYNICA_PRELIMINARY_PLAN preliminary plan"
+            addCompletelyIntroduceContract(KRYNICA_CONTRACT, KRYNICA_CONTRACT_SCAN)
+        and: "$MONIKA_CONTRACT_INTRODUCER is logged in"
+            loginUser(MONIKA_CONTRACT_INTRODUCER)
+        when: "$MONIKA_CONTRACT_INTRODUCER finalize $KRYNICA_PRELIMINARY_PLAN preliminary plan"
+            contractFacade.finalizePreliminaryPlan(KRYNICA_PRELIMINARY_PLAN.preliminaryPlanId)
+        then: "$KRYNICA_PRELIMINARY_PLAN preliminary plan is not finalized"
+            thrown(PreliminaryPlanFinalizeException)
     }
 
 }

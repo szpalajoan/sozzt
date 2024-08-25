@@ -50,7 +50,7 @@ class PreliminaryPlan {
         this.googleMapUrl = googleMapUrl;
     }
 
-    public boolean isCompleted() {
+    boolean isCompleted() {
         return isPreliminaryMapUploaded && googleMapUrl != null;
     }
 }

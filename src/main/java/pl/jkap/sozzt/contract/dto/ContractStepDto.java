@@ -24,7 +24,6 @@ public class ContractStepDto {
         DONE
     }
 
-    private UUID contractStepId;
     private ContractStepTypeDto contractStepType;
     private ContractStepStatusDto contractStepStatus;
     private Instant deadline;

@@ -69,7 +69,6 @@ public class ContractFacade {
     }
 
     public void finalizePreliminaryPlan(UUID contractId) {
-        contractSecurityFacade.checkCanFinalizePreliminaryPlan();
         Contract contract = findContract(contractId);
         contract.finalizePreliminaryPlan(preliminaryPlanFacade, terrainVisionFacade);
         contractRepository.save(contract);

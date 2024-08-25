@@ -14,7 +14,7 @@ class PreliminaryPlanFileStorageSpec extends SozztSpecification {
         and: "$DAREK_PRELIMINARY_PLANER is logged in"
             loginUser(DAREK_PRELIMINARY_PLANER)
         when: "$DAREK_PRELIMINARY_PLANER uploads $KRYNICA_PRELIMINARY_MAP to $KRYNICA_PRELIMINARY_PLAN"
-            FileDto addedPreliminaryMap = uploadPreliminaryMap(KRYNICA_PRELIMINARY_MAP, KRYNICA_PRELIMINARY_PLAN)
+            FileDto addedPreliminaryMap = uploadPreliminaryMap(KRYNICA_PRELIMINARY_PLAN, KRYNICA_PRELIMINARY_MAP)
         then: "$KRYNICA_PRELIMINARY_MAP is added to $KRYNICA_PRELIMINARY_PLAN"
             addedPreliminaryMap == KRYNICA_PRELIMINARY_MAP_METADATA
             Files.readAllBytes(fileStorageFacade.downloadFile(addedPreliminaryMap.getFileId())) == KRYNICA_PRELIMINARY_MAP_FILE.getBytes()

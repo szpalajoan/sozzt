@@ -1,11 +1,13 @@
 package pl.jkap.sozzt.contract.domain;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 import pl.jkap.sozzt.contract.dto.ContractDto;
-import pl.jkap.sozzt.contract.exception.ContractStepFinalizeException;
 import pl.jkap.sozzt.contract.exception.ContractStepNotFoundException;
 import pl.jkap.sozzt.globalvalueobjects.AuditInfo;
 import pl.jkap.sozzt.preliminaryplanning.domain.PreliminaryPlanFacade;
@@ -64,7 +66,6 @@ class Contract implements Serializable {
                 .findFirst()
                 .orElseThrow(() -> new ContractStepNotFoundException("Terrain vision step not found"));
         terrainVisionStep.beginStep();
-
     }
 
     private void completePreliminaryPlanStep(PreliminaryPlanFacade preliminaryPlanFacade) {
