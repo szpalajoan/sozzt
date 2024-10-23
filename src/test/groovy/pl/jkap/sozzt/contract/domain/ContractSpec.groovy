@@ -98,7 +98,7 @@ class ContractSpec extends SozztSpecification {
                                                 contractDetails: KRYNICA_CONTRACT_DETAILS_EDITED])
     }
 
-    def "should not edit contract if does not have permission"() {
+    def "Should not edit contract if does not have permission"() {
         given: "There is a $KRYNICA_CONTRACT added by $MONIKA_CONTRACT_INTRODUCER"
             UUID krynicaContractId = contractFacade.addContract(toCreateContractDto(KRYNICA_CONTRACT)).contractId
 

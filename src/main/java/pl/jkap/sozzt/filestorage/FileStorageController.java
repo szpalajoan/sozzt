@@ -3,7 +3,6 @@ package pl.jkap.sozzt.filestorage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,20 +25,17 @@ public class FileStorageController {
 
     private final FileStorageFacade fileStorageFacade;
 
-    @PostMapping("{contractId}/contract-scan")
+    @PostMapping("{contractId}/contract-scans")
     public ResponseEntity<FileDto> addContractScan(@PathVariable UUID contractId, @RequestParam("file") MultipartFile file,
             @RequestParam("fileId") UUID fileId) {
-        AddFileDto addContractScanDto = AddFileDto.builder()
-                .fileId(fileId)
-                .file(file)
-                .objectId(contractId)
-                .build();
+
+        AddFileDto addContractScanDto = AddFileDto.builder().fileId(fileId).file(file).objectId(contractId).build();
         FileDto addedFile = fileStorageFacade.addContractScan(addContractScanDto);
         return ResponseEntity.ok(addedFile);
     }
 
 
-    @GetMapping("{contractId}/contract-scan")
+    @GetMapping("{contractId}/contract-scans")
     public ResponseEntity<List<FileDto>> getContractScans(@PathVariable UUID contractId) {
         List<FileDto> files = fileStorageFacade.getFiles(contractId, FileType.CONTRACT_SCAN_FROM_TAURON);
         return ResponseEntity.ok(files);
@@ -55,12 +51,7 @@ public class FileStorageController {
     @GetMapping("{contractId}/{fileId}")
     public ResponseEntity<Resource> downloadFile(@PathVariable UUID contractId, @PathVariable UUID fileId) {
         Path path = fileStorageFacade.downloadFile(fileId);
-        if (path == null || !path.toFile().exists()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
         try {
-            Resource resource = new UrlResource(path.toUri());
-
             String contentType = Files.probeContentType(path);
 
             if (contentType == null) {
@@ -69,7 +60,7 @@ public class FileStorageController {
 
             return ResponseEntity.ok()
                     .contentType(MediaType.parseMediaType(contentType))
-                    .body(resource);
+                    .body(new UrlResource(path.toUri()));
 
         } catch (Exception e) {
             return ResponseEntity.status(500).build();

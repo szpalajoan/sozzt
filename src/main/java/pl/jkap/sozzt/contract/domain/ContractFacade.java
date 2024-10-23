@@ -8,7 +8,6 @@ import pl.jkap.sozzt.contract.dto.CreateContractDto;
 import pl.jkap.sozzt.contract.dto.EditContractDto;
 import pl.jkap.sozzt.contract.exception.ContractFinalizeException;
 import pl.jkap.sozzt.contract.exception.ContractNotFoundException;
-import pl.jkap.sozzt.contract.exception.ContractStepFinalizeException;
 import pl.jkap.sozzt.filestorage.event.ContractScanAddedEvent;
 import pl.jkap.sozzt.filestorage.event.ContractScanDeletedEvent;
 import pl.jkap.sozzt.instant.InstantProvider;
