@@ -27,7 +27,14 @@ public class ContactController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ContractDto addContract(@RequestBody CreateContractDto addContractDto) {
-        return contractFacade.addContract(addContractDto);
+         return contractFacade.addContract(addContractDto);
+    }
+
+    //todo dodać innego dtoa
+    @PutMapping("{idContract}")
+    @ResponseStatus(HttpStatus.OK)
+    public ContractDto editContract(@PathVariable UUID idContract, @RequestBody ContractDto editContractDto) {
+        return contractFacade.editContract(idContract, editContractDto);
     }
 
     @GetMapping

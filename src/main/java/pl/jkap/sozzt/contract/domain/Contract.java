@@ -80,6 +80,10 @@ class Contract implements Serializable {
                 .build();
     }
 
+    public void edit(ContractDto contractDto) {
+        contractDetails.edit(contractDto.getContractDetails());
+        location.edit(contractDto.getLocation());
+    }
 }
 
 

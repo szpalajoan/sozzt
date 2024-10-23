@@ -7,10 +7,10 @@ import java.time.Instant;
 
 @Embeddable
 final class ContractDetails {
-    private final String contractNumber;
-    private final String workNumber;
-    private final String customerContractNumber;
-    private final Instant orderDate;
+    private String contractNumber;
+    private String workNumber;
+    private String customerContractNumber;
+    private Instant orderDate;
 
     ContractDetails(ContractDetailsDto contractDetailsDto) {
         if (contractDetailsDto.getContractNumber() == null || contractDetailsDto.getContractNumber().trim().isEmpty()) {
@@ -42,5 +42,12 @@ final class ContractDetails {
 
     Instant getOrderDate() {
         return orderDate;
+    }
+
+    public void edit(ContractDetailsDto contractDetails) {
+        this.contractNumber = contractDetails.getContractNumber();
+        this.workNumber = contractDetails.getWorkNumber();
+        this.customerContractNumber = contractDetails.getCustomerContractNumber();
+        this.orderDate = contractDetails.getOrderDate();
     }
 }

@@ -43,6 +43,17 @@ public class ContractFacade {
         return addedContract;
     }
 
+
+    public ContractDto editContract(UUID idContract, ContractDto contractDto) {
+        requireNonNull(contractDto);
+      //  contractSecurityFacade.checkCanEditContract(contractDto.getContractId());
+        Contract contract = findContract(idContract);
+        contract.edit(contractDto);
+        contract = contractRepository.save(contract);
+        log.info("Contract edited: {}", contract);
+        return contract.dto();
+    }
+
     public ContractDto getContract(UUID id) {
         return findContract(id).dto();
     }

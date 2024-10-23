@@ -12,7 +12,7 @@ public class FileStorageConfigurator {
         return FileStorageFacade.builder()
                 .contractSecurityFacade(contractSecurityFacade)
                 .fileSystemStorage(new FileSystemStorage())
-                .fileRepository(fileRepository)
+                .fileRepository(new InMemoryFileRepository())
                 .fileEventPublisher(fileEventPublisher)
                 .build();
     }
