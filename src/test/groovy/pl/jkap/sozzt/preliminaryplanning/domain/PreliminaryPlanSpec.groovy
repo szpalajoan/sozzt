@@ -3,6 +3,7 @@ package pl.jkap.sozzt.preliminaryplanning.domain
 import pl.jkap.sozzt.contractsecurity.exception.UnauthorizedPreliminaryMapAdditionException
 import pl.jkap.sozzt.filestorage.dto.FileDto
 import pl.jkap.sozzt.filestorage.exception.FileAlreadyExistsException
+import pl.jkap.sozzt.preliminaryplanning.exception.PreliminaryPlanAccessException
 import pl.jkap.sozzt.preliminaryplanning.exception.PreliminaryPlanNotFoundException
 import pl.jkap.sozzt.sample.SozztSpecification
 
@@ -27,7 +28,7 @@ class PreliminaryPlanSpec extends SozztSpecification {
         and: "$DAREK_PRELIMINARY_PLANER is logged in"
             loginUser(DAREK_PRELIMINARY_PLANER)
         when: "$DAREK_PRELIMINARY_PLANER uploads $KRYNICA_PRELIMINARY_MAP to $KRYNICA_PRELIMINARY_PLAN"
-            uploadPreliminaryMap(KRYNICA_PRELIMINARY_MAP, KRYNICA_PRELIMINARY_PLAN)
+            uploadPreliminaryMap(KRYNICA_PRELIMINARY_PLAN, KRYNICA_PRELIMINARY_MAP)
         then: "$KRYNICA_PRELIMINARY_PLAN has a preliminary map uploaded"
             preliminaryPlanFacade.getPreliminaryPlan(KRYNICA_PRELIMINARY_PLAN.preliminaryPlanId) == with(KRYNICA_PRELIMINARY_PLAN, [isPreliminaryMapUploaded : true])
     }
@@ -36,7 +37,7 @@ class PreliminaryPlanSpec extends SozztSpecification {
         given: "There is a $KRYNICA_PRELIMINARY_PLAN"
            addCompletelyIntroduceContract(KRYNICA_CONTRACT, KRYNICA_CONTRACT_SCAN)
         when: "$MONIKA_CONTRACT_INTRODUCER uploads $KRYNICA_PRELIMINARY_MAP to $KRYNICA_PRELIMINARY_PLAN"
-            uploadPreliminaryMap(KRYNICA_PRELIMINARY_MAP, KRYNICA_PRELIMINARY_PLAN)
+            uploadPreliminaryMap(KRYNICA_PRELIMINARY_PLAN, KRYNICA_PRELIMINARY_MAP)
         then: "$MONIKA_CONTRACT_INTRODUCER is not allowed to modify $KRYNICA_PRELIMINARY_PLAN"
            thrown(RuntimeException)
     }
@@ -47,7 +48,7 @@ class PreliminaryPlanSpec extends SozztSpecification {
         and: "$DAREK_PRELIMINARY_PLANER is logged in"
             loginUser(DAREK_PRELIMINARY_PLANER)
         and: "$DAREK_PRELIMINARY_PLANER uploads $KRYNICA_PRELIMINARY_MAP to $KRYNICA_PRELIMINARY_PLAN preliminary plan"
-            FileDto preliminaryMap = uploadPreliminaryMap(KRYNICA_PRELIMINARY_MAP, KRYNICA_PRELIMINARY_PLAN)
+            FileDto preliminaryMap = uploadPreliminaryMap(KRYNICA_PRELIMINARY_PLAN, KRYNICA_PRELIMINARY_MAP)
         when: "$DAREK_PRELIMINARY_PLANER removes $KRYNICA_PRELIMINARY_MAP from $KRYNICA_PRELIMINARY_PLAN preliminary plan"
             deleteFile(preliminaryMap.fileId)
         then: "$KRYNICA_PRELIMINARY_PLAN preliminary plan has no preliminary map uploaded"
@@ -56,7 +57,7 @@ class PreliminaryPlanSpec extends SozztSpecification {
 
     def "Should not upload a preliminary map to preliminary plan when preliminary plan does not exist"() {
         when: "$MONIKA_CONTRACT_INTRODUCER  try to upload $KRYNICA_PRELIMINARY_MAP to not existing $KRYNICA_PRELIMINARY_PLAN preliminary plan"
-            uploadPreliminaryMap(KRYNICA_PRELIMINARY_MAP, KRYNICA_PRELIMINARY_PLAN)
+            uploadPreliminaryMap(KRYNICA_PRELIMINARY_PLAN, KRYNICA_PRELIMINARY_MAP)
         then: "$KRYNICA_PRELIMINARY_MAP is not uploaded"
             thrown(UnauthorizedPreliminaryMapAdditionException)
     }
@@ -67,9 +68,9 @@ class PreliminaryPlanSpec extends SozztSpecification {
         and: "$DAREK_PRELIMINARY_PLANER is logged in"
             loginUser(DAREK_PRELIMINARY_PLANER)
         and: "$KRYNICA_PRELIMINARY_MAP is uploaded to $KRYNICA_PRELIMINARY_PLAN preliminary plan"
-            uploadPreliminaryMap(KRYNICA_PRELIMINARY_MAP, KRYNICA_PRELIMINARY_PLAN)
+            uploadPreliminaryMap(KRYNICA_PRELIMINARY_PLAN, KRYNICA_PRELIMINARY_MAP)
         when: "$DAREK_PRELIMINARY_PLANER try to uploads $KRYNICA_PRELIMINARY_MAP to $KRYNICA_PRELIMINARY_PLAN preliminary plan again"
-            uploadPreliminaryMap(KRYNICA_PRELIMINARY_MAP, KRYNICA_PRELIMINARY_PLAN)
+            uploadPreliminaryMap(KRYNICA_PRELIMINARY_PLAN, KRYNICA_PRELIMINARY_MAP)
         then: "$KRYNICA_PRELIMINARY_MAP is not uploaded again"
             thrown(FileAlreadyExistsException)
     }
@@ -86,10 +87,23 @@ class PreliminaryPlanSpec extends SozztSpecification {
     }
 
     def "Should not add google map url to preliminary plan when preliminary plan does not exist"() {
+        given: "$DAREK_PRELIMINARY_PLANER is logged in"
+            loginUser(DAREK_PRELIMINARY_PLANER)
         when: "$DAREK_PRELIMINARY_PLANER  try to add $KRYNICA_GOOGLE_MAP_URL to not existing $KRYNICA_PRELIMINARY_PLAN preliminary plan"
             preliminaryPlanFacade.addGoogleMapUrl(KRYNICA_PRELIMINARY_PLAN.preliminaryPlanId, KRYNICA_GOOGLE_MAP_URL)
         then: "$KRYNICA_GOOGLE_MAP_URL is not added"
             thrown(PreliminaryPlanNotFoundException)
+    }
+
+    def "Should not add google map url to preliminary plan when user is not privileged"() {
+        given: "There is a $KRYNICA_PRELIMINARY_PLAN preliminary plan"
+            addCompletelyIntroduceContract(KRYNICA_CONTRACT, KRYNICA_CONTRACT_SCAN)
+        and: "$MONIKA_CONTRACT_INTRODUCER is logged in"
+            loginUser(MONIKA_CONTRACT_INTRODUCER)
+        when: "$MONIKA_CONTRACT_INTRODUCER  try to add $KRYNICA_GOOGLE_MAP_URL to $KRYNICA_PRELIMINARY_PLAN preliminary plan"
+            preliminaryPlanFacade.addGoogleMapUrl(KRYNICA_PRELIMINARY_PLAN.preliminaryPlanId, KRYNICA_GOOGLE_MAP_URL)
+        then: "$KRYNICA_GOOGLE_MAP_URL is not added"
+            thrown(PreliminaryPlanAccessException)
     }
 
     def "Should update google map url to preliminary plan when google map url is already added"() {

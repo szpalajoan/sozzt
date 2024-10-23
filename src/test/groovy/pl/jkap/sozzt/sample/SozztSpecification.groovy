@@ -4,7 +4,6 @@ import pl.jkap.sozzt.contract.domain.ContractConfiguration
 import pl.jkap.sozzt.contract.domain.ContractDetailsSample
 import pl.jkap.sozzt.contract.domain.ContractFacade
 import pl.jkap.sozzt.contract.domain.ContractSample
-import pl.jkap.sozzt.contract.domain.ContractStepCreator
 import pl.jkap.sozzt.contract.domain.ContractStepSample
 import pl.jkap.sozzt.contract.domain.LocationSample
 import pl.jkap.sozzt.contract.dto.ContractDto
@@ -31,7 +30,6 @@ import spock.lang.Specification
 class SozztSpecification extends Specification implements FileSample, PreliminaryPlanSample, TerrainVisionSample,
         ContractSample, LocationSample, ContractDetailsSample, ContractStepSample,
         UserSample, InstantSamples {
-
     Collection<UUID> addedFileIds = []
 
     InstantProvider instantProvider = new InstantProvider()
@@ -51,6 +49,8 @@ class SozztSpecification extends Specification implements FileSample, Preliminar
         }
     }
 
+
+
     ContractDto addCompletelyIntroduceContract(ContractDto createContractDto, PreparedFile preparedFile) {
         contractFacade.addContract(toCreateContractDto(createContractDto))
         addContractScan(preparedFile, createContractDto.contractId)
@@ -63,7 +63,7 @@ class SozztSpecification extends Specification implements FileSample, Preliminar
         return addedFile
     }
 
-    FileDto uploadPreliminaryMap(PreparedFile preparedFile, PreliminaryPlanDto preliminaryPlanDto) {
+    FileDto uploadPreliminaryMap(PreliminaryPlanDto preliminaryPlanDto, PreparedFile preparedFile ) {
         FileDto addedFile = fileStorageFacade.addPreliminaryMap(toAddFileDto(preparedFile.metadata, preparedFile.fileAsMultipartFile, preliminaryPlanDto.preliminaryPlanId))
         addedFileIds.add(addedFile.fileId)
         return addedFile
@@ -72,6 +72,30 @@ class SozztSpecification extends Specification implements FileSample, Preliminar
     void deleteFile(UUID fileId) {
         fileStorageFacade.deleteFile(fileId)
         addedFileIds.remove(fileId)
+    }
+
+    void addKrynicaContractOnStage(ExpectedStageSample step) {
+        if(step >= ExpectedStageSample.COMPLETE_INTRODUCTION) {
+            loginUser(MONIKA_CONTRACT_INTRODUCER)
+            completeIntroduceContract(KRYNICA_CONTRACT)
+        }
+        if(step >= ExpectedStageSample.COMPLETE_PRELIMINARY_PLAN) {
+            loginUser(DAREK_PRELIMINARY_PLANER)
+            completePreliminaryPlan(KRYNICA_PRELIMINARY_PLAN)
+        }
+//        if(step >= ExpectedStepSample.COMPLETE_TERRAIN_VISION) {
+//            terrainVisionFacade.addTerrainVision(contractDto.contractId)
+//        }
+    }
+
+    private void completeIntroduceContract(ContractDto contractDto) {
+        addCompletelyIntroduceContract(contractDto, KRYNICA_CONTRACT_SCAN)
+    }
+
+    private void completePreliminaryPlan(PreliminaryPlanDto preliminaryPlanDto) {
+        uploadPreliminaryMap(preliminaryPlanDto, KRYNICA_PRELIMINARY_MAP)
+        preliminaryPlanFacade.addGoogleMapUrl(preliminaryPlanDto.preliminaryPlanId, KRYNICA_GOOGLE_MAP_URL)
+        contractFacade.finalizePreliminaryPlan(preliminaryPlanDto.preliminaryPlanId)
     }
 
 }

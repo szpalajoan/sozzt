@@ -1,9 +1,11 @@
 package pl.jkap.sozzt.terrainvision.domain;
 
 import lombok.Builder;
+import org.springframework.security.core.context.SecurityContextHolder;
 import pl.jkap.sozzt.instant.InstantProvider;
 import pl.jkap.sozzt.terrainvision.dto.AddTerrainVisionDto;
 import pl.jkap.sozzt.terrainvision.dto.TerrainVisionDto;
+import pl.jkap.sozzt.terrainvision.exception.TerrainVisionAccessException;
 import pl.jkap.sozzt.terrainvision.exception.TerrainVisionNotFoundException;
 
 import java.util.UUID;
@@ -22,11 +24,30 @@ public class TerrainVisionFacade {
     }
 
     public void addTerrainVision(AddTerrainVisionDto addTerrainVisionDto) {
-        TerrainVision terrainVision = TerrainVision.builder()
-                .terrainVisionId(addTerrainVisionDto.getTerrainVisionId())
-                .deadline(addTerrainVisionDto.getDeadLine())
-                .build();
+        HoldTerrainVision terrainVision = new HoldTerrainVision(addTerrainVisionDto.getTerrainVisionId(), addTerrainVisionDto.getDeadLine());
         terrainVisionRepository.save(terrainVision);
     }
 
+    public void beginTerrainVision(UUID terrainVisionId) {
+        HoldTerrainVision terrainVision = terrainVisionRepository.findHoldTerrainVisionById(terrainVisionId)
+                .orElseThrow(() -> new TerrainVisionNotFoundException("TerrainVision not found: " + terrainVisionId));
+        InProgressTerrainVision inProgressTerrainVision = terrainVision.begin();
+        terrainVisionRepository.save(inProgressTerrainVision);
+    }
+
+    public void confirmAllPhotosAreUploaded(UUID terrainVisionId) {
+        checkCanModifyTerrainVision();
+        InProgressTerrainVision inProgressTerrainVision = terrainVisionRepository.findInProgressTerrainVisionById(terrainVisionId)
+                .orElseThrow(() -> new TerrainVisionNotFoundException("TerrainVision not found: " + terrainVisionId));
+        inProgressTerrainVision.confirmAllPhotosAreUploaded();
+        terrainVisionRepository.save(inProgressTerrainVision);
+
+    }
+
+    private void checkCanModifyTerrainVision() {
+        if (SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                .noneMatch(role -> role.getAuthority().equals("TERRAIN_VISIONER"))) {
+            throw new TerrainVisionAccessException("You are not authorized to modify terrain vision");
+        }
+    }
 }

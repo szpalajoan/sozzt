@@ -16,15 +16,13 @@ import java.util.UUID;
 @Builder
 @ToString
 class ContractStep implements Serializable {
-    @Id
-    private final UUID contractStepId; //TODO ten id jest tu niepotrzebny -> pewnie bez niego nie startuje apka, bo nie wie co to za obiekt a to będzie jsnob
+
     private final ContractStepType contractStepType;
     private ContractStepStatus contractStepStatus;
     Instant deadline;
 
 
-    ContractStep(UUID contractStepId, ContractStepType contractStepType, ContractStepStatus contractStepStatus, Instant deadline) {
-        this.contractStepId = contractStepId;
+    ContractStep( ContractStepType contractStepType, ContractStepStatus contractStepStatus, Instant deadline) {
         this.contractStepType = contractStepType;
         this.contractStepStatus = contractStepStatus;
         this.deadline = deadline;
@@ -40,7 +38,6 @@ class ContractStep implements Serializable {
 
     ContractStepDto dto() {
         return ContractStepDto.builder()
-                .contractStepId(contractStepId)
                 .contractStepType(ContractStepDto.ContractStepTypeDto.valueOf(contractStepType.name()))
                 .contractStepStatus(ContractStepDto.ContractStepStatusDto.valueOf(contractStepStatus.name()))
                 .deadline(deadline)

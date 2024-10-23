@@ -9,15 +9,13 @@ import java.time.Duration
 trait ContractStepSample implements InstantSamples{
 
     ContractStepDto KRYNICA_CONTRACT_PRELIMINARY_PLAN_STEP = with(ContractStepDto.builder().build(),
-            [contractStepId    : UUID.fromString("21c4aaa0-4a11-4f83-aa2e-504e23d14495"),
-             contractStepType  : ContractStepDto.ContractStepTypeDto.PRELIMINARY_PLAN,
+            [contractStepType  : ContractStepDto.ContractStepTypeDto.PRELIMINARY_PLAN,
              contractStepStatus: ContractStepDto.ContractStepStatusDto.IN_PROGRESS,
              deadline          : (NOW + Duration.ofDays(3))
             ])
 
     ContractStepDto KRYNICA_CONTRACT_TERRAIN_VISION_STEP = with(ContractStepDto.builder().build(),
-            [contractStepId    : UUID.fromString("21c4aaa0-4a11-4f83-aa2e-504e23d14495"),
-             contractStepType  : ContractStepDto.ContractStepTypeDto.TERRAIN_VISION,
+            [contractStepType  : ContractStepDto.ContractStepTypeDto.TERRAIN_VISION,
              contractStepStatus: ContractStepDto.ContractStepStatusDto.ON_HOLD,
              deadline          : (NOW + Duration.ofDays(21))
             ])

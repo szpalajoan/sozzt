@@ -7,12 +7,12 @@ import org.springframework.context.annotation.Configuration;
 public class ContractSecurityConfiguration {
 
     @Bean
-    ContractSecurityFacade contractSecurityFacade(ContractSecurityRepository contractSecurityRepository) {
-        return new ContractSecurityFacade(new InMemoryContractSecurity());
-
-    }
-
     public ContractSecurityFacade contractSecurityFacade() {
         return new ContractSecurityFacade(new InMemoryContractSecurity());
+
     }
+
+//    public ContractSecurityFacade contractSecurityFacade() {
+//        return new ContractSecurityFacade(new InMemoryContractSecurity());
+//    }
 }

@@ -1,12 +1,17 @@
 package pl.jkap.sozzt.contract.domain;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 import pl.jkap.sozzt.contract.dto.ContractDto;
 import pl.jkap.sozzt.contract.exception.ContractStepNotFoundException;
 import pl.jkap.sozzt.globalvalueobjects.AuditInfo;
+import pl.jkap.sozzt.preliminaryplanning.domain.PreliminaryPlanFacade;
+import pl.jkap.sozzt.terrainvision.domain.TerrainVisionFacade;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -49,17 +54,27 @@ class Contract implements Serializable {
         contractSteps.add(contractStepCreator.createTerrainVisionStep(contractId, contractDetails.getOrderDate()));
     }
 
-    void finalizePreliminaryPlan() {
-        ContractStep preliminaryPlanStep = contractSteps.stream()
-                .filter(step -> step.getContractStepType() == ContractStepType.PRELIMINARY_PLAN)
-                .findFirst()
-                .orElseThrow(() -> new ContractStepNotFoundException("Preliminary plan step not found"));
+    void finalizePreliminaryPlan(PreliminaryPlanFacade preliminaryPlanFacade, TerrainVisionFacade terrainVisionFacade) {
+        completePreliminaryPlanStep(preliminaryPlanFacade);
+        beginTerrainVisionStep(terrainVisionFacade);
+    }
+
+    private void beginTerrainVisionStep(TerrainVisionFacade terrainVisionFacade) {
+        terrainVisionFacade.beginTerrainVision(contractId);
         ContractStep terrainVisionStep = contractSteps.stream()
                 .filter(step -> step.getContractStepType() == ContractStepType.TERRAIN_VISION)
                 .findFirst()
                 .orElseThrow(() -> new ContractStepNotFoundException("Terrain vision step not found"));
-        preliminaryPlanStep.completeStep();
         terrainVisionStep.beginStep();
+    }
+
+    private void completePreliminaryPlanStep(PreliminaryPlanFacade preliminaryPlanFacade) {
+        preliminaryPlanFacade.finalizePreliminaryPlan(contractId);
+        ContractStep preliminaryPlanStep = contractSteps.stream()
+                .filter(step -> step.getContractStepType() == ContractStepType.PRELIMINARY_PLAN)
+                .findFirst()
+                .orElseThrow(() -> new ContractStepNotFoundException("Preliminary plan step not found"));
+        preliminaryPlanStep.completeStep();
     }
 
     boolean isContractCompleted() {

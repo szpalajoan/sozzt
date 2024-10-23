@@ -13,28 +13,28 @@ public class ContractConfiguration {
 
 
     @Bean
-    ContractFacade contractFacade(ContractSecurityFacade contractSecurityFacade,
+    public ContractFacade contractFacade(ContractSecurityFacade contractSecurityFacade,
                                   PreliminaryPlanFacade preliminaryPlanFacade,
                                   TerrainVisionFacade terrainVisionFacade,
-                                  ContractRepository contractRepository,
                                   InstantProvider instantProvider) {
         ContractCreator contractCreator = new ContractCreator(instantProvider);
         return ContractFacade.builder()
                 .contractRepository(new InMemoryContractRepository())
                 .contractSecurityFacade(contractSecurityFacade)
                 .preliminaryPlanFacade(preliminaryPlanFacade)
+                .terrainVisionFacade(terrainVisionFacade)
                 .contractCreator(contractCreator)
                 .contractStepCreator(contractStepCreator(preliminaryPlanFacade, terrainVisionFacade))
                 .instantProvider(instantProvider)
                 .build();
     }
 
-    public ContractFacade contractFacade(ContractSecurityFacade contractSecurityFacade,
-                                         PreliminaryPlanFacade preliminaryPlanFacade,
-                                         TerrainVisionFacade terrainVisionFacade,
-                                         InstantProvider instantProvider){
-        return contractFacade(contractSecurityFacade, preliminaryPlanFacade, terrainVisionFacade, new InMemoryContractRepository(), instantProvider);
-    }
+//    public ContractFacade contractFacade(ContractSecurityFacade contractSecurityFacade,
+//                                         PreliminaryPlanFacade preliminaryPlanFacade,
+//                                         TerrainVisionFacade terrainVisionFacade,
+//                                         InstantProvider instantProvider){
+//        return contractFacade(contractSecurityFacade, preliminaryPlanFacade, terrainVisionFacade, new InMemoryContractRepository(), instantProvider);
+//    }
 
     private ContractStepCreator contractStepCreator(PreliminaryPlanFacade preliminaryPlanFacade, TerrainVisionFacade terrainVisionFacade) {
         return ContractStepCreator.builder()

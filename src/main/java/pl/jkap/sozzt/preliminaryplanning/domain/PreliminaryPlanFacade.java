@@ -4,10 +4,13 @@ package pl.jkap.sozzt.preliminaryplanning.domain;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
+import org.springframework.security.core.context.SecurityContextHolder;
 import pl.jkap.sozzt.filestorage.event.PreliminaryMapDeletedEvent;
 import pl.jkap.sozzt.filestorage.event.PreliminaryMapUploadedEvent;
 import pl.jkap.sozzt.preliminaryplanning.dto.AddPreliminaryPlanDto;
 import pl.jkap.sozzt.preliminaryplanning.dto.PreliminaryPlanDto;
+import pl.jkap.sozzt.preliminaryplanning.exception.PreliminaryPlanAccessException;
+import pl.jkap.sozzt.preliminaryplanning.exception.PreliminaryPlanFinalizeException;
 import pl.jkap.sozzt.preliminaryplanning.exception.PreliminaryPlanNotFoundException;
 
 import java.util.UUID;
@@ -24,22 +27,32 @@ public class PreliminaryPlanFacade {
     }
 
     public void addGoogleMapUrl(UUID preliminaryPlanId, String googleMapUrl) {
+        checkHasAccessToModifyPreliminaryPlan();
         PreliminaryPlan preliminaryPlan = preliminaryPlanRepository.findById(preliminaryPlanId)
                 .orElseThrow(() -> new PreliminaryPlanNotFoundException("Preliminary planning not found: " + preliminaryPlanId));
         preliminaryPlan.addGoogleMapUrl(googleMapUrl);
         preliminaryPlanRepository.save(preliminaryPlan);
     }
 
-    public boolean isPreliminaryPlanCompleted(UUID preliminaryPlanId) {
+    public void finalizePreliminaryPlan(UUID preliminaryPlanId) {
         PreliminaryPlan preliminaryPlan = preliminaryPlanRepository.findById(preliminaryPlanId)
                 .orElseThrow(() -> new PreliminaryPlanNotFoundException("Preliminary planning not found: " + preliminaryPlanId));
-        return preliminaryPlan.isCompleted();
+        if(!preliminaryPlan.isCompleted()) {
+            throw new PreliminaryPlanFinalizeException("Preliminary plan is not completed yet: " + preliminaryPlanId);
+        }
     }
 
     PreliminaryPlanDto getPreliminaryPlan(UUID preliminaryPlanId) {
         return preliminaryPlanRepository.findById(preliminaryPlanId)
                 .orElseThrow(() -> new PreliminaryPlanNotFoundException("Preliminary planning not found: " + preliminaryPlanId))
                 .dto();
+    }
+
+    private void checkHasAccessToModifyPreliminaryPlan() {
+        if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                .noneMatch(role -> role.getAuthority().equals("PRELIMINARY_PLANER"))) {
+            throw new PreliminaryPlanAccessException("Modification of preliminary plan is not allowed");
+        }
     }
 
     private void preliminaryMapAdded(UUID preliminaryPlanId) {
@@ -67,4 +80,5 @@ public class PreliminaryPlanFacade {
     public void onPreliminaryMapDeletedEvent(PreliminaryMapDeletedEvent event) {
         preliminaryPlanMapDeleted(event.getPreliminaryPlanId());
     }
+
 }
