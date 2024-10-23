@@ -2,6 +2,7 @@ package pl.jkap.sozzt.contract.domain
 
 import pl.jkap.sozzt.contract.dto.ContractDto
 import pl.jkap.sozzt.contract.dto.CreateContractDto
+import pl.jkap.sozzt.contract.dto.EditContractDto
 import pl.jkap.sozzt.instant.InstantSamples
 import pl.jkap.sozzt.sample.SampleModifier
 import pl.jkap.sozzt.user.UserSample

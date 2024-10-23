@@ -7,12 +7,12 @@ import pl.jkap.sozzt.contract.dto.LocationDto;
 @Getter
 @Embeddable
 class Location {
-    private String region;
-    private String district;
-    private String city;
-    private String transformerStationNumberWithCircuit;
-    private String fieldNumber;
-    private String googleMapLink;
+    private final String region;
+    private final String district;
+    private final String city;
+    private final String transformerStationNumberWithCircuit;
+    private final String fieldNumber;
+    private final String googleMapLink;
 
     Location(LocationDto locationDto) {
         if (locationDto.getRegion() == null || locationDto.getRegion().trim().isEmpty()) {
@@ -51,14 +51,5 @@ class Location {
                 .transformerStationNumberWithCircuit(this.transformerStationNumberWithCircuit)
                 .googleMapLink(this.googleMapLink)
                 .build();
-    }
-
-    public void edit(LocationDto location) {
-        this.city = location.getCity();
-        this.district = location.getDistrict();
-        this.fieldNumber = location.getFieldNumber();
-        this.region = location.getRegion();
-        this.transformerStationNumberWithCircuit = location.getTransformerStationNumberWithCircuit();
-        this.googleMapLink = location.getGoogleMapLink();
     }
 }

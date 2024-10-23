@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import pl.jkap.sozzt.contract.dto.ContractDto;
 import pl.jkap.sozzt.contract.dto.CreateContractDto;
+import pl.jkap.sozzt.contract.dto.EditContractDto;
 import pl.jkap.sozzt.contract.exception.ContractFinalizeException;
 import pl.jkap.sozzt.contract.exception.ContractNotFoundException;
 import pl.jkap.sozzt.contract.exception.ContractStepFinalizeException;
@@ -46,14 +47,17 @@ public class ContractFacade {
     }
 
 
-    public ContractDto editContract(UUID idContract, ContractDto contractDto) {
-        requireNonNull(contractDto);
-      //  contractSecurityFacade.checkCanEditContract(contractDto.getContractId());
+    public ContractDto editContract(UUID idContract, EditContractDto editContractDto) {
+        requireNonNull(editContractDto);
+        contractSecurityFacade.checkCanEditContract();
+
         Contract contract = findContract(idContract);
-        contract.edit(contractDto);
+        contract.edit(editContractDto);
         contract = contractRepository.save(contract);
-        log.info("Contract edited: {}", contract);
-        return contract.dto();
+
+        ContractDto editedContract = contract.dto();
+        log.info("Contract edited: {}", editedContract);
+        return editedContract;
     }
 
     public ContractDto getContract(UUID id) {

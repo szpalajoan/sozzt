@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 import pl.jkap.sozzt.contract.dto.ContractDto;
+import pl.jkap.sozzt.contract.dto.EditContractDto;
 import pl.jkap.sozzt.contract.exception.ContractStepNotFoundException;
 import pl.jkap.sozzt.globalvalueobjects.AuditInfo;
 import pl.jkap.sozzt.preliminaryplanning.domain.PreliminaryPlanFacade;
@@ -95,9 +96,9 @@ class Contract implements Serializable {
                 .build();
     }
 
-    public void edit(ContractDto contractDto) {
-        contractDetails.edit(contractDto.getContractDetails());
-        location.edit(contractDto.getLocation());
+    public void edit(EditContractDto editContractDto) {
+        contractDetails = new ContractDetails(editContractDto.getContractDetails());
+        location = new Location(editContractDto.getLocation());
     }
 }
 

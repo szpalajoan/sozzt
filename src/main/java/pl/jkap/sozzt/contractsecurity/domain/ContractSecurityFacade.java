@@ -23,6 +23,13 @@ public class ContractSecurityFacade {
         }
     }
 
+    public void checkCanEditContract() {
+        if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                .noneMatch(role -> role.getAuthority().equals("ROLE_CONTRACT_INTRODUCER"))) {
+            throw new UnauthorizedContractAdditionException("Contract edit not allowed");
+        }
+    }
+
     public void checkCanAddContractScan(UUID contractId) {
         if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
                 .noneMatch(role -> role.getAuthority().equals("ROLE_CONTRACT_INTRODUCER"))) {

@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.jkap.sozzt.contract.domain.ContractFacade;
 import pl.jkap.sozzt.contract.dto.ContractDto;
 import pl.jkap.sozzt.contract.dto.CreateContractDto;
+import pl.jkap.sozzt.contract.dto.EditContractDto;
 
 import java.util.List;
 import java.util.UUID;
@@ -30,10 +31,9 @@ public class ContactController {
          return contractFacade.addContract(addContractDto);
     }
 
-    //todo dodać innego dtoa
     @PutMapping("{idContract}")
     @ResponseStatus(HttpStatus.OK)
-    public ContractDto editContract(@PathVariable UUID idContract, @RequestBody ContractDto editContractDto) {
+    public ContractDto editContract(@PathVariable UUID idContract, @RequestBody EditContractDto editContractDto) {
         return contractFacade.editContract(idContract, editContractDto);
     }
 
