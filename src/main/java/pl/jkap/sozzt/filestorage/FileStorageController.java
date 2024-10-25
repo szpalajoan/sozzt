@@ -26,19 +26,17 @@ public class FileStorageController {
     private final FileStorageFacade fileStorageFacade;
 
     @PostMapping("{contractId}/contract-scans")
-    public ResponseEntity<FileDto> addContractScan(@PathVariable UUID contractId, @RequestParam("file") MultipartFile file,
-            @RequestParam("fileId") UUID fileId) {
+    public ResponseEntity<FileDto> addContractScan(@PathVariable UUID contractId, @RequestParam("file") MultipartFile file) {
 
-        AddFileDto addContractScanDto = AddFileDto.builder().fileId(fileId).file(file).objectId(contractId).build();
+        AddFileDto addContractScanDto = AddFileDto.builder().file(file).objectId(contractId).build();
         FileDto addedFile = fileStorageFacade.addContractScan(addContractScanDto);
         return ResponseEntity.ok(addedFile);
     }
 
 
     @PostMapping("{contractId}/preliminary-maps")
-    public ResponseEntity<FileDto> addPreliminaryMap(@PathVariable UUID contractId, @RequestParam("file") MultipartFile file,
-            @RequestParam("fileId") UUID fileId) {
-        AddFileDto addPreliminaryMapFileDto = AddFileDto.builder().fileId(fileId).file(file).objectId(contractId).build();
+    public ResponseEntity<FileDto> addPreliminaryMap(@PathVariable UUID contractId, @RequestParam("file") MultipartFile file) {
+        AddFileDto addPreliminaryMapFileDto = AddFileDto.builder().file(file).objectId(contractId).build();
         FileDto addedFile = fileStorageFacade.addPreliminaryMap(addPreliminaryMapFileDto);
         return ResponseEntity.ok(addedFile);
     }
