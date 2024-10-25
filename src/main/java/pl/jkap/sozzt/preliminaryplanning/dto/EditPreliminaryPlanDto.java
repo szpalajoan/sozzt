@@ -2,9 +2,6 @@ package pl.jkap.sozzt.preliminaryplanning.dto;
 
 import lombok.*;
 
-import java.time.Instant;
-import java.util.UUID;
-
 @Builder
 @Getter
 @NoArgsConstructor

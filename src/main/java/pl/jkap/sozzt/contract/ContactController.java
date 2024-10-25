@@ -34,10 +34,7 @@ public class ContactController {
     @PutMapping("{idContract}")
     @ResponseStatus(HttpStatus.OK)
     public ContractDto editContract(@PathVariable UUID idContract, @RequestBody EditContractDto editContractDto) {
-        ContractDto editedContract = contractFacade.editContract(idContract, editContractDto);
-        contractFacade.finalizeContractIntroduction(idContract); //todo dodać to do osobnej metody
-        return editedContract;
-
+        return contractFacade.editContract(idContract, editContractDto);
     }
 
     @GetMapping
