@@ -42,7 +42,7 @@ public class PreliminaryPlanFacade {
         }
     }
 
-    PreliminaryPlanDto getPreliminaryPlan(UUID preliminaryPlanId) {
+    public PreliminaryPlanDto getPreliminaryPlan(UUID preliminaryPlanId) {
         return preliminaryPlanRepository.findById(preliminaryPlanId)
                 .orElseThrow(() -> new PreliminaryPlanNotFoundException("Preliminary planning not found: " + preliminaryPlanId))
                 .dto();
@@ -50,7 +50,7 @@ public class PreliminaryPlanFacade {
 
     private void checkHasAccessToModifyPreliminaryPlan() {
         if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
-                .noneMatch(role -> role.getAuthority().equals("PRELIMINARY_PLANER"))) {
+                .noneMatch(role -> role.getAuthority().equals("ROLE_PRELIMINARY_PLANER"))) {
             throw new PreliminaryPlanAccessException("Modification of preliminary plan is not allowed");
         }
     }

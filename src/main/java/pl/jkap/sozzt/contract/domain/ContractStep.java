@@ -9,7 +9,6 @@ import pl.jkap.sozzt.contract.dto.ContractStepDto;
 
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.UUID;
 
 @Entity
 @Getter

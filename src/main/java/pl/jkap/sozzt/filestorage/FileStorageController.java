@@ -35,9 +35,18 @@ public class FileStorageController {
     }
 
 
-    @GetMapping("{contractId}/contract-scans")
-    public ResponseEntity<List<FileDto>> getContractScans(@PathVariable UUID contractId) {
-        List<FileDto> files = fileStorageFacade.getFiles(contractId, FileType.CONTRACT_SCAN_FROM_TAURON);
+    @PostMapping("{contractId}/preliminary-maps")
+    public ResponseEntity<FileDto> addPreliminaryMap(@PathVariable UUID contractId, @RequestParam("file") MultipartFile file,
+            @RequestParam("fileId") UUID fileId) {
+        AddFileDto addPreliminaryMapFileDto = AddFileDto.builder().fileId(fileId).file(file).objectId(contractId).build();
+        FileDto addedFile = fileStorageFacade.addPreliminaryMap(addPreliminaryMapFileDto);
+        return ResponseEntity.ok(addedFile);
+    }
+
+
+    @GetMapping("{contractId}/files")
+    public ResponseEntity<List<FileDto>> getFiles(@PathVariable UUID contractId, @RequestParam("fileType") FileType fileType) {
+        List<FileDto> files = fileStorageFacade.getFiles(contractId, fileType);
         return ResponseEntity.ok(files);
     }
 
