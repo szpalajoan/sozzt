@@ -13,6 +13,7 @@ import pl.jkap.sozzt.filestorage.exception.FileAlreadyExistsException;
 import pl.jkap.sozzt.filestorage.exception.FileNotFoundException;
 
 import java.nio.file.Path;
+import java.util.List;
 import java.util.UUID;
 
 public class FileStorageFacade {
@@ -32,6 +33,14 @@ public class FileStorageFacade {
         this.fileSystemStorage.init();
         this.fileRepository = fileRepository;
         this.fileEventPublisher = fileEventPublisher;
+    }
+
+    public List<FileDto> getFiles(UUID objectId, FileType fileType){
+        return fileRepository
+                .findByObjectIdAndFileType(objectId, fileType)
+                .stream()
+                .map(File::dto)
+                .toList();
     }
 
     public FileDto addContractScan(AddFileDto addContractScanDto) {

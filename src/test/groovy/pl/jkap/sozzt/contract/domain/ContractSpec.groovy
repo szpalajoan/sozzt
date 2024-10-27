@@ -1,6 +1,7 @@
 package pl.jkap.sozzt.contract.domain
 
 import pl.jkap.sozzt.contract.dto.ContractDto
+import pl.jkap.sozzt.contract.dto.EditContractDto
 import pl.jkap.sozzt.contract.exception.ContractFinalizeException
 import pl.jkap.sozzt.contractsecurity.exception.UnauthorizedContractAdditionException
 import pl.jkap.sozzt.contractsecurity.exception.UnauthorizedContractFinalizeException
@@ -82,5 +83,33 @@ class ContractSpec extends SozztSpecification {
             contractFacade.finalizeContractIntroduction(KRYNICA_CONTRACT.contractId)
         then: "Contract is not introduced"
             thrown(ContractFinalizeException)
+    }
+
+    def "Should edit contract"() {
+        given: "There is a $KRYNICA_CONTRACT added by $MONIKA_CONTRACT_INTRODUCER"
+            UUID krynicaContractId = contractFacade.addContract(toCreateContractDto(KRYNICA_CONTRACT)).contractId
+
+        when:"$MONIKA_CONTRACT_INTRODUCER edits $KRYNICA_CONTRACT"
+            EditContractDto editContractDto = EditContractDto.builder().location(KRYNICA_LOCATION_EDITED).contractDetails(KRYNICA_CONTRACT_DETAILS_EDITED).build()
+            ContractDto contract = contractFacade.editContract(krynicaContractId, editContractDto)
+
+        then: "Contract is edited"
+            contract == with(KRYNICA_CONTRACT, [location       : KRYNICA_LOCATION_EDITED,
+                                                contractDetails: KRYNICA_CONTRACT_DETAILS_EDITED])
+    }
+
+    def "Should not edit contract if does not have permission"() {
+        given: "There is a $KRYNICA_CONTRACT added by $MONIKA_CONTRACT_INTRODUCER"
+            UUID krynicaContractId = contractFacade.addContract(toCreateContractDto(KRYNICA_CONTRACT)).contractId
+
+        and: "$DAREK_PRELIMINARY_PLANER is logged in"
+            loginUser(DAREK_PRELIMINARY_PLANER)
+
+        when: "$DAREK_PRELIMINARY_PLANER edits $KRYNICA_CONTRACT"
+            EditContractDto editContractDto = EditContractDto.builder().location(KRYNICA_LOCATION_EDITED).contractDetails(KRYNICA_CONTRACT_DETAILS_EDITED).build()
+            contractFacade.editContract(krynicaContractId, editContractDto)
+
+        then: "contract is not added"
+            thrown(UnauthorizedContractAdditionException)
     }
 }

@@ -11,4 +11,13 @@ trait LocationSample {
             .googleMapLink("https://maps.app.goo.gl/BLYvgG6upvYEC9Uu7") //TODO: wywal to
             .fieldNumber("2596/1")
             .build()
+
+    LocationDto KRYNICA_LOCATION_EDITED = LocationDto.builder()
+            .region("KRYNICA II")
+            .city("Muszyna Mała")
+            .district("Nowosądecki II")
+            .transformerStationNumberWithCircuit("Muszyna Wapienne [8295] obw . nr 4")
+            .googleMapLink("https://maps.app.goo.gl/BLYvg1232322") //TODO: wywal to
+            .fieldNumber("2596/2")
+            .build()
 }

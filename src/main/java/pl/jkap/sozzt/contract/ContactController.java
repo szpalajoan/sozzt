@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.jkap.sozzt.contract.domain.ContractFacade;
 import pl.jkap.sozzt.contract.dto.ContractDto;
 import pl.jkap.sozzt.contract.dto.CreateContractDto;
+import pl.jkap.sozzt.contract.dto.EditContractDto;
 
 import java.util.List;
 import java.util.UUID;
@@ -27,7 +28,13 @@ public class ContactController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ContractDto addContract(@RequestBody CreateContractDto addContractDto) {
-        return contractFacade.addContract(addContractDto);
+         return contractFacade.addContract(addContractDto);
+    }
+
+    @PutMapping("{idContract}")
+    @ResponseStatus(HttpStatus.OK)
+    public ContractDto editContract(@PathVariable UUID idContract, @RequestBody EditContractDto editContractDto) {
+        return contractFacade.editContract(idContract, editContractDto);
     }
 
     @GetMapping
