@@ -37,6 +37,12 @@ public class ContactController {
         return contractFacade.editContract(idContract, editContractDto);
     }
 
+    @PostMapping("{idContract}/finalize-introduction")
+    @ResponseStatus(HttpStatus.OK)
+    public void finalizeContractIntroduction(@PathVariable UUID idContract) {
+        contractFacade.finalizeContractIntroduction(idContract);
+    }
+
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<ContractDto> getContracts() {
