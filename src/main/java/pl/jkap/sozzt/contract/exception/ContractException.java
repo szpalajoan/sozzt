@@ -1,9 +1,11 @@
 package pl.jkap.sozzt.contract.exception;
 
-abstract class ContractException extends RuntimeException {
+import org.springframework.http.HttpStatus;
+import pl.jkap.sozzt.config.SozztException;
 
-    public ContractException(String message) {
-        super(message);
+abstract class ContractException extends SozztException {
+
+    public ContractException(String message, HttpStatus status, String codeError) {
+        super(message, status, codeError);
     }
-
 }

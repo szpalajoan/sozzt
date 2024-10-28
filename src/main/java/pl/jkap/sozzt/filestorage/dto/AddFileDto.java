@@ -18,6 +18,6 @@ public class AddFileDto {
     private UUID objectId;
 
     public Optional<UUID> getFileId() {
-        return Optional.of(fileId);
+        return Optional.ofNullable(fileId);
     }
 }
