@@ -44,6 +44,15 @@ public class TerrainVisionFacade {
 
     }
 
+    public void confirmChangesOnMap(UUID terrainVisionId, TerrainVisionDto.MapChange mapChange) {
+        checkCanModifyTerrainVision();
+        InProgressTerrainVision inProgressTerrainVision = terrainVisionRepository.findInProgressTerrainVisionById(terrainVisionId)
+                .orElseThrow(() -> new TerrainVisionNotFoundException("TerrainVision not found: " + terrainVisionId));
+        inProgressTerrainVision.confirmChangesOnMap(mapChange);
+        terrainVisionRepository.save(inProgressTerrainVision);
+
+    }
+
     private void checkCanModifyTerrainVision() {
         if (SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
                 .noneMatch(role -> role.getAuthority().equals("TERRAIN_VISIONER"))) {

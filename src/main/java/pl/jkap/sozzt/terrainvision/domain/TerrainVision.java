@@ -21,11 +21,18 @@ abstract class TerrainVision {
         DONE
     }
 
+    enum MapChange {
+        NONE,
+        MODIFIED,
+        NOT_NECESSARY
+    }
+
     @Id
     protected UUID terrainVisionId;
     protected boolean allPhotosUploaded;
     protected Instant deadline;
     protected TerrainVisionStatus terrainVisionStatus;
+    protected MapChange mapChange;
 
 
 
@@ -35,6 +42,7 @@ abstract class TerrainVision {
                 .allPhotosUploaded(allPhotosUploaded)
                 .deadline(deadline)
                 .terrainVisionStatus(TerrainVisionDto.TerrainVisionStatus.valueOf(terrainVisionStatus.name()))
+                .mapChange(TerrainVisionDto.MapChange.valueOf(mapChange.name()))
                 .build();
     }
 }

@@ -18,9 +18,16 @@ public class TerrainVisionDto {
         DONE
     }
 
+    public enum MapChange {
+        NONE,
+        MODIFIED,
+        NOT_NECESSARY
+    }
+
     private UUID terrainVisionId;
     private boolean allPhotosUploaded;
     private Instant deadline;
     private TerrainVisionStatus terrainVisionStatus;
+    private MapChange mapChange;
 
 }
