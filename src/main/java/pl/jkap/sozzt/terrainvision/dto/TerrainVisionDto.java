@@ -15,7 +15,7 @@ public class TerrainVisionDto {
     public enum TerrainVisionStatus {
         HOLD,
         IN_PROGRESS,
-        DONE
+        COMPLETED
     }
 
     public enum MapChange {

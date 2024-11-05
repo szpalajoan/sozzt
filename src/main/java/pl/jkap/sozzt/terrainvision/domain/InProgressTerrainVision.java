@@ -1,6 +1,7 @@
 package pl.jkap.sozzt.terrainvision.domain;
 
 import pl.jkap.sozzt.terrainvision.dto.TerrainVisionDto;
+import pl.jkap.sozzt.terrainvision.exception.CompletionTerrainVisionException;
 import pl.jkap.sozzt.terrainvision.exception.InvalidMapChangeException;
 
 import java.time.Instant;
@@ -22,5 +23,15 @@ class InProgressTerrainVision extends TerrainVision {
             throw new InvalidMapChangeException("Map change cannot be NONE");
         }
         this.mapChange = newMapChange;
+    }
+
+    CompletedTerrainVision complete() {
+        if(!allPhotosUploaded) {
+            throw new CompletionTerrainVisionException("All photos must be uploaded");
+        }
+        if(MapChange.NONE == mapChange) {
+            throw new CompletionTerrainVisionException("Map change cannot be NONE");
+        }
+        return new CompletedTerrainVision(terrainVisionId, deadline, mapChange);
     }
 }

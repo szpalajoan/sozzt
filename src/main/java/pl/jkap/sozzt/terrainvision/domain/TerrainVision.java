@@ -3,7 +3,6 @@ package pl.jkap.sozzt.terrainvision.domain;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import pl.jkap.sozzt.terrainvision.dto.TerrainVisionDto;
 
@@ -18,7 +17,7 @@ abstract class TerrainVision {
     enum TerrainVisionStatus {
         HOLD,
         IN_PROGRESS,
-        DONE
+        COMPLETED
     }
 
     enum MapChange {

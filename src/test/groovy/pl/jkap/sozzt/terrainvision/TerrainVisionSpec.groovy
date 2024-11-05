@@ -2,6 +2,7 @@ package pl.jkap.sozzt.terrainvision
 
 import pl.jkap.sozzt.sample.ExpectedStageSample
 import pl.jkap.sozzt.sample.SozztSpecification
+import pl.jkap.sozzt.terrainvision.exception.CompletionTerrainVisionException
 import pl.jkap.sozzt.terrainvision.exception.InvalidMapChangeException
 import pl.jkap.sozzt.terrainvision.exception.TerrainVisionAccessException
 import pl.jkap.sozzt.terrainvision.exception.TerrainVisionNotFoundException
@@ -23,7 +24,7 @@ class TerrainVisionSpec extends SozztSpecification {
             addKrynicaContractOnStage(ExpectedStageSample.COMPLETE_PRELIMINARY_PLAN)
         and: "$MARCIN_TERRAIN_VISIONER is logged in"
             loginUser(MARCIN_TERRAIN_VISIONER)
-        when: "all photos are uploaded"
+        when: "$MARCIN_TERRAIN_VISIONER confirms that all photos are uploaded"
             terrainVisionFacade.confirmAllPhotosAreUploaded(KRYNICA_CONTRACT.contractId)
         then: "Terrain vision has uploaded all photos"
             terrainVisionFacade.getTerrainVision(KRYNICA_CONTRACT.contractId) == with(NEW_KRYNICA_TERRAIN_VISION, [allPhotosUploaded : true])
@@ -97,5 +98,82 @@ class TerrainVisionSpec extends SozztSpecification {
             mapChange << [MODIFIED, NOT_NECESSARY]
     }
 
+    def "should complete terrain vision"() {
+        given: "there is $NEW_KRYNICA_TERRAIN_VISION stage"
+            addKrynicaContractOnStage(ExpectedStageSample.COMPLETE_TERRAIN_VISION)
+        and: "$MARCIN_TERRAIN_VISIONER is logged in"
+            loginUser(MARCIN_TERRAIN_VISIONER)
+        and: "$MARCIN_TERRAIN_VISIONER confirmed that all photos are uploaded"
+            terrainVisionFacade.confirmAllPhotosAreUploaded(KRYNICA_CONTRACT.contractId)
+        and: "$MARCIN_TERRAIN_VISIONER confirmed changes on map as $mapChange"
+            terrainVisionFacade.confirmChangesOnMap(KRYNICA_CONTRACT.contractId, mapChange)
+        when: "$MARCIN_TERRAIN_VISIONER completes the terrain vision"
+            terrainVisionFacade.completeTerrainVision(KRYNICA_CONTRACT.contractId)
+        then: "Terrain vision is completed"
+            terrainVisionFacade.getTerrainVision(KRYNICA_CONTRACT.contractId) == with(COMPLETED_KRYNICA_TERRAIN_VISION, [mapChange : mapChange])
+        where:
+            mapChange << [MODIFIED, NOT_NECESSARY]
+    }
+
+    def "should not complete terrain vision if not all photos are uploaded"() {
+        given: "there is $NEW_KRYNICA_TERRAIN_VISION stage without all photos uploaded"
+            addKrynicaContractOnStage(ExpectedStageSample.COMPLETE_PRELIMINARY_PLAN)
+            loginUser(MARCIN_TERRAIN_VISIONER)
+        when: "$MARCIN_TERRAIN_VISIONER tries to complete the terrain vision"
+            terrainVisionFacade.completeTerrainVision(KRYNICA_CONTRACT.contractId)
+        then: "Terrain vision is not completed"
+            thrown(CompletionTerrainVisionException)
+    }
+
+    def "should not complete terrain vision if changes on map are not specified"() {
+        given: "there is $NEW_KRYNICA_TERRAIN_VISION stage"
+            addKrynicaContractOnStage(ExpectedStageSample.COMPLETE_TERRAIN_VISION)
+        and: "$MARCIN_TERRAIN_VISIONER is logged in"
+            loginUser(MARCIN_TERRAIN_VISIONER)
+        and: "$MARCIN_TERRAIN_VISIONER confirmed that all photos are uploaded"
+            terrainVisionFacade.confirmAllPhotosAreUploaded(KRYNICA_CONTRACT.contractId)
+        when: "$MARCIN_TERRAIN_VISIONER tries to complete the terrain vision"
+            terrainVisionFacade.completeTerrainVision(KRYNICA_CONTRACT.contractId)
+        then: "Terrain vision is not completed"
+            thrown(CompletionTerrainVisionException)
+    }
+
+
+    def "should not complete terrain vision for not existing terrain vision stage"() {
+        given: "$MARCIN_TERRAIN_VISIONER is logged in"
+            loginUser(MARCIN_TERRAIN_VISIONER)
+        when: "$MARCIN_TERRAIN_VISIONER tries to complete not existing terrain vision stage"
+            terrainVisionFacade.completeTerrainVision(KRYNICA_CONTRACT.contractId)
+        then: "Terrain vision is not completed"
+            thrown(TerrainVisionNotFoundException)
+    }
+
+    def "should not complete terrain vision if not privileged user"() {
+        given: "there is $NEW_KRYNICA_TERRAIN_VISION stage"
+            addKrynicaContractOnStage(ExpectedStageSample.COMPLETE_TERRAIN_VISION)
+        and: "$MONIKA_CONTRACT_INTRODUCER is logged in"
+            loginUser(MONIKA_CONTRACT_INTRODUCER)
+        when: "$MONIKA_CONTRACT_INTRODUCER tries to complete the terrain vision"
+            terrainVisionFacade.completeTerrainVision(KRYNICA_CONTRACT.contractId)
+        then: "Terrain vision is not completed"
+            thrown(TerrainVisionAccessException)
+    }
+
+    def "should not complete terrain vision if it is already completed"() {
+        given: "there is $NEW_KRYNICA_TERRAIN_VISION stage"
+            addKrynicaContractOnStage(ExpectedStageSample.COMPLETE_TERRAIN_VISION)
+        and: "$MARCIN_TERRAIN_VISIONER is logged in"
+            loginUser(MARCIN_TERRAIN_VISIONER)
+        and: "$MARCIN_TERRAIN_VISIONER confirmed that all photos are uploaded"
+            terrainVisionFacade.confirmAllPhotosAreUploaded(KRYNICA_CONTRACT.contractId)
+        and: "$MARCIN_TERRAIN_VISIONER confirmed changes on map as $MODIFIED"
+            terrainVisionFacade.confirmChangesOnMap(KRYNICA_CONTRACT.contractId, MODIFIED)
+        and: "$MARCIN_TERRAIN_VISIONER completes the terrain vision"
+            terrainVisionFacade.completeTerrainVision(KRYNICA_CONTRACT.contractId)
+        when: "$MARCIN_TERRAIN_VISIONER tries to complete the terrain vision again"
+            terrainVisionFacade.completeTerrainVision(KRYNICA_CONTRACT.contractId)
+        then: "Terrain vision is not completed again"
+            thrown(TerrainVisionNotFoundException)
+    }
 
 }

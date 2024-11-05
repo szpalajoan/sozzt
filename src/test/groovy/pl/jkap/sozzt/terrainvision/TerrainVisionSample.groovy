@@ -16,6 +16,14 @@ trait TerrainVisionSample implements ContractSample{
             .mapChange(TerrainVisionDto.MapChange.NONE)
             .build()
 
+    TerrainVisionDto COMPLETED_KRYNICA_TERRAIN_VISION = TerrainVisionDto.builder()
+            .terrainVisionId(KRYNICA_CONTRACT.contractId)
+            .allPhotosUploaded(true)
+            .deadline(KRYNICA_CONTRACT.contractDetails.orderDate + Duration.ofDays(21))
+            .terrainVisionStatus(TerrainVisionDto.TerrainVisionStatus.COMPLETED)
+            .mapChange(TerrainVisionDto.MapChange.MODIFIED)
+            .build()
+
 
     TerrainVisionDto with(TerrainVisionDto terrainVisionDto, Map<String, Object> properties) {
         return SampleModifier.with(TerrainVisionDto.class, terrainVisionDto, properties)

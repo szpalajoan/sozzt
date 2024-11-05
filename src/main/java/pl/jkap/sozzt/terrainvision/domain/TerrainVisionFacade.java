@@ -53,10 +53,20 @@ public class TerrainVisionFacade {
 
     }
 
+    public void completeTerrainVision(UUID uuid) {
+        checkCanModifyTerrainVision();
+        InProgressTerrainVision inProgressTerrainVision = terrainVisionRepository.findInProgressTerrainVisionById(uuid)
+                .orElseThrow(() -> new TerrainVisionNotFoundException("TerrainVision not found: " + uuid));
+        CompletedTerrainVision completedTerrainVision = inProgressTerrainVision.complete();
+        terrainVisionRepository.save(completedTerrainVision);
+    }
+
     private void checkCanModifyTerrainVision() {
         if (SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
                 .noneMatch(role -> role.getAuthority().equals("TERRAIN_VISIONER"))) {
             throw new TerrainVisionAccessException("You are not authorized to modify terrain vision");
         }
     }
+
+
 }
