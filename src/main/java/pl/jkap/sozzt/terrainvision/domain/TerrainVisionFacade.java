@@ -5,6 +5,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import pl.jkap.sozzt.instant.InstantProvider;
 import pl.jkap.sozzt.terrainvision.dto.AddTerrainVisionDto;
 import pl.jkap.sozzt.terrainvision.dto.TerrainVisionDto;
+import pl.jkap.sozzt.terrainvision.event.TerrainVisionCompletedEvent;
 import pl.jkap.sozzt.terrainvision.exception.TerrainVisionAccessException;
 import pl.jkap.sozzt.terrainvision.exception.TerrainVisionNotFoundException;
 
@@ -15,6 +16,7 @@ public class TerrainVisionFacade {
 
     private final TerrainVisionRepository terrainVisionRepository;
     private final InstantProvider instantProvider;
+    private final TerrainVisionEventPublisher terrainVisionEventPublisher;
 
 
     public TerrainVisionDto getTerrainVision(UUID terrainVisionId) {
@@ -53,12 +55,13 @@ public class TerrainVisionFacade {
 
     }
 
-    public void completeTerrainVision(UUID uuid) {
+    public void completeTerrainVision(UUID terrainVisionId) {
         checkCanModifyTerrainVision();
-        InProgressTerrainVision inProgressTerrainVision = terrainVisionRepository.findInProgressTerrainVisionById(uuid)
-                .orElseThrow(() -> new TerrainVisionNotFoundException("TerrainVision not found: " + uuid));
+        InProgressTerrainVision inProgressTerrainVision = terrainVisionRepository.findInProgressTerrainVisionById(terrainVisionId)
+                .orElseThrow(() -> new TerrainVisionNotFoundException("TerrainVision not found: " + terrainVisionId));
         CompletedTerrainVision completedTerrainVision = inProgressTerrainVision.complete();
         terrainVisionRepository.save(completedTerrainVision);
+        terrainVisionEventPublisher.terrainVisionCompleted(new TerrainVisionCompletedEvent(terrainVisionId));
     }
 
     private void checkCanModifyTerrainVision() {

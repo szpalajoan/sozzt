@@ -13,26 +13,26 @@ class TerrainVisionSpec extends SozztSpecification {
 
     def "should add terrain vision"() {
         when: "preliminary plan is completed"
-            addKrynicaContractOnStage(ExpectedStageSample.COMPLETE_PRELIMINARY_PLAN)
+            addKrynicaContractOnStage(ExpectedStageSample.BEGIN_TERRAIN_VISION)
         then: "Terrain vision is started"
-            terrainVisionFacade.getTerrainVision(KRYNICA_CONTRACT.contractId) == NEW_KRYNICA_TERRAIN_VISION
+            terrainVisionFacade.getTerrainVision(KRYNICA_CONTRACT.contractId) == KRYNICA_TERRAIN_VISION
             contractFacade.getContract(KRYNICA_CONTRACT.contractId) == COMPLETED_PRELIMINARY_PLAN_KRYNICA_CONTRACT
     }
 
     def "should confirm that all photos are uploaded "() {
-        given: "there is $NEW_KRYNICA_TERRAIN_VISION stage"
-            addKrynicaContractOnStage(ExpectedStageSample.COMPLETE_PRELIMINARY_PLAN)
+        given: "there is $KRYNICA_TERRAIN_VISION stage"
+            addKrynicaContractOnStage(ExpectedStageSample.BEGIN_TERRAIN_VISION)
         and: "$MARCIN_TERRAIN_VISIONER is logged in"
             loginUser(MARCIN_TERRAIN_VISIONER)
         when: "$MARCIN_TERRAIN_VISIONER confirms that all photos are uploaded"
             terrainVisionFacade.confirmAllPhotosAreUploaded(KRYNICA_CONTRACT.contractId)
         then: "Terrain vision has uploaded all photos"
-            terrainVisionFacade.getTerrainVision(KRYNICA_CONTRACT.contractId) == with(NEW_KRYNICA_TERRAIN_VISION, [allPhotosUploaded : true])
+            terrainVisionFacade.getTerrainVision(KRYNICA_CONTRACT.contractId) == with(KRYNICA_TERRAIN_VISION, [allPhotosUploaded: true])
     }
 
     def "should not allow confirm that all photos are uploaded for not privileged user"() {
-        given: "there is $NEW_KRYNICA_TERRAIN_VISION stage"
-            addKrynicaContractOnStage(ExpectedStageSample.COMPLETE_PRELIMINARY_PLAN)
+        given: "there is $KRYNICA_TERRAIN_VISION stage"
+            addKrynicaContractOnStage(ExpectedStageSample.BEGIN_TERRAIN_VISION)
         and: "$MONIKA_CONTRACT_INTRODUCER is logged in"
             loginUser(MONIKA_CONTRACT_INTRODUCER)
         when: "$MONIKA_CONTRACT_INTRODUCER tries to confirm that all photos are uploaded"
@@ -51,21 +51,21 @@ class TerrainVisionSpec extends SozztSpecification {
     }
 
     def "should confirm changes on map"() {
-        given: "there is $NEW_KRYNICA_TERRAIN_VISION stage"
-            addKrynicaContractOnStage(ExpectedStageSample.COMPLETE_PRELIMINARY_PLAN)
+        given: "there is $KRYNICA_TERRAIN_VISION stage"
+            addKrynicaContractOnStage(ExpectedStageSample.BEGIN_TERRAIN_VISION)
         and: "$MARCIN_TERRAIN_VISIONER is logged in"
             loginUser(MARCIN_TERRAIN_VISIONER)
         when: "$MARCIN_TERRAIN_VISIONER confirm changes on map as $mapChange"
             terrainVisionFacade.confirmChangesOnMap(KRYNICA_CONTRACT.contractId, mapChange)
         then: "Terrain vision has confirmed changes on map as $mapChange"
-            terrainVisionFacade.getTerrainVision(KRYNICA_CONTRACT.contractId) == with(NEW_KRYNICA_TERRAIN_VISION, [mapChange : mapChange])
+            terrainVisionFacade.getTerrainVision(KRYNICA_CONTRACT.contractId) == with(KRYNICA_TERRAIN_VISION, [mapChange: mapChange])
         where:
             mapChange << [MODIFIED, NOT_NECESSARY]
     }
 
     def "should not confirm changes on map as none"() {
-        given: "there is $NEW_KRYNICA_TERRAIN_VISION stage"
-            addKrynicaContractOnStage(ExpectedStageSample.COMPLETE_PRELIMINARY_PLAN)
+        given: "there is $KRYNICA_TERRAIN_VISION stage"
+            addKrynicaContractOnStage(ExpectedStageSample.BEGIN_TERRAIN_VISION)
         and: "$MARCIN_TERRAIN_VISIONER is logged in"
             loginUser(MARCIN_TERRAIN_VISIONER)
         when: "$MARCIN_TERRAIN_VISIONER tries to confirm changes on map as none"
@@ -75,8 +75,8 @@ class TerrainVisionSpec extends SozztSpecification {
     }
 
     def "should not allow confirm changes on map for not privileged user"() {
-        given: "there is $NEW_KRYNICA_TERRAIN_VISION stage"
-            addKrynicaContractOnStage(ExpectedStageSample.COMPLETE_PRELIMINARY_PLAN)
+        given: "there is $KRYNICA_TERRAIN_VISION stage"
+            addKrynicaContractOnStage(ExpectedStageSample.BEGIN_TERRAIN_VISION)
         and: "$MONIKA_CONTRACT_INTRODUCER is logged in"
             loginUser(MONIKA_CONTRACT_INTRODUCER)
         when: "$MONIKA_CONTRACT_INTRODUCER tries to confirm changes on map"
@@ -99,8 +99,8 @@ class TerrainVisionSpec extends SozztSpecification {
     }
 
     def "should complete terrain vision"() {
-        given: "there is $NEW_KRYNICA_TERRAIN_VISION stage"
-            addKrynicaContractOnStage(ExpectedStageSample.COMPLETE_TERRAIN_VISION)
+        given: "there is $KRYNICA_TERRAIN_VISION stage"
+            addKrynicaContractOnStage(ExpectedStageSample.BEGIN_TERRAIN_VISION)
         and: "$MARCIN_TERRAIN_VISIONER is logged in"
             loginUser(MARCIN_TERRAIN_VISIONER)
         and: "$MARCIN_TERRAIN_VISIONER confirmed that all photos are uploaded"
@@ -116,8 +116,8 @@ class TerrainVisionSpec extends SozztSpecification {
     }
 
     def "should not complete terrain vision if not all photos are uploaded"() {
-        given: "there is $NEW_KRYNICA_TERRAIN_VISION stage without all photos uploaded"
-            addKrynicaContractOnStage(ExpectedStageSample.COMPLETE_PRELIMINARY_PLAN)
+        given: "there is $KRYNICA_TERRAIN_VISION stage without all photos uploaded"
+            addKrynicaContractOnStage(ExpectedStageSample.BEGIN_TERRAIN_VISION)
             loginUser(MARCIN_TERRAIN_VISIONER)
         when: "$MARCIN_TERRAIN_VISIONER tries to complete the terrain vision"
             terrainVisionFacade.completeTerrainVision(KRYNICA_CONTRACT.contractId)
@@ -126,8 +126,8 @@ class TerrainVisionSpec extends SozztSpecification {
     }
 
     def "should not complete terrain vision if changes on map are not specified"() {
-        given: "there is $NEW_KRYNICA_TERRAIN_VISION stage"
-            addKrynicaContractOnStage(ExpectedStageSample.COMPLETE_TERRAIN_VISION)
+        given: "there is $KRYNICA_TERRAIN_VISION stage"
+            addKrynicaContractOnStage(ExpectedStageSample.BEGIN_TERRAIN_VISION)
         and: "$MARCIN_TERRAIN_VISIONER is logged in"
             loginUser(MARCIN_TERRAIN_VISIONER)
         and: "$MARCIN_TERRAIN_VISIONER confirmed that all photos are uploaded"
@@ -149,8 +149,8 @@ class TerrainVisionSpec extends SozztSpecification {
     }
 
     def "should not complete terrain vision if not privileged user"() {
-        given: "there is $NEW_KRYNICA_TERRAIN_VISION stage"
-            addKrynicaContractOnStage(ExpectedStageSample.COMPLETE_TERRAIN_VISION)
+        given: "there is $KRYNICA_TERRAIN_VISION stage"
+            addKrynicaContractOnStage(ExpectedStageSample.BEGIN_TERRAIN_VISION)
         and: "$MONIKA_CONTRACT_INTRODUCER is logged in"
             loginUser(MONIKA_CONTRACT_INTRODUCER)
         when: "$MONIKA_CONTRACT_INTRODUCER tries to complete the terrain vision"
@@ -160,8 +160,8 @@ class TerrainVisionSpec extends SozztSpecification {
     }
 
     def "should not complete terrain vision if it is already completed"() {
-        given: "there is $NEW_KRYNICA_TERRAIN_VISION stage"
-            addKrynicaContractOnStage(ExpectedStageSample.COMPLETE_TERRAIN_VISION)
+        given: "there is $KRYNICA_TERRAIN_VISION stage"
+            addKrynicaContractOnStage(ExpectedStageSample.BEGIN_TERRAIN_VISION)
         and: "$MARCIN_TERRAIN_VISIONER is logged in"
             loginUser(MARCIN_TERRAIN_VISIONER)
         and: "$MARCIN_TERRAIN_VISIONER confirmed that all photos are uploaded"

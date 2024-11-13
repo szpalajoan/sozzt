@@ -9,8 +9,9 @@ import pl.jkap.sozzt.filestorage.event.PreliminaryMapDeletedEvent;
 import pl.jkap.sozzt.filestorage.event.PreliminaryMapUploadedEvent;
 import pl.jkap.sozzt.preliminaryplanning.dto.AddPreliminaryPlanDto;
 import pl.jkap.sozzt.preliminaryplanning.dto.PreliminaryPlanDto;
+import pl.jkap.sozzt.preliminaryplanning.event.PreliminaryPlanCompletedEvent;
 import pl.jkap.sozzt.preliminaryplanning.exception.PreliminaryPlanAccessException;
-import pl.jkap.sozzt.preliminaryplanning.exception.PreliminaryPlanFinalizeException;
+import pl.jkap.sozzt.preliminaryplanning.exception.CompletePreliminaryPlanException;
 import pl.jkap.sozzt.preliminaryplanning.exception.PreliminaryPlanNotFoundException;
 
 import java.util.UUID;
@@ -19,6 +20,7 @@ import java.util.UUID;
 @Builder
 public class PreliminaryPlanFacade {
     private PreliminaryPlanRepository preliminaryPlanRepository;
+    private PreliminaryPlanEventPublisher preliminaryPlanEventPublisher;
 
     public void addPreliminaryPlan(AddPreliminaryPlanDto addPreliminaryPlanDto) {
         PreliminaryPlan preliminaryPlan = new PreliminaryPlan(addPreliminaryPlanDto.getPreliminaryPlanId(), addPreliminaryPlanDto.getDeadline());
@@ -34,12 +36,13 @@ public class PreliminaryPlanFacade {
         preliminaryPlanRepository.save(preliminaryPlan);
     }
 
-    public void finalizePreliminaryPlan(UUID preliminaryPlanId) {
+    public void completePreliminaryPlan(UUID preliminaryPlanId) {
         PreliminaryPlan preliminaryPlan = preliminaryPlanRepository.findById(preliminaryPlanId)
                 .orElseThrow(() -> new PreliminaryPlanNotFoundException("Preliminary planning not found: " + preliminaryPlanId));
         if(!preliminaryPlan.isCompleted()) {
-            throw new PreliminaryPlanFinalizeException("Preliminary plan is not completed yet: " + preliminaryPlanId);
+            throw new CompletePreliminaryPlanException("Preliminary plan is not completed yet: " + preliminaryPlanId);
         }
+        preliminaryPlanEventPublisher.preliminaryPlanCompleted(new PreliminaryPlanCompletedEvent(preliminaryPlanId));
     }
 
     public PreliminaryPlanDto getPreliminaryPlan(UUID preliminaryPlanId) {

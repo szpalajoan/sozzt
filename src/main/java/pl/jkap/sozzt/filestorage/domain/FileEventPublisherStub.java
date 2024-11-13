@@ -5,8 +5,8 @@ import pl.jkap.sozzt.inmemory.InMemoryEventInvoker;
 
 public class FileEventPublisherStub extends FileEventPublisher {
 
-    public FileEventPublisherStub(Object... facades) {
-        super(new InMemoryEventInvoker(facades));
+    public FileEventPublisherStub(InMemoryEventInvoker inMemoryEventInvoker) {
+        super(inMemoryEventInvoker);
     }
 
 }

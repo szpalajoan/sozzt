@@ -2,6 +2,8 @@ package pl.jkap.sozzt.sample
 
 enum ExpectedStageSample {
     COMPLETE_INTRODUCTION,
+    BEGIN_PRELIMINARY_PLAN,
     COMPLETE_PRELIMINARY_PLAN,
+    BEGIN_TERRAIN_VISION,
     COMPLETE_TERRAIN_VISION
 }

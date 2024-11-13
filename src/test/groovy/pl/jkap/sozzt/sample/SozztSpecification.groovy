@@ -15,17 +15,23 @@ import pl.jkap.sozzt.filestorage.domain.FileStorageConfigurator
 import pl.jkap.sozzt.filestorage.domain.FileStorageFacade
 import pl.jkap.sozzt.filestorage.domain.PreparedFile
 import pl.jkap.sozzt.filestorage.dto.FileDto
+import pl.jkap.sozzt.inmemory.InMemoryEventInvoker
 import pl.jkap.sozzt.instant.InstantProvider
 import pl.jkap.sozzt.instant.InstantSamples
 import pl.jkap.sozzt.preliminaryplanning.domain.PreliminaryPlanConfiguration
+import pl.jkap.sozzt.preliminaryplanning.domain.PreliminaryPlanEventPublisherStub
 import pl.jkap.sozzt.preliminaryplanning.domain.PreliminaryPlanFacade
 import pl.jkap.sozzt.preliminaryplanning.domain.PreliminaryPlanSample
 import pl.jkap.sozzt.preliminaryplanning.dto.PreliminaryPlanDto
 import pl.jkap.sozzt.terrainvision.TerrainVisionSample
 import pl.jkap.sozzt.terrainvision.domain.TerrainVisionConfiguration
+import pl.jkap.sozzt.terrainvision.domain.TerrainVisionEventPublisherStub
 import pl.jkap.sozzt.terrainvision.domain.TerrainVisionFacade
+import pl.jkap.sozzt.terrainvision.dto.TerrainVisionDto
 import pl.jkap.sozzt.user.UserSample
 import spock.lang.Specification
+
+import static pl.jkap.sozzt.sample.ExpectedStageSample.*
 
 class SozztSpecification extends Specification implements FileSample, PreliminaryPlanSample, TerrainVisionSample,
         ContractSample, LocationSample, ContractDetailsSample, ContractStepSample,
@@ -33,14 +39,16 @@ class SozztSpecification extends Specification implements FileSample, Preliminar
     Collection<UUID> addedFileIds = []
 
     InstantProvider instantProvider = new InstantProvider()
+    InMemoryEventInvoker eventInvoker = new InMemoryEventInvoker()
     ContractSecurityFacade contractSecurityFacade = new ContractSecurityConfiguration().contractSecurityFacade()
-    TerrainVisionFacade terrainVisionFacade = new TerrainVisionConfiguration().terrainVisionFacade(instantProvider)
-    PreliminaryPlanFacade preliminaryPlanFacade = new PreliminaryPlanConfiguration().preliminaryPlanFacade()
+    TerrainVisionFacade terrainVisionFacade = new TerrainVisionConfiguration().terrainVisionFacade(instantProvider, new TerrainVisionEventPublisherStub(eventInvoker))
+    PreliminaryPlanFacade preliminaryPlanFacade = new PreliminaryPlanConfiguration().preliminaryPlanFacade(new PreliminaryPlanEventPublisherStub(eventInvoker))
     ContractFacade contractFacade = new ContractConfiguration().contractFacade(contractSecurityFacade, preliminaryPlanFacade, terrainVisionFacade, instantProvider)
-    FileStorageFacade fileStorageFacade = new FileStorageConfigurator().fileStorageFacade(contractSecurityFacade, new FileEventPublisherStub(contractFacade, preliminaryPlanFacade))
+    FileStorageFacade fileStorageFacade = new FileStorageConfigurator().fileStorageFacade(contractSecurityFacade, new FileEventPublisherStub(eventInvoker))
 
     def setup() {
         instantProvider.useFixedClock(NOW)
+        eventInvoker.addFacades(contractFacade, preliminaryPlanFacade)
     }
 
     def cleanup(){
@@ -75,17 +83,18 @@ class SozztSpecification extends Specification implements FileSample, Preliminar
     }
 
     void addKrynicaContractOnStage(ExpectedStageSample step) {
-        if(step >= ExpectedStageSample.COMPLETE_INTRODUCTION) {
+        if(step >= COMPLETE_INTRODUCTION || step >= BEGIN_PRELIMINARY_PLAN) {
             loginUser(MONIKA_CONTRACT_INTRODUCER)
             completeIntroduceContract(KRYNICA_CONTRACT)
         }
-        if(step >= ExpectedStageSample.COMPLETE_PRELIMINARY_PLAN) {
+        if(step >= COMPLETE_PRELIMINARY_PLAN || step >= BEGIN_TERRAIN_VISION) {
             loginUser(DAREK_PRELIMINARY_PLANER)
-            completePreliminaryPlan(KRYNICA_PRELIMINARY_PLAN)
+            completePreliminaryPlan(COMPLETED_KRYNICA_PRELIMINARY_PLAN)
         }
-//        if(step >= ExpectedStepSample.COMPLETE_TERRAIN_VISION) {
-//            terrainVisionFacade.addTerrainVision(contractDto.contractId)
-//        }
+        if(step >= COMPLETE_TERRAIN_VISION) {
+            loginUser(MARCIN_TERRAIN_VISIONER)
+            completeTerrainVision(COMPLETED_KRYNICA_TERRAIN_VISION)
+        }
     }
 
     private void completeIntroduceContract(ContractDto contractDto) {
@@ -95,7 +104,12 @@ class SozztSpecification extends Specification implements FileSample, Preliminar
     private void completePreliminaryPlan(PreliminaryPlanDto preliminaryPlanDto) {
         uploadPreliminaryMap(preliminaryPlanDto, KRYNICA_PRELIMINARY_MAP)
         preliminaryPlanFacade.addGoogleMapUrl(preliminaryPlanDto.preliminaryPlanId, KRYNICA_GOOGLE_MAP_URL)
-        contractFacade.finalizePreliminaryPlan(preliminaryPlanDto.preliminaryPlanId)
+        preliminaryPlanFacade.completePreliminaryPlan(preliminaryPlanDto.preliminaryPlanId)
     }
 
+    private void completeTerrainVision(TerrainVisionDto terrainVisionDto) {
+        terrainVisionFacade.confirmAllPhotosAreUploaded(terrainVisionDto.terrainVisionId)
+        terrainVisionFacade.confirmChangesOnMap(terrainVisionDto.terrainVisionId, terrainVisionDto.mapChange)
+        terrainVisionFacade.completeTerrainVision(terrainVisionDto.terrainVisionId)
+    }
 }

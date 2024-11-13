@@ -14,7 +14,9 @@ import pl.jkap.sozzt.instant.InstantProvider;
 import pl.jkap.sozzt.contractsecurity.domain.ContractSecurityFacade;
 import pl.jkap.sozzt.contractsecurity.dto.AddSecurityContractDto;
 import pl.jkap.sozzt.preliminaryplanning.domain.PreliminaryPlanFacade;
+import pl.jkap.sozzt.preliminaryplanning.event.PreliminaryPlanCompletedEvent;
 import pl.jkap.sozzt.terrainvision.domain.TerrainVisionFacade;
+import pl.jkap.sozzt.terrainvision.event.TerrainVisionCompletedEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,14 +84,21 @@ public class ContractFacade {
         log.info("Contract finalized: {}", contract);
     }
 
-    public void finalizePreliminaryPlan(UUID contractId) {
+    public void completePreliminaryPlan(UUID contractId) {
         Contract contract = findContract(contractId);
-        contract.finalizePreliminaryPlan(preliminaryPlanFacade, terrainVisionFacade);
+        contract.completePreliminaryPlan(terrainVisionFacade);
         contractRepository.save(contract);
         log.info("Preliminary plan finalized: {}", contract);
     }
 
-    public void scanUploaded(UUID contractId) {
+    private void completeTerrainVision(UUID contractId) {
+        Contract contract = findContract(contractId);
+        contract.completeTerrainVision();
+        contractRepository.save(contract);
+        log.info("Terrain vision finalized: {}", contract);
+    }
+
+    private void scanUploaded(UUID contractId) {
         Contract contract = findContract(contractId);
         contract.confirmScanUploaded();
         contractRepository.save(contract);
@@ -115,6 +124,18 @@ public class ContractFacade {
     @SuppressWarnings("unused")
     public void onContractScanDeletedEvent(ContractScanDeletedEvent event) {
         scanDeleted(event.getContractId());
+    }
+
+    @EventListener
+    @SuppressWarnings("unused")
+    public void onPreliminaryPlanCompletedEvent(PreliminaryPlanCompletedEvent event) {
+        completePreliminaryPlan(event.getContractId());
+    }
+
+    @EventListener
+    @SuppressWarnings("unused")
+    public void onTerrainVisionCompletedEvent(TerrainVisionCompletedEvent event) {
+        completeTerrainVision(event.getContractId());
     }
 
 }

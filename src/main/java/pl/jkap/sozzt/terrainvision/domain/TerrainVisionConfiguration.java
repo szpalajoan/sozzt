@@ -8,10 +8,11 @@ import pl.jkap.sozzt.instant.InstantProvider;
 public class TerrainVisionConfiguration {
 
     @Bean
-    public TerrainVisionFacade terrainVisionFacade(InstantProvider instantProvider) {
+    public TerrainVisionFacade terrainVisionFacade(InstantProvider instantProvider, TerrainVisionEventPublisher terrainVisionEventPublisher) {
         return TerrainVisionFacade.builder()
                 .terrainVisionRepository(new InMemoryTerrainVisionRepository())
                 .instantProvider(instantProvider)
+                .terrainVisionEventPublisher(terrainVisionEventPublisher)
                 .build();
     }
 

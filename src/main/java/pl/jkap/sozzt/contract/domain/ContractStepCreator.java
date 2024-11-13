@@ -11,7 +11,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Builder
-public class ContractStepCreator {
+class ContractStepCreator {
 
     private final TerrainVisionFacade terrainVisionFacade;
     private final PreliminaryPlanFacade preliminaryPlanFacade;

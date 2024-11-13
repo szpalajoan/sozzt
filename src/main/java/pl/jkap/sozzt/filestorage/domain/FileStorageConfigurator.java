@@ -17,7 +17,4 @@ public class FileStorageConfigurator {
                 .build();
     }
 
-//    public FileStorageFacade fileStorageFacade(ContractSecurityFacade contractSecurityFacade, FileEventPublisherStub contractSpringEventPublisher) {
-//        return fileStorageFacade(contractSecurityFacade, new InMemoryFileRepository(), contractSpringEventPublisher);
-//    }
 }

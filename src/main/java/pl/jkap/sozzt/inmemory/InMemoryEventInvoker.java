@@ -17,13 +17,16 @@ public class InMemoryEventInvoker implements ApplicationEventPublisher {
 
     private final Map<Class<?>, Object> instances = new HashMap<>();
 
-    public InMemoryEventInvoker(@NotNull Object... objects) {
-        for (Object obj : objects) {
-            instances.put(obj.getClass(), obj);
+    public InMemoryEventInvoker() {
+    }
+
+    public void addFacades(@NotNull Object... facades) {
+        for (Object facade : facades) {
+            instances.put(facade.getClass(), facade);
         }
     }
 
-    public void invokeEvent(Object event) {
+    private void invokeEvent(Object event) {
         Class<?> eventClass = event.getClass();
         String methodName = "on" + eventClass.getSimpleName();
         List<Class<?>> listenerClasses = findClassesWithMethod(methodName);
@@ -76,12 +79,12 @@ public class InMemoryEventInvoker implements ApplicationEventPublisher {
     }
 
     @Override
-    public void publishEvent(ApplicationEvent event) {
+    public void publishEvent(@NotNull ApplicationEvent event) {
         invokeEvent(event);
     }
 
     @Override
-    public void publishEvent(Object event) {
+    public void publishEvent(@NotNull Object event) {
         invokeEvent(event);
     }
 }

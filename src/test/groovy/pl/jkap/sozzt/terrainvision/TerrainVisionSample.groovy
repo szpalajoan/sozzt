@@ -8,7 +8,7 @@ import java.time.Duration
 
 trait TerrainVisionSample implements ContractSample{
 
-    TerrainVisionDto NEW_KRYNICA_TERRAIN_VISION = TerrainVisionDto.builder()
+    TerrainVisionDto KRYNICA_TERRAIN_VISION = TerrainVisionDto.builder()
             .terrainVisionId(KRYNICA_CONTRACT.contractId)
             .allPhotosUploaded(false)
             .deadline(KRYNICA_CONTRACT.contractDetails.orderDate + Duration.ofDays(21))
