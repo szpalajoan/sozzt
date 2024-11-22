@@ -28,4 +28,10 @@ public class PreliminaryPlanController {
     public void editPreliminaryPlan(@PathVariable UUID idContract, @RequestBody EditPreliminaryPlanDto editPreliminaryPlanDto) {
         preliminaryPlanFacade.addGoogleMapUrl(idContract, editPreliminaryPlanDto.getGoogleMapUrl());
     }
+
+    @PostMapping("{idContract}/complete")
+    @ResponseStatus(HttpStatus.OK)
+    public void completePreliminaryPlan(@PathVariable UUID idContract) {
+        preliminaryPlanFacade.completePreliminaryPlan(idContract);
+    }
 }

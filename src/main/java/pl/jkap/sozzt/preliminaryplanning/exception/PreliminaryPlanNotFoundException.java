@@ -1,7 +1,10 @@
 package pl.jkap.sozzt.preliminaryplanning.exception;
 
-public class PreliminaryPlanNotFoundException extends RuntimeException {
+import org.springframework.http.HttpStatus;
+import pl.jkap.sozzt.config.SozztException;
+
+public class PreliminaryPlanNotFoundException extends SozztException {
     public PreliminaryPlanNotFoundException(String message) {
-        super(message);
+        super(message, HttpStatus.NOT_FOUND, "preliminary-plan.not-found.error");
     }
 }
