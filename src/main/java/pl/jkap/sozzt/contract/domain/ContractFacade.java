@@ -15,6 +15,7 @@ import pl.jkap.sozzt.contractsecurity.domain.ContractSecurityFacade;
 import pl.jkap.sozzt.contractsecurity.dto.AddSecurityContractDto;
 import pl.jkap.sozzt.preliminaryplanning.domain.PreliminaryPlanFacade;
 import pl.jkap.sozzt.preliminaryplanning.event.PreliminaryPlanCompletedEvent;
+import pl.jkap.sozzt.routepreparation.domain.RoutePreparationFacade;
 import pl.jkap.sozzt.terrainvision.domain.TerrainVisionFacade;
 import pl.jkap.sozzt.terrainvision.event.TerrainVisionCompletedEvent;
 
@@ -34,6 +35,7 @@ public class ContractFacade {
     private final ContractStepCreator contractStepCreator;
     private final PreliminaryPlanFacade preliminaryPlanFacade;
     private final TerrainVisionFacade terrainVisionFacade;
+    private final RoutePreparationFacade routePreparationFacade;
     private final InstantProvider instantProvider;
 
     public ContractDto addContract(CreateContractDto createContractDto) {
@@ -93,7 +95,7 @@ public class ContractFacade {
 
     private void completeTerrainVision(UUID contractId) {
         Contract contract = findContract(contractId);
-        contract.completeTerrainVision();
+        contract.completeTerrainVision(routePreparationFacade);
         contractRepository.save(contract);
         log.info("Terrain vision finalized: {}", contract);
     }

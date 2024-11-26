@@ -8,6 +8,7 @@ import pl.jkap.sozzt.user.UserSample
 
 import static pl.jkap.sozzt.contract.dto.ContractStepDto.ContractStepStatusDto.DONE
 import static pl.jkap.sozzt.contract.dto.ContractStepDto.ContractStepStatusDto.IN_PROGRESS
+import static pl.jkap.sozzt.contract.dto.ContractStepDto.ContractStepStatusDto.NOT_ACTIVE
 
 trait ContractSample implements UserSample, LocationSample, ContractDetailsSample, ContractStepSample, InstantSamples {
 
@@ -22,15 +23,20 @@ trait ContractSample implements UserSample, LocationSample, ContractDetailsSampl
                                                             contractSteps           : []])
 
     ContractDto INTRODUCED_KRYNICA_CONTRACT = with(KRYNICA_CONTRACT, [isScanFromTauronUploaded: true,
-                                                                      contractSteps           : [KRYNICA_CONTRACT_PRELIMINARY_PLAN_STEP, KRYNICA_CONTRACT_TERRAIN_VISION_STEP]])
+                                                                      contractSteps           : [KRYNICA_CONTRACT_PRELIMINARY_PLAN_STEP,
+                                                                                                 KRYNICA_CONTRACT_TERRAIN_VISION_STEP,
+                                                                                                 KRYNICA_CONTRACT_ROUTE_PREPARATION_STEP]])
 
     ContractDto COMPLETED_PRELIMINARY_PLAN_KRYNICA_CONTRACT = with(INTRODUCED_KRYNICA_CONTRACT, [
             contractSteps: [with(KRYNICA_CONTRACT_PRELIMINARY_PLAN_STEP, [contractStepStatus: DONE]),
-                            with(KRYNICA_CONTRACT_TERRAIN_VISION_STEP, [contractStepStatus: IN_PROGRESS])]])
+                            with(KRYNICA_CONTRACT_TERRAIN_VISION_STEP, [contractStepStatus: IN_PROGRESS]),
+                            with(KRYNICA_CONTRACT_ROUTE_PREPARATION_STEP, [contractStepStatus: NOT_ACTIVE])]])
 
     ContractDto COMPLETED_TERRAIN_VISION_KRYNICA_CONTRACT = with(COMPLETED_PRELIMINARY_PLAN_KRYNICA_CONTRACT, [
             contractSteps: [with(KRYNICA_CONTRACT_PRELIMINARY_PLAN_STEP, [contractStepStatus: DONE]),
-                            with(KRYNICA_CONTRACT_TERRAIN_VISION_STEP, [contractStepStatus: DONE])]])
+                            with(KRYNICA_CONTRACT_TERRAIN_VISION_STEP, [contractStepStatus: DONE]),
+                            with(KRYNICA_CONTRACT_ROUTE_PREPARATION_STEP, [contractStepStatus: IN_PROGRESS])]])
+
 
     ContractDto with(ContractDto contractDto, Map<String, Object> properties) {
         return SampleModifier.with(ContractDto.class, contractDto, properties)

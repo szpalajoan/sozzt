@@ -13,7 +13,7 @@ class TerrainVisionSpec extends SozztSpecification {
 
     def "should add terrain vision"() {
         when: "preliminary plan is completed"
-            addKrynicaContractOnStage(ExpectedStageSample.BEGIN_TERRAIN_VISION)
+            addKrynicaContractOnStage(ExpectedStageSample.COMPLETED_PRELIMINARY_PLAN)
         then: "Terrain vision is started"
             terrainVisionFacade.getTerrainVision(KRYNICA_CONTRACT.contractId) == KRYNICA_TERRAIN_VISION
             contractFacade.getContract(KRYNICA_CONTRACT.contractId) == COMPLETED_PRELIMINARY_PLAN_KRYNICA_CONTRACT
