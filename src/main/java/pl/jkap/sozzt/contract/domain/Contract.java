@@ -72,9 +72,11 @@ class Contract implements Serializable {
         terrainVisionStep.beginStep();
     }
 
-    void completeTerrainVision(RoutePreparationFacade routePreparationFacade) {
+    void completeTerrainVision(RoutePreparationFacade routePreparationFacade, boolean routePreparationNecessary) {
         completeTerrainVisionStep();
-        beginRoutePreparationStep(routePreparationFacade);
+        if(routePreparationNecessary){
+            beginRoutePreparationStep(routePreparationFacade);
+        }
     }
 
     private void completeTerrainVisionStep() {

@@ -96,7 +96,12 @@ class SozztSpecification extends Specification implements FileSample, Preliminar
         }
         if(step >= COMPLETED_TERRAIN_VISION) {
             loginUser(MARCIN_TERRAIN_VISIONER)
-            completeTerrainVision(COMPLETED_KRYNICA_TERRAIN_VISION)
+            if(step == COMPLETED_TERRAIN_VISION_WITHOUT_MAP_REQUIRED){
+                completeTerrainVision(COMPLETED_KRYNICA_TERRAIN_VISION)
+            } else {
+                completeTerrainVision(COMPLETED_KRYNICA_TERRAIN_VISION, true)
+            }
+
         }
     }
 
@@ -110,9 +115,10 @@ class SozztSpecification extends Specification implements FileSample, Preliminar
         preliminaryPlanFacade.completePreliminaryPlan(preliminaryPlanDto.preliminaryPlanId)
     }
 
-    private void completeTerrainVision(TerrainVisionDto terrainVisionDto) {
+    private void completeTerrainVision(TerrainVisionDto terrainVisionDto, boolean withMapChange = false) {
+        TerrainVisionDto.MapChange mapChange = withMapChange ? TerrainVisionDto.MapChange.MODIFIED : TerrainVisionDto.MapChange.NOT_NECESSARY
         terrainVisionFacade.confirmAllPhotosAreUploaded(terrainVisionDto.terrainVisionId)
-        terrainVisionFacade.confirmChangesOnMap(terrainVisionDto.terrainVisionId, terrainVisionDto.mapChange)
+        terrainVisionFacade.confirmChangesOnMap(terrainVisionDto.terrainVisionId, mapChange)
         terrainVisionFacade.completeTerrainVision(terrainVisionDto.terrainVisionId)
     }
 }

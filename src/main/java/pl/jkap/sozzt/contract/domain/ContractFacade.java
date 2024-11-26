@@ -93,9 +93,9 @@ public class ContractFacade {
         log.info("Preliminary plan finalized: {}", contract);
     }
 
-    private void completeTerrainVision(UUID contractId) {
+    private void completeTerrainVision(UUID contractId, boolean routePreparationNecessary) {
         Contract contract = findContract(contractId);
-        contract.completeTerrainVision(routePreparationFacade);
+        contract.completeTerrainVision(routePreparationFacade, routePreparationNecessary);
         contractRepository.save(contract);
         log.info("Terrain vision finalized: {}", contract);
     }
@@ -137,7 +137,7 @@ public class ContractFacade {
     @EventListener
     @SuppressWarnings("unused")
     public void onTerrainVisionCompletedEvent(TerrainVisionCompletedEvent event) {
-        completeTerrainVision(event.getContractId());
+        completeTerrainVision(event.getContractId(), event.isRoutePreparationNecessary());
     }
 
 }
