@@ -46,10 +46,8 @@ public class FileStorageFacade {
     public FileDto addContractScan(AddFileDto addContractScanDto) {
         contractSecurityFacade.checkCanAddContractScan(addContractScanDto.getObjectId());
         File addedFile = addFile(
-                addContractScanDto.getFileId().orElseGet(UUID::randomUUID),
-                addContractScanDto.getFile(),
-                FileType.CONTRACT_SCAN_FROM_TAURON,
-                addContractScanDto.getObjectId()
+                addContractScanDto,
+                FileType.CONTRACT_SCAN_FROM_TAURON
         );
         fileEventPublisher.contractScanUploaded(new ContractScanAddedEvent(addedFile.getObjectId()));
         return addedFile.dto();
@@ -58,12 +56,37 @@ public class FileStorageFacade {
     public FileDto addPreliminaryMap(AddFileDto addPreliminaryMapFileDto) {
         contractSecurityFacade.checkCanAddPreliminaryMap(addPreliminaryMapFileDto.getObjectId());
         File addedFile = addFile(
-                addPreliminaryMapFileDto.getFileId().orElseGet(UUID::randomUUID),
-                addPreliminaryMapFileDto.getFile(),
-                FileType.PRELIMINARY_MAP,
-                addPreliminaryMapFileDto.getObjectId()
+                addPreliminaryMapFileDto,
+                FileType.PRELIMINARY_MAP
         );
         return addedFile.dto();
+    }
+
+    public FileDto addPhotoFromPlaceOfTheContract(AddFileDto addPhotoFromPlaceOfTheContractDto) {
+        contractSecurityFacade.checkCanEditTerrainVision();
+        File addedFile = addFile(
+                addPhotoFromPlaceOfTheContractDto,
+                FileType.PHOTO_FROM_PLACE_OF_THE_CONTRACT
+        );
+        return addedFile.dto();
+    }
+
+    public FileDto addPreliminaryMapUpdated(AddFileDto addPreliminaryMapFileDto) {
+        contractSecurityFacade.checkCanEditTerrainVision();
+        File addedFile = addFile(
+                addPreliminaryMapFileDto,
+                FileType.PRELIMINARY_MAP_UPDATED
+        );
+        return addedFile.dto();
+    }
+
+    private File addFile(AddFileDto addFileDto, FileType fileType) {
+        return addFile(
+                addFileDto.getFileId().orElseGet(UUID::randomUUID),
+                addFileDto.getFile(),
+                fileType,
+                addFileDto.getObjectId()
+        );
     }
 
     private File addFile(UUID fileId, MultipartFile file, FileType fileType, UUID objectId) {

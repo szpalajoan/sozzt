@@ -1,8 +1,11 @@
 package pl.jkap.sozzt.contractsecurity.exception;
 
-abstract class ContractSecurityException extends RuntimeException {
+import org.springframework.http.HttpStatus;
+import pl.jkap.sozzt.config.SozztException;
+
+abstract class ContractSecurityException extends SozztException {
 
     public ContractSecurityException(String message) {
-        super(message);
+        super(message, HttpStatus.FORBIDDEN, "contract.security.exception");
     }
 }
