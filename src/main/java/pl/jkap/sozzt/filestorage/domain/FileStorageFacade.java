@@ -81,27 +81,21 @@ public class FileStorageFacade {
     }
 
     private File addFile(AddFileDto addFileDto, FileType fileType) {
-        return addFile(
-                addFileDto.getFileId().orElseGet(UUID::randomUUID),
-                addFileDto.getFile(),
-                fileType,
-                addFileDto.getObjectId()
-        );
-    }
+        UUID fileId = addFileDto.getFileId().orElseGet(UUID::randomUUID);
 
-    private File addFile(UUID fileId, MultipartFile file, FileType fileType, UUID objectId) {
         checkFileNotExists(fileId);
-        String path = calculatePath(fileType, objectId);
-        String savedFilePath = fileSystemStorage.store(file, path);
+
+        String path = calculatePath(fileType, addFileDto.getObjectId());
+        String savedFilePath = fileSystemStorage.store(addFileDto.getFile(), path);
         File newFile = File.builder()
                 .fileId(fileId)
-                .fileName(file.getOriginalFilename())
+                .fileName(addFileDto.getFile().getOriginalFilename())
                 .fileType(fileType)
-                .objectId(objectId)
+                .objectId(addFileDto.getObjectId())
                 .path(savedFilePath)
                 .build();
         fileRepository.save(newFile);
-        publishEvent(objectId, fileType);
+        publishEvent(addFileDto.getObjectId(), fileType);
         return newFile;
     }
 

@@ -75,4 +75,6 @@ public class TerrainVisionFacade {
             throw new TerrainVisionAccessException("You are not authorized to modify terrain vision");
         }
     }
+
+
 }
