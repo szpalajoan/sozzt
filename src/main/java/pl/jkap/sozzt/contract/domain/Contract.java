@@ -97,7 +97,7 @@ class Contract implements Serializable {
         return contractSteps.stream()
                 .filter(step -> step.getContractStepType() == contractStepType)
                 .findFirst()
-                .orElseThrow(() -> new ContractStepNotFoundException(STR."Contract step: \{contractStepType} not found"));
+                .orElseThrow(() -> new ContractStepNotFoundException("Contract t found"));
     }
 
     boolean isContractCompleted() {

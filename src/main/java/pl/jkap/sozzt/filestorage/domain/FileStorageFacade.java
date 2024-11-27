@@ -35,9 +35,9 @@ public class FileStorageFacade {
         this.fileEventPublisher = fileEventPublisher;
     }
 
-    public List<FileDto> getFiles(UUID objectId, FileType fileType){
+    public List<FileDto> getFiles(UUID objectId, FileDto.FileTypeDto fileType){
         return fileRepository
-                .findByObjectIdAndFileType(objectId, fileType)
+                .findByObjectIdAndFileType(objectId, FileType.valueOf(fileType.name()))
                 .stream()
                 .map(File::dto)
                 .toList();

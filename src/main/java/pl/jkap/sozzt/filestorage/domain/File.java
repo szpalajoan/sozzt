@@ -32,7 +32,7 @@ class File implements Serializable {
         return FileDto.builder()
                 .fileId(fileId)
                 .fileName(fileName)
-                .fileType(fileType)
+                .fileType(FileDto.FileTypeDto.valueOf(fileType.name()))
                 .objectId(objectId)
                 .build();
     }

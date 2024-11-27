@@ -56,7 +56,7 @@ public class FileStorageController {
     }
 
     @GetMapping("{contractId}/files")
-    public ResponseEntity<List<FileDto>> getFiles(@PathVariable UUID contractId, @RequestParam("fileType") FileType fileType) {
+    public ResponseEntity<List<FileDto>> getFiles(@PathVariable UUID contractId, @RequestParam("fileType") FileDto.FileTypeDto fileType) {
         List<FileDto> files = fileStorageFacade.getFiles(contractId, fileType);
         return ResponseEntity.ok(files);
     }
