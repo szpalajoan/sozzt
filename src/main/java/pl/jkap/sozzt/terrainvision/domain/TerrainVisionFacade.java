@@ -65,7 +65,8 @@ public class TerrainVisionFacade {
                 .orElseThrow(() -> new TerrainVisionNotFoundException("TerrainVision not found: " + terrainVisionId));
         CompletedTerrainVision completedTerrainVision = inProgressTerrainVision.complete();
         terrainVisionRepository.save(completedTerrainVision);
-        terrainVisionEventPublisher.terrainVisionCompleted(new TerrainVisionCompletedEvent(terrainVisionId));
+        terrainVisionEventPublisher.terrainVisionCompleted(new TerrainVisionCompletedEvent(terrainVisionId,
+                        completedTerrainVision.getMapChange().equals(TerrainVision.MapChange.MODIFIED)));
     }
 
     private void checkCanModifyTerrainVision() {

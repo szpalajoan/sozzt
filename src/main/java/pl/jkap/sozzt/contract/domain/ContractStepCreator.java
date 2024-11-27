@@ -35,4 +35,9 @@ class ContractStepCreator {
         return new ContractStep(ContractStepType.TERRAIN_VISION, ContractStepStatus.ON_HOLD, deadline);
     }
 
+    ContractStep createRoutePreparationStep(UUID contractId, Instant contractOrderDate) {
+        Instant deadline = contractOrderDate.plus(Duration.ofDays(51));
+        return new ContractStep(ContractStepType.ROUTE_PREPARATION, ContractStepStatus.NOT_ACTIVE, deadline);
+    }
+
 }

@@ -11,6 +11,8 @@ import pl.jkap.sozzt.contract.dto.ContractDto;
 import pl.jkap.sozzt.contract.dto.EditContractDto;
 import pl.jkap.sozzt.contract.exception.ContractStepNotFoundException;
 import pl.jkap.sozzt.globalvalueobjects.AuditInfo;
+import pl.jkap.sozzt.routepreparation.domain.RoutePreparationFacade;
+import pl.jkap.sozzt.routepreparation.dto.AddRoutePreparationDto;
 import pl.jkap.sozzt.terrainvision.domain.TerrainVisionFacade;
 
 import java.io.Serializable;
@@ -52,6 +54,7 @@ class Contract implements Serializable {
     void createSteps(ContractStepCreator contractStepCreator) {
         contractSteps.add(contractStepCreator.createPreliminaryPlanStep(contractId, contractDetails.getOrderDate()));
         contractSteps.add(contractStepCreator.createTerrainVisionStep(contractId, contractDetails.getOrderDate()));
+        contractSteps.add(contractStepCreator.createRoutePreparationStep(contractId, contractDetails.getOrderDate()));
     }
 
     void completePreliminaryPlan(TerrainVisionFacade terrainVisionFacade) {
@@ -60,27 +63,41 @@ class Contract implements Serializable {
     }
 
     private void completePreliminaryPlanStep() {
-        ContractStep preliminaryPlanStep = contractSteps.stream()
-                .filter(step -> step.getContractStepType() == ContractStepType.PRELIMINARY_PLAN)
-                .findFirst()
-                .orElseThrow(() -> new ContractStepNotFoundException("Preliminary plan step not found"));
+        ContractStep preliminaryPlanStep = getContractStep(ContractStepType.PRELIMINARY_PLAN);
         preliminaryPlanStep.completeStep();
     }
     private void beginTerrainVisionStep(TerrainVisionFacade terrainVisionFacade) {
         terrainVisionFacade.beginTerrainVision(contractId);
-        ContractStep terrainVisionStep = contractSteps.stream()
-                .filter(step -> step.getContractStepType() == ContractStepType.TERRAIN_VISION)
-                .findFirst()
-                .orElseThrow(() -> new ContractStepNotFoundException("Terrain vision step not found"));
+        ContractStep terrainVisionStep = getContractStep(ContractStepType.TERRAIN_VISION);
         terrainVisionStep.beginStep();
     }
 
-    void completeTerrainVision() {
-        ContractStep terrainVisionStep = contractSteps.stream()
-                .filter(step -> step.getContractStepType() == ContractStepType.TERRAIN_VISION)
-                .findFirst()
-                .orElseThrow(() -> new ContractStepNotFoundException("Terrain vision step not found"));
+    void completeTerrainVision(RoutePreparationFacade routePreparationFacade, boolean routePreparationNecessary) {
+        completeTerrainVisionStep();
+        if(routePreparationNecessary){
+            beginRoutePreparationStep(routePreparationFacade);
+        }
+    }
+
+    private void completeTerrainVisionStep() {
+        ContractStep terrainVisionStep = getContractStep(ContractStepType.TERRAIN_VISION);
         terrainVisionStep.completeStep();
+    }
+
+    private void beginRoutePreparationStep(RoutePreparationFacade routePreparationFacade) {
+        ContractStep routePreparationStep = getContractStep(ContractStepType.ROUTE_PREPARATION);
+        routePreparationFacade.addRoutePreparation(AddRoutePreparationDto.builder()
+                .routePreparationId(contractId)
+                .deadline(routePreparationStep.getDeadline())
+                .build());
+        routePreparationStep.beginStep();
+    }
+
+    private ContractStep getContractStep(ContractStepType contractStepType) {
+        return contractSteps.stream()
+                .filter(step -> step.getContractStepType() == contractStepType)
+                .findFirst()
+                .orElseThrow(() -> new ContractStepNotFoundException(STR."Contract step: \{contractStepType} not found"));
     }
 
     boolean isContractCompleted() {

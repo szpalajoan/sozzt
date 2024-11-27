@@ -23,6 +23,8 @@ import pl.jkap.sozzt.preliminaryplanning.domain.PreliminaryPlanEventPublisherStu
 import pl.jkap.sozzt.preliminaryplanning.domain.PreliminaryPlanFacade
 import pl.jkap.sozzt.preliminaryplanning.domain.PreliminaryPlanSample
 import pl.jkap.sozzt.preliminaryplanning.dto.PreliminaryPlanDto
+import pl.jkap.sozzt.routepreparation.domain.RoutePreparationConfiguration
+import pl.jkap.sozzt.routepreparation.domain.RoutePreparationFacade
 import pl.jkap.sozzt.terrainvision.TerrainVisionSample
 import pl.jkap.sozzt.terrainvision.domain.TerrainVisionConfiguration
 import pl.jkap.sozzt.terrainvision.domain.TerrainVisionEventPublisherStub
@@ -33,7 +35,7 @@ import spock.lang.Specification
 
 import static pl.jkap.sozzt.sample.ExpectedStageSample.*
 
-class SozztSpecification extends Specification implements FileSample, PreliminaryPlanSample, TerrainVisionSample,
+class SozztSpecification extends Specification implements FileSample, PreliminaryPlanSample, TerrainVisionSample, RoutePreparationSample,
         ContractSample, LocationSample, ContractDetailsSample, ContractStepSample,
         UserSample, InstantSamples {
     Collection<UUID> addedFileIds = []
@@ -41,9 +43,10 @@ class SozztSpecification extends Specification implements FileSample, Preliminar
     InstantProvider instantProvider = new InstantProvider()
     InMemoryEventInvoker eventInvoker = new InMemoryEventInvoker()
     ContractSecurityFacade contractSecurityFacade = new ContractSecurityConfiguration().contractSecurityFacade()
-    TerrainVisionFacade terrainVisionFacade = new TerrainVisionConfiguration().terrainVisionFacade(instantProvider, new TerrainVisionEventPublisherStub(eventInvoker))
     PreliminaryPlanFacade preliminaryPlanFacade = new PreliminaryPlanConfiguration().preliminaryPlanFacade(new PreliminaryPlanEventPublisherStub(eventInvoker))
-    ContractFacade contractFacade = new ContractConfiguration().contractFacade(contractSecurityFacade, preliminaryPlanFacade, terrainVisionFacade, instantProvider)
+    TerrainVisionFacade terrainVisionFacade = new TerrainVisionConfiguration().terrainVisionFacade(instantProvider, new TerrainVisionEventPublisherStub(eventInvoker))
+    RoutePreparationFacade routePreparationFacade = new RoutePreparationConfiguration().routePreparationFacade()
+    ContractFacade contractFacade = new ContractConfiguration().contractFacade(contractSecurityFacade, preliminaryPlanFacade, terrainVisionFacade, routePreparationFacade, instantProvider)
     FileStorageFacade fileStorageFacade = new FileStorageConfigurator().fileStorageFacade(contractSecurityFacade, new FileEventPublisherStub(eventInvoker))
 
     def setup() {
@@ -83,17 +86,22 @@ class SozztSpecification extends Specification implements FileSample, Preliminar
     }
 
     void addKrynicaContractOnStage(ExpectedStageSample step) {
-        if(step >= COMPLETE_INTRODUCTION || step >= BEGIN_PRELIMINARY_PLAN) {
+        if(step >= COMPLETED_INTRODUCTION || step >= BEGIN_PRELIMINARY_PLAN) {
             loginUser(MONIKA_CONTRACT_INTRODUCER)
             completeIntroduceContract(KRYNICA_CONTRACT)
         }
-        if(step >= COMPLETE_PRELIMINARY_PLAN || step >= BEGIN_TERRAIN_VISION) {
+        if(step >= COMPLETED_PRELIMINARY_PLAN || step >= BEGIN_TERRAIN_VISION) {
             loginUser(DAREK_PRELIMINARY_PLANER)
             completePreliminaryPlan(COMPLETED_KRYNICA_PRELIMINARY_PLAN)
         }
-        if(step >= COMPLETE_TERRAIN_VISION) {
+        if(step >= COMPLETED_TERRAIN_VISION) {
             loginUser(MARCIN_TERRAIN_VISIONER)
-            completeTerrainVision(COMPLETED_KRYNICA_TERRAIN_VISION)
+            if(step == COMPLETED_TERRAIN_VISION_WITHOUT_MAP_REQUIRED){
+                completeTerrainVision(COMPLETED_KRYNICA_TERRAIN_VISION)
+            } else {
+                completeTerrainVision(COMPLETED_KRYNICA_TERRAIN_VISION, true)
+            }
+
         }
     }
 
@@ -107,9 +115,10 @@ class SozztSpecification extends Specification implements FileSample, Preliminar
         preliminaryPlanFacade.completePreliminaryPlan(preliminaryPlanDto.preliminaryPlanId)
     }
 
-    private void completeTerrainVision(TerrainVisionDto terrainVisionDto) {
+    private void completeTerrainVision(TerrainVisionDto terrainVisionDto, boolean withMapChange = false) {
+        TerrainVisionDto.MapChange mapChange = withMapChange ? TerrainVisionDto.MapChange.MODIFIED : TerrainVisionDto.MapChange.NOT_NECESSARY
         terrainVisionFacade.confirmAllPhotosAreUploaded(terrainVisionDto.terrainVisionId)
-        terrainVisionFacade.confirmChangesOnMap(terrainVisionDto.terrainVisionId, terrainVisionDto.mapChange)
+        terrainVisionFacade.confirmChangesOnMap(terrainVisionDto.terrainVisionId, mapChange)
         terrainVisionFacade.completeTerrainVision(terrainVisionDto.terrainVisionId)
     }
 }
