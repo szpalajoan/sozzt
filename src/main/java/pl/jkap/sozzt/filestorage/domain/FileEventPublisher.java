@@ -3,10 +3,7 @@ package pl.jkap.sozzt.filestorage.domain;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
-import pl.jkap.sozzt.filestorage.event.ContractScanAddedEvent;
-import pl.jkap.sozzt.filestorage.event.ContractScanDeletedEvent;
-import pl.jkap.sozzt.filestorage.event.PreliminaryMapDeletedEvent;
-import pl.jkap.sozzt.filestorage.event.PreliminaryMapUploadedEvent;
+import pl.jkap.sozzt.filestorage.event.*;
 
 @Component
 public class FileEventPublisher {
@@ -32,5 +29,9 @@ public class FileEventPublisher {
 
     public void preliminaryMapDeleted(PreliminaryMapDeletedEvent preliminaryMapUploadedEvent) {
         applicationEventPublisher.publishEvent(preliminaryMapUploadedEvent);
+    }
+
+    public void geodeticMapUploaded(GeodeticMapUploadedEvent geodeticMapUploadedEvent) {
+        applicationEventPublisher.publishEvent(geodeticMapUploadedEvent);
     }
 }

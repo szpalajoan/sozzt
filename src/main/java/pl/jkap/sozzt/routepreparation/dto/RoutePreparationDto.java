@@ -14,4 +14,5 @@ public class RoutePreparationDto {
 
     private UUID routePreparationId;
     private Instant deadline;
+    private boolean isGeodeticMapUploaded;
 }

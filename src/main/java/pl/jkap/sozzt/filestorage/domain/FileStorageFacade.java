@@ -1,14 +1,10 @@
 package pl.jkap.sozzt.filestorage.domain;
 
 import lombok.Builder;
-import org.springframework.web.multipart.MultipartFile;
 import pl.jkap.sozzt.contractsecurity.domain.ContractSecurityFacade;
 import pl.jkap.sozzt.filestorage.dto.AddFileDto;
 import pl.jkap.sozzt.filestorage.dto.FileDto;
-import pl.jkap.sozzt.filestorage.event.ContractScanAddedEvent;
-import pl.jkap.sozzt.filestorage.event.ContractScanDeletedEvent;
-import pl.jkap.sozzt.filestorage.event.PreliminaryMapDeletedEvent;
-import pl.jkap.sozzt.filestorage.event.PreliminaryMapUploadedEvent;
+import pl.jkap.sozzt.filestorage.event.*;
 import pl.jkap.sozzt.filestorage.exception.FileAlreadyExistsException;
 import pl.jkap.sozzt.filestorage.exception.FileNotFoundException;
 
@@ -80,6 +76,16 @@ public class FileStorageFacade {
         return addedFile.dto();
     }
 
+    public FileDto addGeodeticMap(AddFileDto geodeticMapFileDto) {
+        contractSecurityFacade.checkCanUploadGeodeticMap();
+        File addedFile = addFile(
+                geodeticMapFileDto,
+                FileType.GEODETIC_MAP
+        );
+        return addedFile.dto();
+
+    }
+
     private File addFile(AddFileDto addFileDto, FileType fileType) {
         UUID fileId = addFileDto.getFileId().orElseGet(UUID::randomUUID);
 
@@ -106,6 +112,9 @@ public class FileStorageFacade {
                 break;
             case PRELIMINARY_MAP:
                 fileEventPublisher.preliminaryMapUploaded(new PreliminaryMapUploadedEvent(objectId));
+                break;
+            case GEODETIC_MAP:
+                fileEventPublisher.geodeticMapUploaded(new GeodeticMapUploadedEvent(objectId));
                 break;
         }
     }

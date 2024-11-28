@@ -14,7 +14,8 @@ public class FileDto {
         CONTRACT_SCAN_FROM_TAURON,
         PRELIMINARY_MAP,
         PHOTO_FROM_PLACE_OF_THE_CONTRACT,
-        PRELIMINARY_MAP_UPDATED
+        PRELIMINARY_MAP_UPDATED,
+        GEODETIC_MAP
     }
     private UUID fileId;
     private String fileName;

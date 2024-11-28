@@ -21,11 +21,17 @@ class RoutePreparation {
     @Id
     private UUID routePreparationId;
     Instant deadline;
+    boolean isGeodeticMapUploaded;
 
     public RoutePreparationDto dto() {
         return RoutePreparationDto.builder()
                 .routePreparationId(routePreparationId)
                 .deadline(deadline)
+                .isGeodeticMapUploaded(isGeodeticMapUploaded)
                 .build();
+    }
+
+    void markGeodeticMapUploaded() {
+        isGeodeticMapUploaded = true;
     }
 }

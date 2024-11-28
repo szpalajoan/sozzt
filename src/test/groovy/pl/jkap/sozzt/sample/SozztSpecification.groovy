@@ -23,8 +23,10 @@ import pl.jkap.sozzt.preliminaryplanning.domain.PreliminaryPlanEventPublisherStu
 import pl.jkap.sozzt.preliminaryplanning.domain.PreliminaryPlanFacade
 import pl.jkap.sozzt.preliminaryplanning.domain.PreliminaryPlanSample
 import pl.jkap.sozzt.preliminaryplanning.dto.PreliminaryPlanDto
+import pl.jkap.sozzt.routepreparation.RoutePreparationSample
 import pl.jkap.sozzt.routepreparation.domain.RoutePreparationConfiguration
 import pl.jkap.sozzt.routepreparation.domain.RoutePreparationFacade
+import pl.jkap.sozzt.routepreparation.dto.RoutePreparationDto
 import pl.jkap.sozzt.terrainvision.TerrainVisionSample
 import pl.jkap.sozzt.terrainvision.domain.TerrainVisionConfiguration
 import pl.jkap.sozzt.terrainvision.domain.TerrainVisionEventPublisherStub
@@ -51,7 +53,9 @@ class SozztSpecification extends Specification implements FileSample, Preliminar
 
     def setup() {
         instantProvider.useFixedClock(NOW)
-        eventInvoker.addFacades(contractFacade, preliminaryPlanFacade)
+        eventInvoker.addFacades(contractFacade,
+                preliminaryPlanFacade,
+                routePreparationFacade)
     }
 
     def cleanup(){
@@ -76,6 +80,12 @@ class SozztSpecification extends Specification implements FileSample, Preliminar
 
     FileDto uploadPreliminaryMap(PreliminaryPlanDto preliminaryPlanDto, PreparedFile preparedFile ) {
         FileDto addedFile = fileStorageFacade.addPreliminaryMap(toAddFileDto(preparedFile.metadata, preparedFile.fileAsMultipartFile, preliminaryPlanDto.preliminaryPlanId))
+        addedFileIds.add(addedFile.fileId)
+        return addedFile
+    }
+
+    FileDto uploadGeodeticMap(RoutePreparationDto routePreparationDto, PreparedFile preparedFile ) {
+        FileDto addedFile = fileStorageFacade.addGeodeticMap(toAddFileDto(preparedFile.metadata, preparedFile.fileAsMultipartFile, routePreparationDto.routePreparationId))
         addedFileIds.add(addedFile.fileId)
         return addedFile
     }

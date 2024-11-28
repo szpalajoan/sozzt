@@ -70,4 +70,11 @@ public class ContractSecurityFacade {
             throw new UnauthorizedTerrainVisionEditException();
         }
     }
+
+    public void checkCanUploadGeodeticMap() {
+        if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                .noneMatch(role -> role.getAuthority().equals("ROLE_SURVEYOR"))) {
+            throw new UnauthorizedRoutePreparationEditException("upload geodetic map is not allowed");
+        }
+    }
 }

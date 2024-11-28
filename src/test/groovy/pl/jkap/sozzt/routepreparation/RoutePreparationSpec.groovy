@@ -33,5 +33,27 @@ class RoutePreparationSpec extends SozztSpecification {
             thrown(RoutePreparationNotFoundException)
     }
 
+    def "should not add route preparation when terrain vision is not completed"() {
+        given: "terrain vision is not completed"
+            addKrynicaContractOnStage(BEGIN_TERRAIN_VISION)
+        and: "$WALDEK_SURVEYOR is logged in"
+            loginUser(WALDEK_SURVEYOR)
+        when: "$WALDEK_SURVEYOR trys to get $KRYNICA_ROUTE_PREPARATION"
+            routePreparationFacade.getRoutePreparation(KRYNICA_CONTRACT.contractId)
+        then: "$KRYNICA_ROUTE_PREPARATION not exists"
+            thrown(RoutePreparationNotFoundException)
+    }
+
+    def "should add geodetic map to route preparation"() {
+        given: "there is $KRYNICA_TERRAIN_VISION stage"
+            addKrynicaContractOnStage(BEGIN_ROUTE_PREPARATION)
+        and: "$WALDEK_SURVEYOR is logged in"
+            loginUser(WALDEK_SURVEYOR)
+        when: "$WALDEK_SURVEYOR adds geodetic map to $KRYNICA_ROUTE_PREPARATION"
+            uploadGeodeticMap(KRYNICA_ROUTE_PREPARATION, KRYNICA_GEODETIC_MAP)
+        then: "Geodetic map is added to $KRYNICA_ROUTE_PREPARATION"
+            routePreparationFacade.getRoutePreparation(KRYNICA_CONTRACT.contractId) == with(KRYNICA_ROUTE_PREPARATION, [isGeodeticMapUploaded : true])
+
+    }
     //TODO dodaj zabezpieczenie aby nie było można robić geta stepow bez uprawnien
 }
