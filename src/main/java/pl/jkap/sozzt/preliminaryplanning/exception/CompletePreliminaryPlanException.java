@@ -6,6 +6,6 @@ import pl.jkap.sozzt.config.SozztException;
 public class CompletePreliminaryPlanException extends SozztException {
 
     public CompletePreliminaryPlanException(String message) {
-        super(message, HttpStatus.INTERNAL_SERVER_ERROR, "preliminary-plan.complete.error");
+        super(message, HttpStatus.BAD_REQUEST, "preliminary-plan.complete.error");
     }
 }

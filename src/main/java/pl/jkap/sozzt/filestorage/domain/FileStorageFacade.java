@@ -1,7 +1,6 @@
 package pl.jkap.sozzt.filestorage.domain;
 
 import lombok.Builder;
-import org.springframework.web.multipart.MultipartFile;
 import pl.jkap.sozzt.contractsecurity.domain.ContractSecurityFacade;
 import pl.jkap.sozzt.filestorage.dto.AddFileDto;
 import pl.jkap.sozzt.filestorage.dto.FileDto;
@@ -35,9 +34,9 @@ public class FileStorageFacade {
         this.fileEventPublisher = fileEventPublisher;
     }
 
-    public List<FileDto> getFiles(UUID objectId, FileDto.FileTypeDto fileType){
+    public List<FileDto> getFiles(UUID objectId, FileType fileType){
         return fileRepository
-                .findByObjectIdAndFileType(objectId, FileType.valueOf(fileType.name()))
+                .findByObjectIdAndFileType(objectId, fileType)
                 .stream()
                 .map(File::dto)
                 .toList();
@@ -71,11 +70,11 @@ public class FileStorageFacade {
         return addedFile.dto();
     }
 
-    public FileDto addPreliminaryMapUpdated(AddFileDto addPreliminaryMapFileDto) {
+    public FileDto addPreliminaryUpdatedMap(AddFileDto addPreliminaryUpdatedMapDto) {
         contractSecurityFacade.checkCanEditTerrainVision();
         File addedFile = addFile(
-                addPreliminaryMapFileDto,
-                FileType.PRELIMINARY_MAP_UPDATED
+                addPreliminaryUpdatedMapDto,
+                FileType.PRELIMINARY_UPDATED_MAP
         );
         return addedFile.dto();
     }
