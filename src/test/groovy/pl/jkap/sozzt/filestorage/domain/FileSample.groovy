@@ -11,6 +11,9 @@ import pl.jkap.sozzt.filestorage.dto.FileDto
 import java.nio.file.Files
 import java.nio.file.Paths
 
+import static pl.jkap.sozzt.filestorage.domain.FileType.CONTRACT_SCAN_FROM_TAURON
+import static pl.jkap.sozzt.filestorage.domain.FileType.PRELIMINARY_MAP
+
 trait FileSample implements ContractSample, PreliminaryPlanSample {
 
     MultipartFile KRYNICA_CONTRACT_SCAN_FILE = new MockMultipartFile("KRYNICA_CONTRACT", "KRYNICA_CONTRACT.pdf", "application/pdf", Files.readAllBytes(Paths.get("src/test/resources/contract/KRYNICA_CONTRACT.pdf")))
@@ -21,14 +24,14 @@ trait FileSample implements ContractSample, PreliminaryPlanSample {
             .fileId(UUID.fromString("4fb55d25-7e7c-4bea-9c78-cb000f9b823a"))
             .fileName(KRYNICA_CONTRACT_SCAN_FILE.getOriginalFilename())
             .objectId(KRYNICA_CONTRACT.contractId)
-            .fileType(FileDto.FileTypeDto.CONTRACT_SCAN_FROM_TAURON)
+            .fileType(CONTRACT_SCAN_FROM_TAURON)
             .build()
 
     FileDto KRYNICA_PRELIMINARY_MAP_METADATA = FileDto.builder()
             .fileId(UUID.fromString("782b56b1-bad7-4865-a1ec-d6af52e7548a"))
             .fileName(KRYNICA_PRELIMINARY_MAP_FILE.getOriginalFilename())
             .objectId(KRYNICA_PRELIMINARY_PLAN.preliminaryPlanId)
-            .fileType(FileDto.FileTypeDto.PRELIMINARY_MAP)
+            .fileType(PRELIMINARY_MAP)
             .build()
 
     PreparedFile KRYNICA_CONTRACT_SCAN = new PreparedFile(KRYNICA_CONTRACT_SCAN_METADATA, KRYNICA_CONTRACT_SCAN_FILE)

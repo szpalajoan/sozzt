@@ -1,6 +1,7 @@
 package pl.jkap.sozzt.terrainvision.domain;
 
 import lombok.Builder;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import pl.jkap.sozzt.instant.InstantProvider;
 import pl.jkap.sozzt.terrainvision.dto.AddTerrainVisionDto;
@@ -12,6 +13,7 @@ import pl.jkap.sozzt.terrainvision.exception.TerrainVisionNotFoundException;
 import java.util.UUID;
 
 @Builder
+@Slf4j
 public class TerrainVisionFacade {
 
     private final TerrainVisionRepository terrainVisionRepository;
@@ -38,6 +40,7 @@ public class TerrainVisionFacade {
     }
 
     public void confirmAllPhotosAreUploaded(UUID terrainVisionId) {
+        log.info("Confirming all photos are uploaded: {}", terrainVisionId);
         checkCanModifyTerrainVision();
         InProgressTerrainVision inProgressTerrainVision = terrainVisionRepository.findInProgressTerrainVisionById(terrainVisionId)
                 .orElseThrow(() -> new TerrainVisionNotFoundException("TerrainVision not found: " + terrainVisionId));
@@ -47,6 +50,7 @@ public class TerrainVisionFacade {
     }
 
     public void confirmChangesOnMap(UUID terrainVisionId, TerrainVisionDto.MapChange mapChange) {
+        log.info("Confirming changes on map: {}", terrainVisionId);
         checkCanModifyTerrainVision();
         InProgressTerrainVision inProgressTerrainVision = terrainVisionRepository.findInProgressTerrainVisionById(terrainVisionId)
                 .orElseThrow(() -> new TerrainVisionNotFoundException("TerrainVision not found: " + terrainVisionId));
@@ -67,7 +71,7 @@ public class TerrainVisionFacade {
 
     private void checkCanModifyTerrainVision() {
         if (SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
-                .noneMatch(role -> role.getAuthority().equals("TERRAIN_VISIONER"))) {
+                .noneMatch(role -> role.getAuthority().equals("ROLE_TERRAIN_VISIONER"))) {
             throw new TerrainVisionAccessException("You are not authorized to modify terrain vision");
         }
     }

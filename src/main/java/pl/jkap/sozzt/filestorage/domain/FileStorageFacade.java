@@ -1,7 +1,6 @@
 package pl.jkap.sozzt.filestorage.domain;
 
 import lombok.Builder;
-import org.springframework.web.multipart.MultipartFile;
 import pl.jkap.sozzt.contractsecurity.domain.ContractSecurityFacade;
 import pl.jkap.sozzt.filestorage.dto.AddFileDto;
 import pl.jkap.sozzt.filestorage.dto.FileDto;
@@ -46,10 +45,8 @@ public class FileStorageFacade {
     public FileDto addContractScan(AddFileDto addContractScanDto) {
         contractSecurityFacade.checkCanAddContractScan(addContractScanDto.getObjectId());
         File addedFile = addFile(
-                addContractScanDto.getFileId().orElseGet(UUID::randomUUID),
-                addContractScanDto.getFile(),
-                FileType.CONTRACT_SCAN_FROM_TAURON,
-                addContractScanDto.getObjectId()
+                addContractScanDto,
+                FileType.CONTRACT_SCAN_FROM_TAURON
         );
         fileEventPublisher.contractScanUploaded(new ContractScanAddedEvent(addedFile.getObjectId()));
         return addedFile.dto();
@@ -58,27 +55,46 @@ public class FileStorageFacade {
     public FileDto addPreliminaryMap(AddFileDto addPreliminaryMapFileDto) {
         contractSecurityFacade.checkCanAddPreliminaryMap(addPreliminaryMapFileDto.getObjectId());
         File addedFile = addFile(
-                addPreliminaryMapFileDto.getFileId().orElseGet(UUID::randomUUID),
-                addPreliminaryMapFileDto.getFile(),
-                FileType.PRELIMINARY_MAP,
-                addPreliminaryMapFileDto.getObjectId()
+                addPreliminaryMapFileDto,
+                FileType.PRELIMINARY_MAP
         );
         return addedFile.dto();
     }
 
-    private File addFile(UUID fileId, MultipartFile file, FileType fileType, UUID objectId) {
+    public FileDto addPhotoFromPlaceOfTheContract(AddFileDto addPhotoFromPlaceOfTheContractDto) {
+        contractSecurityFacade.checkCanEditTerrainVision();
+        File addedFile = addFile(
+                addPhotoFromPlaceOfTheContractDto,
+                FileType.PHOTO_FROM_PLACE_OF_THE_CONTRACT
+        );
+        return addedFile.dto();
+    }
+
+    public FileDto addPreliminaryUpdatedMap(AddFileDto addPreliminaryUpdatedMapDto) {
+        contractSecurityFacade.checkCanEditTerrainVision();
+        File addedFile = addFile(
+                addPreliminaryUpdatedMapDto,
+                FileType.PRELIMINARY_UPDATED_MAP
+        );
+        return addedFile.dto();
+    }
+
+    private File addFile(AddFileDto addFileDto, FileType fileType) {
+        UUID fileId = addFileDto.getFileId().orElseGet(UUID::randomUUID);
+
         checkFileNotExists(fileId);
-        String path = calculatePath(fileType, objectId);
-        String savedFilePath = fileSystemStorage.store(file, path);
+
+        String path = calculatePath(fileType, addFileDto.getObjectId());
+        String savedFilePath = fileSystemStorage.store(addFileDto.getFile(), path);
         File newFile = File.builder()
                 .fileId(fileId)
-                .fileName(file.getOriginalFilename())
+                .fileName(addFileDto.getFile().getOriginalFilename())
                 .fileType(fileType)
-                .objectId(objectId)
+                .objectId(addFileDto.getObjectId())
                 .path(savedFilePath)
                 .build();
         fileRepository.save(newFile);
-        publishEvent(objectId, fileType);
+        publishEvent(addFileDto.getObjectId(), fileType);
         return newFile;
     }
 

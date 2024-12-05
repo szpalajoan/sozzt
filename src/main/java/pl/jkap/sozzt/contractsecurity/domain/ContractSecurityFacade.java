@@ -63,4 +63,11 @@ public class ContractSecurityFacade {
             throw new UnauthorizedPreliminaryMapAdditionException("finalize preliminary plan is not allowed");
         }
     }
+
+    public void checkCanEditTerrainVision() {
+        if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                .noneMatch(role -> role.getAuthority().equals("ROLE_TERRAIN_VISIONER"))) {
+            throw new UnauthorizedTerrainVisionEditException();
+        }
+    }
 }

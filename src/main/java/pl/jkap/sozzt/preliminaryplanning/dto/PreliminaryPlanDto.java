@@ -16,4 +16,7 @@ public class PreliminaryPlanDto {
     private boolean isPreliminaryMapUploaded;
     private String googleMapUrl;
     private Instant deadline;
+
+    //todo dodać status całego kroku
+
 }

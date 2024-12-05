@@ -41,6 +41,19 @@ public class FileStorageController {
         return ResponseEntity.ok(addedFile);
     }
 
+    @PostMapping("{contractId}/photos-from-place-of-the-contract")
+    public ResponseEntity<FileDto> addPhotoFromPlaceOfTheContract(@PathVariable UUID contractId, @RequestParam("file") MultipartFile file) {
+        AddFileDto addPreliminaryMapFileDto = AddFileDto.builder().file(file).objectId(contractId).build();
+        FileDto addedFile = fileStorageFacade.addPhotoFromPlaceOfTheContract(addPreliminaryMapFileDto);
+        return ResponseEntity.ok(addedFile);
+    }
+
+    @PostMapping("{contractId}/preliminary-updated-maps")
+    public ResponseEntity<FileDto> addPreliminaryUpdatedMap(@PathVariable UUID contractId, @RequestParam("file") MultipartFile file) {
+        AddFileDto addPreliminaryUpdatedMapDto = AddFileDto.builder().file(file).objectId(contractId).build();
+        FileDto addedFile = fileStorageFacade.addPreliminaryUpdatedMap(addPreliminaryUpdatedMapDto);
+        return ResponseEntity.ok(addedFile);
+    }
 
     @GetMapping("{contractId}/files")
     public ResponseEntity<List<FileDto>> getFiles(@PathVariable UUID contractId, @RequestParam("fileType") FileType fileType) {
