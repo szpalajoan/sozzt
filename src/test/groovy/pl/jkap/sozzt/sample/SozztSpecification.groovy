@@ -25,6 +25,7 @@ import pl.jkap.sozzt.preliminaryplanning.domain.PreliminaryPlanSample
 import pl.jkap.sozzt.preliminaryplanning.dto.PreliminaryPlanDto
 import pl.jkap.sozzt.routepreparation.RoutePreparationSample
 import pl.jkap.sozzt.routepreparation.domain.RoutePreparationConfiguration
+import pl.jkap.sozzt.routepreparation.domain.RoutePreparationEventPublisherStub
 import pl.jkap.sozzt.routepreparation.domain.RoutePreparationFacade
 import pl.jkap.sozzt.routepreparation.dto.RoutePreparationDto
 import pl.jkap.sozzt.terrainvision.TerrainVisionSample
@@ -47,7 +48,7 @@ class SozztSpecification extends Specification implements FileSample, Preliminar
     ContractSecurityFacade contractSecurityFacade = new ContractSecurityConfiguration().contractSecurityFacade()
     PreliminaryPlanFacade preliminaryPlanFacade = new PreliminaryPlanConfiguration().preliminaryPlanFacade(new PreliminaryPlanEventPublisherStub(eventInvoker))
     TerrainVisionFacade terrainVisionFacade = new TerrainVisionConfiguration().terrainVisionFacade(instantProvider, new TerrainVisionEventPublisherStub(eventInvoker))
-    RoutePreparationFacade routePreparationFacade = new RoutePreparationConfiguration().routePreparationFacade()
+    RoutePreparationFacade routePreparationFacade = new RoutePreparationConfiguration().routePreparationFacade(new RoutePreparationEventPublisherStub(eventInvoker))
     ContractFacade contractFacade = new ContractConfiguration().contractFacade(contractSecurityFacade, preliminaryPlanFacade, terrainVisionFacade, routePreparationFacade, instantProvider)
     FileStorageFacade fileStorageFacade = new FileStorageConfigurator().fileStorageFacade(contractSecurityFacade, new FileEventPublisherStub(eventInvoker))
 

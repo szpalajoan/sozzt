@@ -34,4 +34,8 @@ class RoutePreparation {
     void markGeodeticMapUploaded() {
         isGeodeticMapUploaded = true;
     }
+
+    boolean isCompleted() {
+        return isGeodeticMapUploaded;
+    }
 }

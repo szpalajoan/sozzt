@@ -79,6 +79,15 @@ class Contract implements Serializable {
         }
     }
 
+    void completeRoutePreparation() {
+        completeRoutePreparationStep();
+    }
+
+    private void completeRoutePreparationStep() {
+        ContractStep routePreparationStep = getContractStep(ContractStepType.ROUTE_PREPARATION);
+        routePreparationStep.completeStep();
+    }
+
     private void completeTerrainVisionStep() {
         ContractStep terrainVisionStep = getContractStep(ContractStepType.TERRAIN_VISION);
         terrainVisionStep.completeStep();

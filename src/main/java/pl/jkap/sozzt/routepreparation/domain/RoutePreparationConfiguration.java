@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 public class RoutePreparationConfiguration {
 
     @Bean
-    public RoutePreparationFacade routePreparationFacade() {
-        return new RoutePreparationFacade(new InMemoryRoutePreparationRepository());
+    public RoutePreparationFacade routePreparationFacade(RoutePreparationEventPublisher routePreparationEventPublisher) {
+        return new RoutePreparationFacade(new InMemoryRoutePreparationRepository(), routePreparationEventPublisher);
     }
 }

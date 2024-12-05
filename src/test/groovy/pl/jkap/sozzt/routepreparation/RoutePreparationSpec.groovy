@@ -53,7 +53,6 @@ class RoutePreparationSpec extends SozztSpecification {
             uploadGeodeticMap(KRYNICA_ROUTE_PREPARATION, KRYNICA_GEODETIC_MAP)
         then: "Geodetic map is added to $KRYNICA_ROUTE_PREPARATION"
             routePreparationFacade.getRoutePreparation(KRYNICA_CONTRACT.contractId) == with(KRYNICA_ROUTE_PREPARATION, [isGeodeticMapUploaded : true])
-
     }
     //TODO dodaj zabezpieczenie aby nie było można robić geta stepow bez uprawnien
 }

@@ -16,6 +16,7 @@ import pl.jkap.sozzt.contractsecurity.dto.AddSecurityContractDto;
 import pl.jkap.sozzt.preliminaryplanning.domain.PreliminaryPlanFacade;
 import pl.jkap.sozzt.preliminaryplanning.event.PreliminaryPlanCompletedEvent;
 import pl.jkap.sozzt.routepreparation.domain.RoutePreparationFacade;
+import pl.jkap.sozzt.routepreparation.event.RoutePreparationCompletedEvent;
 import pl.jkap.sozzt.terrainvision.domain.TerrainVisionFacade;
 import pl.jkap.sozzt.terrainvision.event.TerrainVisionCompletedEvent;
 
@@ -86,7 +87,7 @@ public class ContractFacade {
         log.info("Contract finalized: {}", contract);
     }
 
-    public void completePreliminaryPlan(UUID contractId) {
+    private void completePreliminaryPlan(UUID contractId) {
         Contract contract = findContract(contractId);
         contract.completePreliminaryPlan(terrainVisionFacade);
         contractRepository.save(contract);
@@ -98,6 +99,13 @@ public class ContractFacade {
         contract.completeTerrainVision(routePreparationFacade, routePreparationNecessary);
         contractRepository.save(contract);
         log.info("Terrain vision finalized: {}", contract);
+    }
+
+    private void completeRoutePreparation(UUID contractId) {
+        Contract contract = findContract(contractId);
+        contract.completeRoutePreparation();
+        contractRepository.save(contract);
+        log.info("Route preparation finalized: {}", contract);
     }
 
     private void scanUploaded(UUID contractId) {
@@ -138,6 +146,12 @@ public class ContractFacade {
     @SuppressWarnings("unused")
     public void onTerrainVisionCompletedEvent(TerrainVisionCompletedEvent event) {
         completeTerrainVision(event.getContractId(), event.isRoutePreparationNecessary());
+    }
+
+    @EventListener
+    @SuppressWarnings("unused")
+    public void onRoutePreparationCompletedEvent(RoutePreparationCompletedEvent event) {
+        completeRoutePreparation(event.getContractId());
     }
 
 }

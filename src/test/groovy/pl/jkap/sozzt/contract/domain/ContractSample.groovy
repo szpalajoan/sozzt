@@ -42,6 +42,10 @@ trait ContractSample implements UserSample, LocationSample, ContractDetailsSampl
                             with(KRYNICA_CONTRACT_TERRAIN_VISION_STEP, [contractStepStatus: DONE]),
                             with(KRYNICA_CONTRACT_ROUTE_PREPARATION_STEP, [contractStepStatus: NOT_ACTIVE])]])
 
+    ContractDto COMPLETED_ROUTE_PREPARATION_KRYNICA_CONTRACT = with(COMPLETED_TERRAIN_VISION_KRYNICA_CONTRACT, [
+            contractSteps: [with(KRYNICA_CONTRACT_PRELIMINARY_PLAN_STEP, [contractStepStatus: DONE]),
+                            with(KRYNICA_CONTRACT_TERRAIN_VISION_STEP, [contractStepStatus: DONE]),
+                            with(KRYNICA_CONTRACT_ROUTE_PREPARATION_STEP, [contractStepStatus: DONE])]])
 
     ContractDto with(ContractDto contractDto, Map<String, Object> properties) {
         return SampleModifier.with(ContractDto.class, contractDto, properties)
