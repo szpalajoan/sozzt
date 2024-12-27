@@ -1,4 +1,4 @@
-package pl.jkap.sozzt.filestorage;
+package pl.jkap.sozzt.filestorage.infrastructure;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;

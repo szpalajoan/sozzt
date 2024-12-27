@@ -43,8 +43,7 @@ public class FileStorageFacade {
         contractSecurityFacade.checkCanAddContractScan(addContractScanDto.getObjectId());
         File addedFile = addFile(
                 addContractScanDto,
-                FileType.CONTRACT_SCAN_FROM_TAURON
-        );
+                FileType.CONTRACT_SCAN_FROM_TAURON);
         fileEventPublisher.contractScanUploaded(new ContractScanAddedEvent(addedFile.getObjectId()));
         return addedFile.dto();
     }
@@ -53,8 +52,7 @@ public class FileStorageFacade {
         contractSecurityFacade.checkCanAddPreliminaryMap(addPreliminaryMapFileDto.getObjectId());
         File addedFile = addFile(
                 addPreliminaryMapFileDto,
-                FileType.PRELIMINARY_MAP
-        );
+                FileType.PRELIMINARY_MAP);
         return addedFile.dto();
     }
 
@@ -62,8 +60,7 @@ public class FileStorageFacade {
         contractSecurityFacade.checkCanEditTerrainVision();
         File addedFile = addFile(
                 addPhotoFromPlaceOfTheContractDto,
-                FileType.PHOTO_FROM_PLACE_OF_THE_CONTRACT
-        );
+                FileType.PHOTO_FROM_PLACE_OF_THE_CONTRACT);
         return addedFile.dto();
     }
 
@@ -71,8 +68,7 @@ public class FileStorageFacade {
         contractSecurityFacade.checkCanEditTerrainVision();
         File addedFile = addFile(
                 addPreliminaryUpdatedMapDto,
-                FileType.PRELIMINARY_UPDATED_MAP
-        );
+                FileType.PRELIMINARY_UPDATED_MAP);
         return addedFile.dto();
     }
 
@@ -80,10 +76,23 @@ public class FileStorageFacade {
         contractSecurityFacade.checkCanUploadGeodeticMap();
         File addedFile = addFile(
                 geodeticMapFileDto,
-                FileType.GEODETIC_MAP
-        );
+                FileType.GEODETIC_MAP);
         return addedFile.dto();
+    }
 
+    public FileDto addPrivatePlotOwnerConsentAgreement(AddFileDto privatePlotOwnerConsentAgreementFileDto) {
+        File addedFile = addFile(
+                privatePlotOwnerConsentAgreementFileDto,
+                FileType.PRIVATE_PLOT_OWNER_CONSENT_AGREEMENT);
+        return addedFile.dto();
+    }
+
+
+    public FileDto addPublicOwnerConsentAgreement(AddFileDto publicPlotOwnerConsentAgreementFileDto) {
+        File addedFile = addFile(
+                publicPlotOwnerConsentAgreementFileDto,
+                FileType.PUBLIC_OWNER_CONSENT_AGREEMENT);
+        return addedFile.dto();
     }
 
     private File addFile(AddFileDto addFileDto, FileType fileType) {

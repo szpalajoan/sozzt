@@ -1,6 +1,8 @@
 package pl.jkap.sozzt.contract.domain;
 
 import lombok.Builder;
+import pl.jkap.sozzt.consents.domain.ConsentsFacade;
+import pl.jkap.sozzt.consents.dto.AddConsentsDto;
 import pl.jkap.sozzt.preliminaryplanning.domain.PreliminaryPlanFacade;
 import pl.jkap.sozzt.preliminaryplanning.dto.AddPreliminaryPlanDto;
 import pl.jkap.sozzt.terrainvision.domain.TerrainVisionFacade;
@@ -15,6 +17,7 @@ class ContractStepCreator {
 
     private final TerrainVisionFacade terrainVisionFacade;
     private final PreliminaryPlanFacade preliminaryPlanFacade;
+    private final ConsentsFacade consentsFacade;
 
 
     ContractStep createPreliminaryPlanStep(UUID contractId, Instant contractOrderDate) {
@@ -35,9 +38,14 @@ class ContractStepCreator {
         return new ContractStep(ContractStepType.TERRAIN_VISION, ContractStepStatus.ON_HOLD, deadline);
     }
 
-    ContractStep createRoutePreparationStep(UUID contractId, Instant contractOrderDate) {
+    ContractStep createRoutePreparationStep(Instant contractOrderDate) {
         Instant deadline = contractOrderDate.plus(Duration.ofDays(51));
         return new ContractStep(ContractStepType.ROUTE_PREPARATION, ContractStepStatus.NOT_ACTIVE, deadline);
     }
 
+    ContractStep createConsentsCollectionStep(UUID contractId, Instant contractOrderDate) {
+        Instant deadline = contractOrderDate.plus(Duration.ofDays(51));
+        consentsFacade.addConsents(new AddConsentsDto(contractId, deadline));
+        return new ContractStep(ContractStepType.CONSENTS_COLLECTION, ContractStepStatus.NOT_ACTIVE, deadline);
+    }
 }
