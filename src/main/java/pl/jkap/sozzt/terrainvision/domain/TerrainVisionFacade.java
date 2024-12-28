@@ -50,13 +50,12 @@ public class TerrainVisionFacade {
     }
 
     public void confirmChangesOnMap(UUID terrainVisionId, TerrainVisionDto.MapChange mapChange) {
-        log.info("Confirming changes on map: {}", terrainVisionId);
+        log.info("Confirming changes on map: {} with mapChange: {}", terrainVisionId, mapChange);
         checkCanModifyTerrainVision();
         InProgressTerrainVision inProgressTerrainVision = terrainVisionRepository.findInProgressTerrainVisionById(terrainVisionId)
                 .orElseThrow(() -> new TerrainVisionNotFoundException("TerrainVision not found: " + terrainVisionId));
         inProgressTerrainVision.confirmChangesOnMap(mapChange);
         terrainVisionRepository.save(inProgressTerrainVision);
-
     }
 
     public void completeTerrainVision(UUID terrainVisionId) {

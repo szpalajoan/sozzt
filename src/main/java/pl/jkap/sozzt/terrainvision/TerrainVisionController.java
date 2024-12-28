@@ -34,4 +34,11 @@ public class TerrainVisionController {
     public void confirmChangesOnMap(@PathVariable UUID idContract, @RequestBody ConfirmChangesOnMapDto confirmChangesOnMapDto) {
         terrainVisionFacade.confirmChangesOnMap(idContract, confirmChangesOnMapDto.getMapChange());
     }
+
+    @PostMapping("{idContract}/complete-terrain-vision")
+    @ResponseStatus(HttpStatus.OK)
+    public void completeTerrainVision(@PathVariable UUID idContract) {
+        terrainVisionFacade.completeTerrainVision(idContract);
+    }
+
 }
