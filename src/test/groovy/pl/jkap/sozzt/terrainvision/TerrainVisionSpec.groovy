@@ -7,7 +7,7 @@ import pl.jkap.sozzt.terrainvision.exception.InvalidMapChangeException
 import pl.jkap.sozzt.terrainvision.exception.TerrainVisionAccessException
 import pl.jkap.sozzt.terrainvision.exception.TerrainVisionNotFoundException
 
-import static pl.jkap.sozzt.terrainvision.dto.TerrainVisionDto.MapChange.*
+import static pl.jkap.sozzt.terrainvision.dto.TerrainVisionDto.RoutePreparation.*
 
 class TerrainVisionSpec extends SozztSpecification {
 
@@ -56,11 +56,11 @@ class TerrainVisionSpec extends SozztSpecification {
         and: "$MARCIN_TERRAIN_VISIONER is logged in"
             loginUser(MARCIN_TERRAIN_VISIONER)
         when: "$MARCIN_TERRAIN_VISIONER confirm changes on map as $mapChange"
-            terrainVisionFacade.confirmChangesOnMap(KRYNICA_CONTRACT.contractId, mapChange)
+            terrainVisionFacade.setRoutePreparationNecessary(KRYNICA_CONTRACT.contractId, mapChange)
         then: "Terrain vision has confirmed changes on map as $mapChange"
             terrainVisionFacade.getTerrainVision(KRYNICA_CONTRACT.contractId) == with(KRYNICA_TERRAIN_VISION, [mapChange: mapChange])
         where:
-            mapChange << [MODIFIED, NOT_NECESSARY]
+            mapChange << [NECESSARY, NOT_NECESSARY]
     }
 
     def "should not confirm changes on map as none"() {
@@ -69,7 +69,7 @@ class TerrainVisionSpec extends SozztSpecification {
         and: "$MARCIN_TERRAIN_VISIONER is logged in"
             loginUser(MARCIN_TERRAIN_VISIONER)
         when: "$MARCIN_TERRAIN_VISIONER tries to confirm changes on map as none"
-            terrainVisionFacade.confirmChangesOnMap(KRYNICA_CONTRACT.contractId, NONE)
+            terrainVisionFacade.setRoutePreparationNecessary(KRYNICA_CONTRACT.contractId, NONE)
         then: "Terrain vision has not confirmed changes on map"
             thrown(InvalidMapChangeException)
     }
@@ -80,22 +80,22 @@ class TerrainVisionSpec extends SozztSpecification {
         and: "$MONIKA_CONTRACT_INTRODUCER is logged in"
             loginUser(MONIKA_CONTRACT_INTRODUCER)
         when: "$MONIKA_CONTRACT_INTRODUCER tries to confirm changes on map"
-            terrainVisionFacade.confirmChangesOnMap(KRYNICA_CONTRACT.contractId, mapChange)
+            terrainVisionFacade.setRoutePreparationNecessary(KRYNICA_CONTRACT.contractId, mapChange)
         then: "Confirmation of changes on map is not possible"
             thrown(TerrainVisionAccessException)
         where:
-            mapChange << [MODIFIED, NOT_NECESSARY]
+            mapChange << [NECESSARY, NOT_NECESSARY]
     }
 
     def "should not confirm changes on map for not existing terrain vision stage"() {
         given: "$MARCIN_TERRAIN_VISIONER is logged in"
             loginUser(MARCIN_TERRAIN_VISIONER)
         when: "$MARCIN_TERRAIN_VISIONER tries to confirm changes on map on not existing terrain vision stage"
-            terrainVisionFacade.confirmChangesOnMap(KRYNICA_CONTRACT.contractId, mapChange)
+            terrainVisionFacade.setRoutePreparationNecessary(KRYNICA_CONTRACT.contractId, mapChange)
         then: "Confirmation of changes on map is not possible for not existing terrain vision stage"
             thrown(TerrainVisionNotFoundException)
         where:
-            mapChange << [MODIFIED, NOT_NECESSARY]
+            mapChange << [NECESSARY, NOT_NECESSARY]
     }
 
     def "should complete terrain vision"() {
@@ -106,13 +106,13 @@ class TerrainVisionSpec extends SozztSpecification {
         and: "$MARCIN_TERRAIN_VISIONER confirmed that all photos are uploaded"
             terrainVisionFacade.confirmAllPhotosAreUploaded(KRYNICA_CONTRACT.contractId)
         and: "$MARCIN_TERRAIN_VISIONER confirmed changes on map as $mapChange"
-            terrainVisionFacade.confirmChangesOnMap(KRYNICA_CONTRACT.contractId, mapChange)
+            terrainVisionFacade.setRoutePreparationNecessary(KRYNICA_CONTRACT.contractId, mapChange)
         when: "$MARCIN_TERRAIN_VISIONER completes the terrain vision"
             terrainVisionFacade.completeTerrainVision(KRYNICA_CONTRACT.contractId)
         then: "Terrain vision is completed"
             terrainVisionFacade.getTerrainVision(KRYNICA_CONTRACT.contractId) == with(COMPLETED_KRYNICA_TERRAIN_VISION, [mapChange : mapChange])
         where:
-            mapChange << [MODIFIED, NOT_NECESSARY]
+            mapChange << [NECESSARY, NOT_NECESSARY]
     }
 
     def "should not complete terrain vision if not all photos are uploaded"() {
@@ -166,8 +166,8 @@ class TerrainVisionSpec extends SozztSpecification {
             loginUser(MARCIN_TERRAIN_VISIONER)
         and: "$MARCIN_TERRAIN_VISIONER confirmed that all photos are uploaded"
             terrainVisionFacade.confirmAllPhotosAreUploaded(KRYNICA_CONTRACT.contractId)
-        and: "$MARCIN_TERRAIN_VISIONER confirmed changes on map as $MODIFIED"
-            terrainVisionFacade.confirmChangesOnMap(KRYNICA_CONTRACT.contractId, MODIFIED)
+        and: "$MARCIN_TERRAIN_VISIONER confirmed changes on map as $NECESSARY"
+            terrainVisionFacade.setRoutePreparationNecessary(KRYNICA_CONTRACT.contractId, NECESSARY)
         and: "$MARCIN_TERRAIN_VISIONER completes the terrain vision"
             terrainVisionFacade.completeTerrainVision(KRYNICA_CONTRACT.contractId)
         when: "$MARCIN_TERRAIN_VISIONER tries to complete the terrain vision again"

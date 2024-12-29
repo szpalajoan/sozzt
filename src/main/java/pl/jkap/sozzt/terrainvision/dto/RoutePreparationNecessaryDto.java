@@ -7,6 +7,6 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class ConfirmChangesOnMapDto {
-    private TerrainVisionDto.MapChange mapChange;
+public class RoutePreparationNecessaryDto {
+    private TerrainVisionDto.RoutePreparation routePreparation;
 }

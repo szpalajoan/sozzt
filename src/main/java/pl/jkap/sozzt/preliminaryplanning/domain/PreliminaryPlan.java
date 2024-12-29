@@ -42,10 +42,6 @@ class PreliminaryPlan {
         this.isPreliminaryMapUploaded = true;
     }
 
-    void confirmMapDeleted() {
-        this.isPreliminaryMapUploaded = false;
-    }
-
     void addGoogleMapUrl(String googleMapUrl) {
         this.googleMapUrl = googleMapUrl;
     }

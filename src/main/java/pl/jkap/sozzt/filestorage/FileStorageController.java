@@ -55,6 +55,13 @@ public class FileStorageController {
         return ResponseEntity.ok(addedFile);
     }
 
+    @PostMapping("{contractId}/geodetic-maps")
+    public ResponseEntity<FileDto> addGeodeticMap(@PathVariable UUID contractId, @RequestParam("file") MultipartFile file) {
+        AddFileDto addPreliminaryUpdatedMapDto = AddFileDto.builder().file(file).objectId(contractId).build();
+        FileDto addedFile = fileStorageFacade.addGeodeticMap(addPreliminaryUpdatedMapDto);
+        return ResponseEntity.ok(addedFile);
+    }
+
     @GetMapping("{contractId}/files")
     public ResponseEntity<List<FileDto>> getFiles(@PathVariable UUID contractId, @RequestParam("fileType") FileType fileType) {
         List<FileDto> files = fileStorageFacade.getFiles(contractId, fileType);

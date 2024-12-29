@@ -20,9 +20,9 @@ abstract class TerrainVision {
         COMPLETED
     }
 
-    enum MapChange {
+    enum RoutePreparation {
         NONE,
-        MODIFIED,
+        NECESSARY,
         NOT_NECESSARY
     }
 
@@ -31,7 +31,7 @@ abstract class TerrainVision {
     protected boolean allPhotosUploaded;
     protected Instant deadline;
     protected TerrainVisionStatus terrainVisionStatus;
-    protected MapChange mapChange;
+    protected RoutePreparation routePreparation;
 
 
 
@@ -41,7 +41,7 @@ abstract class TerrainVision {
                 .allPhotosUploaded(allPhotosUploaded)
                 .deadline(deadline)
                 .terrainVisionStatus(TerrainVisionDto.TerrainVisionStatus.valueOf(terrainVisionStatus.name()))
-                .mapChange(TerrainVisionDto.MapChange.valueOf(mapChange.name()))
+                .routePreparation(TerrainVisionDto.RoutePreparation.valueOf(routePreparation.name()))
                 .build();
     }
 }

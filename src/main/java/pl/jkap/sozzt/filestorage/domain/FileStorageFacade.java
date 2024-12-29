@@ -110,9 +110,6 @@ public class FileStorageFacade {
             case CONTRACT_SCAN_FROM_TAURON:
                 fileEventPublisher.contractScanUploaded(new ContractScanAddedEvent(objectId));
                 break;
-            case PRELIMINARY_MAP:
-                fileEventPublisher.preliminaryMapUploaded(new PreliminaryMapUploadedEvent(objectId));
-                break;
             case GEODETIC_MAP:
                 fileEventPublisher.geodeticMapUploaded(new GeodeticMapUploadedEvent(objectId));
                 break;
@@ -145,9 +142,6 @@ public class FileStorageFacade {
         switch (file.getFileType()) {
             case CONTRACT_SCAN_FROM_TAURON:
                 fileEventPublisher.contractScanDeleted(new ContractScanDeletedEvent(file.getObjectId()));
-                break;
-            case PRELIMINARY_MAP:
-                fileEventPublisher.preliminaryMapDeleted(new PreliminaryMapDeletedEvent(file.getObjectId()));
                 break;
         }
     }

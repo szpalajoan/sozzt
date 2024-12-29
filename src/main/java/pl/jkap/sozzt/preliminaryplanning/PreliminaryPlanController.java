@@ -34,4 +34,10 @@ public class PreliminaryPlanController {
     public void completePreliminaryPlan(@PathVariable UUID idContract) {
         preliminaryPlanFacade.completePreliminaryPlan(idContract);
     }
+
+    @PostMapping("{idContract}/preliminary-map-added")
+    @ResponseStatus(HttpStatus.OK)
+    public void preliminaryMapAdded(@PathVariable UUID idContract) {
+        preliminaryPlanFacade.preliminaryMapAdded(idContract);
+    }
 }

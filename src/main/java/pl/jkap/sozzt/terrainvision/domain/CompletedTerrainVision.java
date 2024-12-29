@@ -5,7 +5,7 @@ import java.util.UUID;
 
 class CompletedTerrainVision extends TerrainVision {
 
-    CompletedTerrainVision(UUID terrainVisionId, Instant deadline, MapChange mapChange) {
-        super(terrainVisionId, true, deadline, TerrainVisionStatus.COMPLETED, mapChange);
+    CompletedTerrainVision(UUID terrainVisionId, Instant deadline, RoutePreparation routePreparation) {
+        super(terrainVisionId, true, deadline, TerrainVisionStatus.COMPLETED, routePreparation);
     }
 }

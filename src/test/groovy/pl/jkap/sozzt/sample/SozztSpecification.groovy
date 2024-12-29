@@ -127,9 +127,9 @@ class SozztSpecification extends Specification implements FileSample, Preliminar
     }
 
     private void completeTerrainVision(TerrainVisionDto terrainVisionDto, boolean withMapChange = false) {
-        TerrainVisionDto.MapChange mapChange = withMapChange ? TerrainVisionDto.MapChange.MODIFIED : TerrainVisionDto.MapChange.NOT_NECESSARY
+        TerrainVisionDto.RoutePreparation mapChange = withMapChange ? TerrainVisionDto.RoutePreparation.NECESSARY : TerrainVisionDto.RoutePreparation.NOT_NECESSARY
         terrainVisionFacade.confirmAllPhotosAreUploaded(terrainVisionDto.terrainVisionId)
-        terrainVisionFacade.confirmChangesOnMap(terrainVisionDto.terrainVisionId, mapChange)
+        terrainVisionFacade.setRoutePreparationNecessary(terrainVisionDto.terrainVisionId, mapChange)
         terrainVisionFacade.completeTerrainVision(terrainVisionDto.terrainVisionId)
     }
 }

@@ -18,9 +18,9 @@ public class TerrainVisionDto {
         COMPLETED
     }
 
-    public enum MapChange {
+    public enum RoutePreparation {
         NONE,
-        MODIFIED,
+        NECESSARY,
         NOT_NECESSARY
     }
 
@@ -28,6 +28,6 @@ public class TerrainVisionDto {
     private boolean allPhotosUploaded;
     private Instant deadline;
     private TerrainVisionStatus terrainVisionStatus;
-    private MapChange mapChange;
+    private RoutePreparation routePreparation;
 
 }

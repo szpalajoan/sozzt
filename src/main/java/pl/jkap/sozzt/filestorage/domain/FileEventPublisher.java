@@ -23,14 +23,6 @@ public class FileEventPublisher {
         applicationEventPublisher.publishEvent(contractScanDeletedEvent);
     }
 
-    public void preliminaryMapUploaded(PreliminaryMapUploadedEvent preliminaryMapUploadedEvent) {
-        applicationEventPublisher.publishEvent(preliminaryMapUploadedEvent);
-    }
-
-    public void preliminaryMapDeleted(PreliminaryMapDeletedEvent preliminaryMapUploadedEvent) {
-        applicationEventPublisher.publishEvent(preliminaryMapUploadedEvent);
-    }
-
     public void geodeticMapUploaded(GeodeticMapUploadedEvent geodeticMapUploadedEvent) {
         applicationEventPublisher.publishEvent(geodeticMapUploadedEvent);
     }

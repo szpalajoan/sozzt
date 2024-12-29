@@ -4,7 +4,7 @@ package pl.jkap.sozzt.terrainvision
 import pl.jkap.sozzt.sample.SozztSpecification
 
 import static pl.jkap.sozzt.sample.ExpectedStageSample.*
-import static pl.jkap.sozzt.terrainvision.dto.TerrainVisionDto.MapChange.MODIFIED
+import static pl.jkap.sozzt.terrainvision.dto.TerrainVisionDto.RoutePreparation.NECESSARY
 
 class CompleteTerrainVisionStepSpec extends SozztSpecification {
 
@@ -15,8 +15,8 @@ class CompleteTerrainVisionStepSpec extends SozztSpecification {
             loginUser(MARCIN_TERRAIN_VISIONER)
         and: "$MARCIN_TERRAIN_VISIONER confirmed that all photos are uploaded"
             terrainVisionFacade.confirmAllPhotosAreUploaded(KRYNICA_CONTRACT.contractId)
-        and: "$MARCIN_TERRAIN_VISIONER confirmed changes on map as $MODIFIED"
-            terrainVisionFacade.confirmChangesOnMap(KRYNICA_CONTRACT.contractId, MODIFIED)
+        and: "$MARCIN_TERRAIN_VISIONER confirmed changes on map as $NECESSARY"
+            terrainVisionFacade.setRoutePreparationNecessary(KRYNICA_CONTRACT.contractId, NECESSARY)
         when: "$MARCIN_TERRAIN_VISIONER completes the terrain vision"
             terrainVisionFacade.completeTerrainVision(KRYNICA_CONTRACT.contractId)
         then: "Terrain vision is completed"

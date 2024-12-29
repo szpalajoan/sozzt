@@ -13,7 +13,7 @@ trait TerrainVisionSample implements ContractSample{
             .allPhotosUploaded(false)
             .deadline(KRYNICA_CONTRACT.contractDetails.orderDate + Duration.ofDays(21))
             .terrainVisionStatus(TerrainVisionDto.TerrainVisionStatus.IN_PROGRESS)
-            .mapChange(TerrainVisionDto.MapChange.NONE)
+            .routePreparation(TerrainVisionDto.RoutePreparation.NONE)
             .build()
 
     TerrainVisionDto COMPLETED_KRYNICA_TERRAIN_VISION = TerrainVisionDto.builder()
@@ -21,7 +21,7 @@ trait TerrainVisionSample implements ContractSample{
             .allPhotosUploaded(true)
             .deadline(KRYNICA_CONTRACT.contractDetails.orderDate + Duration.ofDays(21))
             .terrainVisionStatus(TerrainVisionDto.TerrainVisionStatus.COMPLETED)
-            .mapChange(TerrainVisionDto.MapChange.MODIFIED)
+            .routePreparation(TerrainVisionDto.RoutePreparation.NECESSARY)
             .build()
 
 
