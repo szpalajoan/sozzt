@@ -1,4 +1,4 @@
-package pl.jkap.sozzt.contract;
+package pl.jkap.sozzt.contract.infrastructure;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

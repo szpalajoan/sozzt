@@ -28,7 +28,7 @@ public class AuditInfo {
         this.updatedBy = updatedBy;
     }
 
-    AuditInfo update(Instant updatedAt, String updatedBy) {
+    public AuditInfo update(Instant updatedAt, String updatedBy) {
         if (updatedAt.isAfter(createdAt)) {
             return new AuditInfo(createdAt, createdBy, updatedAt, updatedBy);
         } else {

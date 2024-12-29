@@ -1,4 +1,4 @@
-package pl.jkap.sozzt.terrainvision;
+package pl.jkap.sozzt.terrainvision.infrastructure;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

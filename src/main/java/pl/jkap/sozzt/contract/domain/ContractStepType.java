@@ -3,5 +3,6 @@ package pl.jkap.sozzt.contract.domain;
 enum ContractStepType {
     PRELIMINARY_PLAN,
     TERRAIN_VISION,
-    ROUTE_PREPARATION
+    ROUTE_PREPARATION,
+    CONSENTS_COLLECTION
 }

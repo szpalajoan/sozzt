@@ -15,7 +15,8 @@ public class ContractStepDto {
     public enum ContractStepTypeDto {
         PRELIMINARY_PLAN,
         TERRAIN_VISION,
-        ROUTE_PREPARATION
+        ROUTE_PREPARATION,
+        CONSENTS_COLLECTION
     }
 
     public enum ContractStepStatusDto {

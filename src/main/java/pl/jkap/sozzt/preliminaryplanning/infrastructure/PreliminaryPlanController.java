@@ -1,4 +1,4 @@
-package pl.jkap.sozzt.preliminaryplanning;
+package pl.jkap.sozzt.preliminaryplanning.infrastructure;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

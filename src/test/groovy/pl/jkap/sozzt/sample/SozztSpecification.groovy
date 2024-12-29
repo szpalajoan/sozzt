@@ -1,5 +1,10 @@
 package pl.jkap.sozzt.sample
 
+import pl.jkap.sozzt.consents.domain.ConsentsConfiguration
+import pl.jkap.sozzt.consents.domain.ConsentsFacade
+import pl.jkap.sozzt.consents.domain.ConsentsSample
+import pl.jkap.sozzt.consents.domain.InMemoryConsentsRepository
+import pl.jkap.sozzt.consents.domain.PlotOwnerConsentSample
 import pl.jkap.sozzt.contract.domain.ContractConfiguration
 import pl.jkap.sozzt.contract.domain.ContractDetailsSample
 import pl.jkap.sozzt.contract.domain.ContractFacade
@@ -38,7 +43,7 @@ import spock.lang.Specification
 
 import static pl.jkap.sozzt.sample.ExpectedStageSample.*
 
-class SozztSpecification extends Specification implements FileSample, PreliminaryPlanSample, TerrainVisionSample, RoutePreparationSample,
+class SozztSpecification extends Specification implements FileSample, PlotOwnerConsentSample, ConsentsSample, PreliminaryPlanSample, TerrainVisionSample, RoutePreparationSample,
         ContractSample, LocationSample, ContractDetailsSample, ContractStepSample,
         UserSample, InstantSamples {
     Collection<UUID> addedFileIds = []
@@ -49,8 +54,10 @@ class SozztSpecification extends Specification implements FileSample, Preliminar
     PreliminaryPlanFacade preliminaryPlanFacade = new PreliminaryPlanConfiguration().preliminaryPlanFacade(new PreliminaryPlanEventPublisherStub(eventInvoker))
     TerrainVisionFacade terrainVisionFacade = new TerrainVisionConfiguration().terrainVisionFacade(instantProvider, new TerrainVisionEventPublisherStub(eventInvoker))
     RoutePreparationFacade routePreparationFacade = new RoutePreparationConfiguration().routePreparationFacade(new RoutePreparationEventPublisherStub(eventInvoker))
-    ContractFacade contractFacade = new ContractConfiguration().contractFacade(contractSecurityFacade, preliminaryPlanFacade, terrainVisionFacade, routePreparationFacade, instantProvider)
     FileStorageFacade fileStorageFacade = new FileStorageConfigurator().fileStorageFacade(contractSecurityFacade, new FileEventPublisherStub(eventInvoker))
+    ConsentsFacade consentsFacade = new ConsentsConfiguration().consentsFacade(fileStorageFacade, instantProvider)
+    ContractFacade contractFacade = new ContractConfiguration().contractFacade(contractSecurityFacade, preliminaryPlanFacade, terrainVisionFacade, routePreparationFacade, consentsFacade, instantProvider)
+
 
     def setup() {
         instantProvider.useFixedClock(NOW)
@@ -91,6 +98,19 @@ class SozztSpecification extends Specification implements FileSample, Preliminar
         return addedFile
     }
 
+    FileDto addPrivatePlotOwnerConsentAgreement(PreparedFile preparedFile, UUID consentId, UUID privatePlotOwnerConsentId) {
+        FileDto addedFile = consentsFacade.addPrivatePlotOwnerConsentAgreement(consentId, privatePlotOwnerConsentId, toAddFileDto(preparedFile.metadata, preparedFile.fileAsMultipartFile, privatePlotOwnerConsentId))
+        addedFileIds.add(addedFile.fileId)
+        return addedFile
+    }
+
+    FileDto addPublicOwnerConsentAgreement(PreparedFile preparedFile, UUID consentId, UUID publicOwnerConsentId) {
+        FileDto addedFile = consentsFacade.addPublicOwnerConsentAgreement(consentId, publicOwnerConsentId, toAddFileDto(preparedFile.metadata, preparedFile.fileAsMultipartFile, publicOwnerConsentId))
+        addedFileIds.add(addedFile.fileId)
+        return addedFile
+
+    }
+
     void deleteFile(UUID fileId) {
         fileStorageFacade.deleteFile(fileId)
         addedFileIds.remove(fileId)
@@ -105,7 +125,7 @@ class SozztSpecification extends Specification implements FileSample, Preliminar
             loginUser(DAREK_PRELIMINARY_PLANER)
             completePreliminaryPlan(COMPLETED_KRYNICA_PRELIMINARY_PLAN)
         }
-        if(step >= COMPLETED_TERRAIN_VISION) {
+        if(step >= COMPLETED_TERRAIN_VISION || step >= BEGIN_ROUTE_PREPARATION || step >= BEGIN_CONSENTS_COLLECTION) {
             loginUser(MARCIN_TERRAIN_VISIONER)
             if(step == COMPLETED_TERRAIN_VISION_WITHOUT_MAP_REQUIRED){
                 completeTerrainVision(COMPLETED_KRYNICA_TERRAIN_VISION)

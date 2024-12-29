@@ -10,6 +10,9 @@ trait UserSample {
     UsernamePasswordAuthenticationToken DAREK_PRELIMINARY_PLANER = createUser("Darek", "ROLE_PRELIMINARY_PLANER")
     UsernamePasswordAuthenticationToken MARCIN_TERRAIN_VISIONER = createUser("Marcin", "ROLE_TERRAIN_VISIONER")
     UsernamePasswordAuthenticationToken WALDEK_SURVEYOR = createUser("Waldek", "ROLE_SURVEYOR")
+    UsernamePasswordAuthenticationToken KASIA_CONSENT_CORDINATOR = createUser("Kasia", "ROLE_CONSENT_COORDINATOR")
+    UsernamePasswordAuthenticationToken IWONA_CONSENT_COLLECTOR = createUser("IWONA", "ROLE_CONSENT_COLLECTOR")
+
 
     UsernamePasswordAuthenticationToken createUser(String name, String role) {
         User user = new User(name, new Random().nextLong().toString(), List.of(new SimpleGrantedAuthority(role)))

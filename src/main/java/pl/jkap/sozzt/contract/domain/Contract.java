@@ -54,7 +54,8 @@ class Contract implements Serializable {
     void createSteps(ContractStepCreator contractStepCreator) {
         contractSteps.add(contractStepCreator.createPreliminaryPlanStep(contractId, contractDetails.getOrderDate()));
         contractSteps.add(contractStepCreator.createTerrainVisionStep(contractId, contractDetails.getOrderDate()));
-        contractSteps.add(contractStepCreator.createRoutePreparationStep(contractId, contractDetails.getOrderDate()));
+        contractSteps.add(contractStepCreator.createRoutePreparationStep(contractDetails.getOrderDate()));
+        contractSteps.add(contractStepCreator.createConsentsCollectionStep(contractId, contractDetails.getOrderDate()));
     }
 
     void completePreliminaryPlan(TerrainVisionFacade terrainVisionFacade) {
@@ -77,6 +78,7 @@ class Contract implements Serializable {
         if(routePreparationNecessary){
             beginRoutePreparationStep(routePreparationFacade);
         }
+        beginConsentsCollectionStep();
     }
 
     void completeRoutePreparation() {
@@ -102,11 +104,16 @@ class Contract implements Serializable {
         routePreparationStep.beginStep();
     }
 
+    private void beginConsentsCollectionStep() {
+        ContractStep consentsCollectionStep = getContractStep(ContractStepType.CONSENTS_COLLECTION);
+        consentsCollectionStep.beginStep();
+    }
+
     private ContractStep getContractStep(ContractStepType contractStepType) {
         return contractSteps.stream()
                 .filter(step -> step.getContractStepType() == contractStepType)
                 .findFirst()
-                .orElseThrow(() -> new ContractStepNotFoundException(STR."Contract step: \{contractStepType} not found"));
+                .orElseThrow(() -> new ContractStepNotFoundException("Contract step:" + contractStepType + "not found"));
     }
 
     boolean isContractCompleted() {
