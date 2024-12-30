@@ -5,7 +5,6 @@ import pl.jkap.sozzt.consents.domain.DeliveryType;
 
 import java.time.Instant;
 import java.util.Optional;
-import java.util.UUID;
 
 @Builder
 @Getter
@@ -13,8 +12,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @EqualsAndHashCode
 @ToString
-public class AddPublicPlotOwnerConsentDto {
-    private UUID publicPlotOwnerConsentId;
+public class UpdatePrivatePlotOwnerConsentDto {
     private String ownerName;
     private String comment;
     private String plotNumber;
@@ -22,9 +20,6 @@ public class AddPublicPlotOwnerConsentDto {
     private Instant mailingDate;
     private DeliveryType deliveryType;
 
-    public Optional<UUID> getPublicPlotOwnerConsentId() {
-        return Optional.ofNullable(publicPlotOwnerConsentId);
-    }
     public Optional<DeliveryType> getDeliveryType() {
         return Optional.ofNullable(deliveryType);
     }

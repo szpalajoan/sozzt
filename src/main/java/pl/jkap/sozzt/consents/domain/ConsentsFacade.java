@@ -56,7 +56,7 @@ public class ConsentsFacade {
         return privatePlotOwnerConsent.dto();
     }
 
-    public PublicOwnerConsentDto addPublicOwnerConsent(UUID uuid, AddPublicPlotOwnerConsentDto addPublicPlotOwnerConsentDto) {
+    public PublicPlotOwnerConsentDto addPublicOwnerConsent(UUID uuid, AddPublicPlotOwnerConsentDto addPublicPlotOwnerConsentDto) {
         Consents consents = consentsRepository.findById(uuid)
                 .orElseThrow(() -> new ConsentsNotFoundException("Consents not found: " + uuid));
         PublicOwnerConsent publicOwnerConsent = consents.addPublicOwnerConsent(addPublicPlotOwnerConsentDto, instantProvider);
@@ -81,5 +81,60 @@ public class ConsentsFacade {
         FileDto addedAgreement = fileStorageFacade.addPublicOwnerConsentAgreement(addFileDto);
         log.info("Public plot owner consent accepted: {}", publicPlotOwnerConsentId);
         return addedAgreement;
+    }
+
+    public void updatePrivatePlotOwnerConsent(UUID consentsId, UUID privatePlotOwnerConsentId, UpdatePrivatePlotOwnerConsentDto updatePrivatePlotOwnerConsentDto) {
+        Consents consents = consentsRepository.findById(consentsId)
+                .orElseThrow(() -> new ConsentsNotFoundException("Consents not found for contractId: " + consentsId));
+        consents.updatePrivatePlotOwnerConsent(privatePlotOwnerConsentId, updatePrivatePlotOwnerConsentDto);
+        consentsRepository.save(consents);
+        log.info("Private plot owner consent updated: {}", updatePrivatePlotOwnerConsentDto);
+    }
+
+    public void updatePublicOwnerConsent(UUID consentsId, UUID publicPlotOwnerConsentId, UpdatePublicPlotOwnerConsentDto updatePublicPlotOwnerConsentDto) {
+        Consents consents = consentsRepository.findById(consentsId)
+                .orElseThrow(() -> new ConsentsNotFoundException("Consents not found for contractId: " + consentsId));
+        consents.updatePublicPlotOwnerConsent(publicPlotOwnerConsentId, updatePublicPlotOwnerConsentDto);
+        consentsRepository.save(consents);
+        log.info("Public plot owner consent updated: {}", updatePublicPlotOwnerConsentDto);
+    }
+
+    public void markPrivatePlotOwnerConsentAsSentByMail(UUID consentsId, UUID privatePlotOwnerConsentId) {
+        Consents consents = consentsRepository.findById(consentsId)
+                .orElseThrow(() -> new ConsentsNotFoundException("Consents not found for contractId: " + consentsId));
+        consents.markPrivatePlotOwnerConsentAsSentByMail(privatePlotOwnerConsentId, instantProvider);
+        consentsRepository.save(consents);
+        log.info("Private plot owner consent sent by mail: {}", privatePlotOwnerConsentId);
+    }
+
+    public void markPublicPlotOwnerConsentAsSentByMail(UUID consentsId, UUID publicPlotOwnerConsentId) {
+        Consents consents = consentsRepository.findById(consentsId)
+                .orElseThrow(() -> new ConsentsNotFoundException("Consents not found for contractId: " + consentsId));
+        consents.markPublicPlotOwnerConsentAsSentByMail(publicPlotOwnerConsentId, instantProvider);
+        consentsRepository.save(consents);
+        log.info("Public plot owner consent sent by mail: {}", publicPlotOwnerConsentId);
+    }
+
+    public void invalidatePrivatePlotOwnerConsent(UUID consentsId, UUID privatePlotOwnerConsentId, String reason) {
+        Consents consents = consentsRepository.findById(consentsId)
+                .orElseThrow(() -> new ConsentsNotFoundException("Consents not found for contractId: " + consentsId));
+        consents.invalidatePrivatePlotOwnerConsent(privatePlotOwnerConsentId, reason, instantProvider);
+        consentsRepository.save(consents);
+        log.info("Private plot owner consent invalidated: {}", privatePlotOwnerConsentId);
+    }
+
+    public void invalidatePublicPlotOwnerConsent(UUID consentsId, UUID publicPlotOwnerConsentId, String reason) {
+        Consents consents = consentsRepository.findById(consentsId)
+                .orElseThrow(() -> new ConsentsNotFoundException("Consents not found for contractId: " + consentsId));
+        consents.invalidatePublicPlotOwnerConsent(publicPlotOwnerConsentId, reason, instantProvider);
+        consentsRepository.save(consents);
+        log.info("Public plot owner consent invalidated: {}", publicPlotOwnerConsentId);
+    }
+
+    public void completeConsentsCollection(UUID consentsId) {
+        Consents consents = consentsRepository.findById(consentsId)
+                .orElseThrow(() -> new ConsentsNotFoundException("Consents not found for contractId: " + consentsId));
+        consents.markAsCompleted();
+        consentsRepository.save(consents);
     }
 }

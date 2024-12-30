@@ -3,7 +3,9 @@ package pl.jkap.sozzt.consents.domain
 import pl.jkap.sozzt.consents.dto.AddPrivatePlotOwnerConsentDto
 import pl.jkap.sozzt.consents.dto.AddPublicPlotOwnerConsentDto
 import pl.jkap.sozzt.consents.dto.PrivatePlotOwnerConsentDto
-import pl.jkap.sozzt.consents.dto.PublicOwnerConsentDto
+import pl.jkap.sozzt.consents.dto.PublicPlotOwnerConsentDto
+import pl.jkap.sozzt.consents.dto.UpdatePrivatePlotOwnerConsentDto
+import pl.jkap.sozzt.consents.dto.UpdatePublicPlotOwnerConsentDto
 import pl.jkap.sozzt.instant.InstantSamples
 import pl.jkap.sozzt.sample.SampleModifier
 import pl.jkap.sozzt.user.UserSample
@@ -14,28 +16,43 @@ trait PlotOwnerConsentSample implements UserSample, InstantSamples {
     PrivatePlotOwnerConsentDto KRYNICA_PRIVATE_PLOT_OWNER_CONSENT = PrivatePlotOwnerConsentDto.builder()
             .privatePlotOwnerConsentId(UUID.fromString("827d54cf-badc-4f84-9cf0-f7637f3d26e0"))
             .ownerName("Marcin Krynicki")
-            .street("Kwiatowa")
-            .houseNumber("1")
-            .apartmentNumber("12")
-            .postalCode("12-345")
-            .city("Krynica")
             .plotNumber("123")
             .consentCreateDate(NOW)
             .consentStatus(ConsentStatus.CONSENT_CREATED)
             .collectorName(IWONA_CONSENT_COLLECTOR.name)
+            .deliveryType(DeliveryType.NOT_SPECIFIED)
             .build()
 
-    PublicOwnerConsentDto KRYNICA_PUBLIC_OWNER_CONSENT = PublicOwnerConsentDto.builder()
+    PublicPlotOwnerConsentDto KRYNICA_PUBLIC_OWNER_CONSENT = PublicPlotOwnerConsentDto.builder()
             .publicPlotOwnerConsentId(UUID.fromString("65082b5f-2656-4e2e-a7f5-b3c0800c3b0f"))
             .publicOwnerName("Gmina Krynica")
-            .street("Urzędowa")
-            .houseNumber("2")
-            .postalCode("12-345")
-            .city("Krynica")
             .plotNumber("8573/3")
             .consentCreateDate(NOW)
             .consentStatus(ConsentStatus.CONSENT_CREATED)
             .collectorName(IWONA_CONSENT_COLLECTOR.name)
+            .deliveryType(DeliveryType.NOT_SPECIFIED)
+            .build()
+
+    PrivatePlotOwnerConsentDto CONFIRMED_KRYNICA_PRIVATE_PLOT_OWNER_CONSENT = PrivatePlotOwnerConsentDto.builder()
+            .privatePlotOwnerConsentId(UUID.fromString("827d54cf-badc-4f84-9cf0-f7637f3d26e0"))
+            .ownerName("Marcin Krynicki")
+            .plotNumber("123")
+            .consentCreateDate(NOW)
+            .consentStatus(ConsentStatus.CONSENT_GIVEN)
+            .consentGivenDate(NOW)
+            .collectorName(IWONA_CONSENT_COLLECTOR.name)
+            .deliveryType(DeliveryType.NOT_SPECIFIED)
+            .build()
+
+    PublicPlotOwnerConsentDto CONFIRMED_PUBLIC_PLOT_OWNER_CONSENT = PublicPlotOwnerConsentDto.builder()
+            .publicPlotOwnerConsentId(UUID.fromString("65082b5f-2656-4e2e-a7f5-b3c0800c3b0f"))
+            .publicOwnerName("Gmina Krynica")
+            .plotNumber("8573/3")
+            .consentCreateDate(NOW)
+            .consentStatus(ConsentStatus.CONSENT_GIVEN)
+            .consentGivenDate(NOW)
+            .collectorName(IWONA_CONSENT_COLLECTOR.name)
+            .deliveryType(DeliveryType.NOT_SPECIFIED)
             .build()
 
 
@@ -43,26 +60,45 @@ trait PlotOwnerConsentSample implements UserSample, InstantSamples {
         return AddPrivatePlotOwnerConsentDto.builder()
                 .privatePlotOwnerConsentId(privatePlotOwnerConsentDto.privatePlotOwnerConsentId)
                 .ownerName(privatePlotOwnerConsentDto.ownerName)
-                .street(privatePlotOwnerConsentDto.street)
-                .houseNumber(privatePlotOwnerConsentDto.houseNumber)
-                .apartmentNumber(privatePlotOwnerConsentDto.apartmentNumber)
-                .postalCode(privatePlotOwnerConsentDto.postalCode)
-                .city(privatePlotOwnerConsentDto.city)
                 .plotNumber(privatePlotOwnerConsentDto.plotNumber)
                 .collectorName(privatePlotOwnerConsentDto.collectorName)
+                .deliveryType(privatePlotOwnerConsentDto.deliveryType)
+                .comment(privatePlotOwnerConsentDto.comment)
+                .mailingDate(privatePlotOwnerConsentDto.mailingDate)
                 .build()
     }
 
-    AddPublicPlotOwnerConsentDto toAddPublicPlotOwnerConsent(PublicOwnerConsentDto publicOwnerConsentDto) {
+    AddPublicPlotOwnerConsentDto toAddPublicPlotOwnerConsent(PublicPlotOwnerConsentDto publicOwnerConsentDto) {
         return AddPublicPlotOwnerConsentDto.builder()
                 .publicPlotOwnerConsentId(publicOwnerConsentDto.publicPlotOwnerConsentId)
                 .ownerName(publicOwnerConsentDto.publicOwnerName)
-                .street(publicOwnerConsentDto.street)
-                .houseNumber(publicOwnerConsentDto.houseNumber)
-                .postalCode(publicOwnerConsentDto.postalCode)
-                .city(publicOwnerConsentDto.city)
                 .plotNumber(publicOwnerConsentDto.plotNumber)
                 .collectorName(publicOwnerConsentDto.collectorName)
+                .deliveryType(publicOwnerConsentDto.deliveryType)
+                .comment(publicOwnerConsentDto.comment)
+                .mailingDate(publicOwnerConsentDto.mailingDate)
+                .build()
+    }
+
+    UpdatePrivatePlotOwnerConsentDto toUpdatePrivatePlotOwnerConsent(PrivatePlotOwnerConsentDto privatePlotOwnerConsentDto) {
+        return UpdatePrivatePlotOwnerConsentDto.builder()
+                .ownerName(privatePlotOwnerConsentDto.ownerName)
+                .plotNumber(privatePlotOwnerConsentDto.plotNumber)
+                .collectorName(privatePlotOwnerConsentDto.collectorName)
+                .deliveryType(privatePlotOwnerConsentDto.deliveryType)
+                .comment(privatePlotOwnerConsentDto.comment)
+                .mailingDate(privatePlotOwnerConsentDto.mailingDate)
+                .build()
+    }
+
+    UpdatePublicPlotOwnerConsentDto toUpdatePublicPlotOwnerConsent(PublicPlotOwnerConsentDto publicOwnerConsentDto) {
+        return UpdatePublicPlotOwnerConsentDto.builder()
+                .publicOwnerName(publicOwnerConsentDto.publicOwnerName)
+                .plotNumber(publicOwnerConsentDto.plotNumber)
+                .collectorName(publicOwnerConsentDto.collectorName)
+                .deliveryType(publicOwnerConsentDto.deliveryType)
+                .comment(publicOwnerConsentDto.comment)
+                .mailingDate(publicOwnerConsentDto.mailingDate)
                 .build()
     }
 
@@ -70,7 +106,15 @@ trait PlotOwnerConsentSample implements UserSample, InstantSamples {
         return SampleModifier.with(PrivatePlotOwnerConsentDto.class, consentsDto, properties)
     }
 
-    PublicOwnerConsentDto with(PublicOwnerConsentDto consentsDto, Map<String, Object> properties) {
-        return SampleModifier.with(PublicOwnerConsentDto.class, consentsDto, properties)
+    PublicPlotOwnerConsentDto with(PublicPlotOwnerConsentDto consentsDto, Map<String, Object> properties) {
+        return SampleModifier.with(PublicPlotOwnerConsentDto.class, consentsDto, properties)
+    }
+
+    UpdatePrivatePlotOwnerConsentDto with(UpdatePrivatePlotOwnerConsentDto consentsDto, Map<String, Object> properties) {
+        return SampleModifier.with(UpdatePrivatePlotOwnerConsentDto.class, consentsDto, properties)
+    }
+
+    UpdatePublicPlotOwnerConsentDto with(UpdatePublicPlotOwnerConsentDto consentsDto, Map<String, Object> properties) {
+        return SampleModifier.with(UpdatePublicPlotOwnerConsentDto.class, consentsDto, properties)
     }
 }

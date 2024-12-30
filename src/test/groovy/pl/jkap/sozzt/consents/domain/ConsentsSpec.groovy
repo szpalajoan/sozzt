@@ -1,10 +1,13 @@
 package pl.jkap.sozzt.consents.domain
 
 import pl.jkap.sozzt.consents.dto.PrivatePlotOwnerConsentDto
-import pl.jkap.sozzt.consents.dto.PublicOwnerConsentDto
+import pl.jkap.sozzt.consents.dto.PublicPlotOwnerConsentDto
 import pl.jkap.sozzt.filestorage.dto.FileDto
 import pl.jkap.sozzt.sample.SozztSpecification
 
+import java.time.Instant
+
+import static pl.jkap.sozzt.consents.domain.ConsentStatus.*
 import static pl.jkap.sozzt.sample.ExpectedStageSample.COMPLETED_TERRAIN_VISION
 import static pl.jkap.sozzt.sample.ExpectedStageSample.BEGIN_CONSENTS_COLLECTION
 
@@ -51,6 +54,121 @@ class ConsentsSpec extends SozztSpecification {
             consentsFacade.getConsents(KRYNICA_CONTRACT.contractId) == with(KRYNICA_CONSENTS, [publicOwnerConsents: [KRYNICA_PUBLIC_OWNER_CONSENT]])
     }
 
+    def "should update private plot owner consent"() {
+        given: "there is $KRYNICA_CONSENTS stage"
+            addKrynicaContractOnStage(BEGIN_CONSENTS_COLLECTION)
+        and: "$KASIA_CONSENT_CORDINATOR is logged in"
+            loginUser(KASIA_CONSENT_CORDINATOR)
+        and: "there is $KRYNICA_PRIVATE_PLOT_OWNER_CONSENT in $KRYNICA_CONSENTS"
+            PrivatePlotOwnerConsentDto privatePlotOwnerConsent = consentsFacade.addPrivatePlotOwnerConsent(KRYNICA_CONTRACT.contractId, toAddPrivatePlotOwnerConsent(KRYNICA_PRIVATE_PLOT_OWNER_CONSENT))
+        when: "$KASIA_CONSENT_CORDINATOR updates $KRYNICA_PRIVATE_PLOT_OWNER_CONSENT"
+            consentsFacade.updatePrivatePlotOwnerConsent(KRYNICA_CONTRACT.contractId,
+                    privatePlotOwnerConsent.privatePlotOwnerConsentId,
+                    toUpdatePrivatePlotOwnerConsent(with(privatePlotOwnerConsent, [(updateField): updateValue])))
+        then: "Private plot owner consent is updated"
+            consentsFacade.getConsents(KRYNICA_CONTRACT.contractId) == with(KRYNICA_CONSENTS, [privatePlotOwnerConsents: [with(KRYNICA_PRIVATE_PLOT_OWNER_CONSENT, [(updateField): updateValue])]])
+        where:
+            updateField     | updateValue
+            "ownerName"     | "Piotr Kowalski"
+            "comment"       | "Wire has to be replaced"
+            "plotNumber"    | "23/123"
+            "collectorName" | "BEATA"
+            "mailingDate"   | Instant.now()
+            "deliveryType"  | DeliveryType.POST
+    }
+
+    def "should update public owner consent"() {
+        given: "there is $KRYNICA_CONSENTS stage"
+            addKrynicaContractOnStage(BEGIN_CONSENTS_COLLECTION)
+        and: "$KASIA_CONSENT_CORDINATOR is logged in"
+            loginUser(KASIA_CONSENT_CORDINATOR)
+        and: "there is $KRYNICA_PUBLIC_OWNER_CONSENT in $KRYNICA_CONSENTS"
+            PublicPlotOwnerConsentDto publicOwnerConsent = consentsFacade.addPublicOwnerConsent(KRYNICA_CONTRACT.contractId, toAddPublicPlotOwnerConsent(KRYNICA_PUBLIC_OWNER_CONSENT))
+        when: "$KASIA_CONSENT_CORDINATOR updates $KRYNICA_PUBLIC_OWNER_CONSENT"
+            consentsFacade.updatePublicOwnerConsent(KRYNICA_CONTRACT.contractId,
+                    publicOwnerConsent.publicPlotOwnerConsentId,
+                    toUpdatePublicPlotOwnerConsent(with(publicOwnerConsent, [(updateField): updateValue])))
+        then: "Comment is added"
+            consentsFacade.getConsents(KRYNICA_CONTRACT.contractId) == with(KRYNICA_CONSENTS, [publicOwnerConsents: [with(KRYNICA_PUBLIC_OWNER_CONSENT, [(updateField): updateValue])]])
+        where:
+            updateField       | updateValue
+            "publicOwnerName" | "Urząd miasta Krakowa"
+            "comment"         | "Procedural delays"
+            "plotNumber"      | "23/123"
+            "collectorName"   | "BEATA"
+            "mailingDate"     | Instant.now()
+            "deliveryType"    | DeliveryType.POST
+    }
+
+    def "should mark private plot owner consent as sent by mail"() {
+        given: "there is $KRYNICA_CONSENTS stage"
+            addKrynicaContractOnStage(BEGIN_CONSENTS_COLLECTION)
+        and: "$KASIA_CONSENT_CORDINATOR is logged in"
+            loginUser(KASIA_CONSENT_CORDINATOR)
+        and: "there is $KRYNICA_PRIVATE_PLOT_OWNER_CONSENT in $KRYNICA_CONSENTS"
+            PrivatePlotOwnerConsentDto privatePlotOwnerConsent = consentsFacade.addPrivatePlotOwnerConsent(KRYNICA_CONTRACT.contractId, toAddPrivatePlotOwnerConsent(KRYNICA_PRIVATE_PLOT_OWNER_CONSENT))
+        and: "it is $TOMORROW"
+            instantProvider.useFixedClock(TOMORROW)
+        when: "$KASIA_CONSENT_CORDINATOR marks $KRYNICA_PRIVATE_PLOT_OWNER_CONSENT as sent by mail"
+            consentsFacade.markPrivatePlotOwnerConsentAsSentByMail(KRYNICA_CONTRACT.contractId, privatePlotOwnerConsent.privatePlotOwnerConsentId)
+        then: "Private plot owner consent is marked as sent by mail"
+        consentsFacade.getConsents(KRYNICA_CONTRACT.contractId) == with(KRYNICA_CONSENTS, [privatePlotOwnerConsents: [with(KRYNICA_PRIVATE_PLOT_OWNER_CONSENT, [consentStatus: SENT,
+                                                                                                                                                                mailingDate  : TOMORROW,
+                                                                                                                                                                deliveryType : DeliveryType.POST])]])
+    }
+
+    def "should mark public plot owner consent as sent by mail"() {
+        given: "there is $KRYNICA_CONSENTS stage"
+            addKrynicaContractOnStage(BEGIN_CONSENTS_COLLECTION)
+        and: "$KASIA_CONSENT_CORDINATOR is logged in"
+            loginUser(KASIA_CONSENT_CORDINATOR)
+        and: "there is $KRYNICA_PUBLIC_OWNER_CONSENT in $KRYNICA_CONSENTS"
+            PublicPlotOwnerConsentDto publicOwnerConsent = consentsFacade.addPublicOwnerConsent(KRYNICA_CONTRACT.contractId, toAddPublicPlotOwnerConsent(KRYNICA_PUBLIC_OWNER_CONSENT))
+        and: "it is $TOMORROW"
+            instantProvider.useFixedClock(TOMORROW)
+        when: "$KASIA_CONSENT_CORDINATOR marks $KRYNICA_PUBLIC_OWNER_CONSENT as sent by mail"
+            consentsFacade.markPublicPlotOwnerConsentAsSentByMail(KRYNICA_CONTRACT.contractId, publicOwnerConsent.publicPlotOwnerConsentId)
+        then: "Public plot owner consent is marked as sent by mail"
+            consentsFacade.getConsents(KRYNICA_CONTRACT.contractId) == with(KRYNICA_CONSENTS, [publicOwnerConsents: [with(KRYNICA_PUBLIC_OWNER_CONSENT, [consentStatus: SENT,
+                                                                                                                                                                mailingDate  : TOMORROW,
+                                                                                                                                                                deliveryType : DeliveryType.POST])]])
+    }
+
+    def "should invalidate private owner consent"() {
+        given: "there is $KRYNICA_CONSENTS stage"
+            addKrynicaContractOnStage(BEGIN_CONSENTS_COLLECTION)
+        and: "$KASIA_CONSENT_CORDINATOR is logged in"
+            loginUser(KASIA_CONSENT_CORDINATOR)
+        and: "there is $KRYNICA_PRIVATE_PLOT_OWNER_CONSENT in $KRYNICA_CONSENTS"
+            PrivatePlotOwnerConsentDto privateOwnerConsent = consentsFacade.addPrivatePlotOwnerConsent(KRYNICA_CONTRACT.contractId, toAddPrivatePlotOwnerConsent(KRYNICA_PRIVATE_PLOT_OWNER_CONSENT))
+        and: "it is $TOMORROW"
+            instantProvider.useFixedClock(TOMORROW)
+        when: "$KASIA_CONSENT_CORDINATOR invalidates $KRYNICA_PRIVATE_PLOT_OWNER_CONSENT"
+            consentsFacade.invalidatePrivatePlotOwnerConsent(KRYNICA_CONTRACT.contractId, privateOwnerConsent.privatePlotOwnerConsentId, "Refused to give agreement")
+        then: "Private plot owner consent is invalidated"
+            consentsFacade.getConsents(KRYNICA_CONTRACT.contractId) == with(KRYNICA_CONSENTS, [privatePlotOwnerConsents: [with(KRYNICA_PRIVATE_PLOT_OWNER_CONSENT, [consentStatus   : INVALIDATED,
+                                                                                                                                                                    consentGivenDate: TOMORROW,
+                                                                                                                                                                    statusComment   : "Refused to give agreement"])]])
+
+    }
+
+    def "should invalidate public owner consent"() {
+        given: "there is $KRYNICA_CONSENTS stage"
+            addKrynicaContractOnStage(BEGIN_CONSENTS_COLLECTION)
+        and: "$KASIA_CONSENT_CORDINATOR is logged in"
+            loginUser(KASIA_CONSENT_CORDINATOR)
+        and: "there is $KRYNICA_PUBLIC_OWNER_CONSENT in $KRYNICA_CONSENTS"
+            PublicPlotOwnerConsentDto publicOwnerConsent = consentsFacade.addPublicOwnerConsent(KRYNICA_CONTRACT.contractId, toAddPublicPlotOwnerConsent(KRYNICA_PUBLIC_OWNER_CONSENT))
+        and: "it is $TOMORROW"
+            instantProvider.useFixedClock(TOMORROW)
+        when: "$KASIA_CONSENT_CORDINATOR invalidates $KRYNICA_PUBLIC_OWNER_CONSENT"
+            consentsFacade.invalidatePublicPlotOwnerConsent(KRYNICA_CONTRACT.contractId, publicOwnerConsent.publicPlotOwnerConsentId, "consent not needed")
+        then: "Public plot owner consent is invalidated"
+            consentsFacade.getConsents(KRYNICA_CONTRACT.contractId) == with(KRYNICA_CONSENTS, [publicOwnerConsents: [with(KRYNICA_PUBLIC_OWNER_CONSENT, [consentStatus   : INVALIDATED,
+                                                                                                                                                         consentGivenDate: TOMORROW,
+                                                                                                                                                         statusComment   : "consent not needed"])]])
+    }
+
     def "should add agreement for private plot owner consent"() {
         given: "there is $KRYNICA_CONSENTS stage"
             addKrynicaContractOnStage(BEGIN_CONSENTS_COLLECTION)
@@ -61,12 +179,12 @@ class ConsentsSpec extends SozztSpecification {
         and: "$IWONA_CONSENT_COLLECTOR is logged in $TOMORROW"
             instantProvider.useFixedClock(TOMORROW)
             loginUser(IWONA_CONSENT_COLLECTOR)
-        when: "$IWONA_CONSENT_COLLECTOR adds $KRYNICA_PRIVATE_PLOT_OWNER_CONSENT_AGREEMENT"
-            FileDto privatePlotOwnerConsentAgreement = addPrivatePlotOwnerConsentAgreement(KRYNICA_PRIVATE_PLOT_OWNER_CONSENT_AGREEMENT, KRYNICA_CONTRACT.contractId, privatePlotOwnerConsentDto.privatePlotOwnerConsentId)
-        then: "$KRYNICA_PRIVATE_PLOT_OWNER_CONSENT_AGREEMENT is added"
+        when: "$IWONA_CONSENT_COLLECTOR adds agreement for $KRYNICA_PRIVATE_PLOT_OWNER_CONSENT"
+            FileDto privatePlotOwnerConsentAgreement = addPrivatePlotOwnerConsentAgreement(KRYNICA_PRIVATE_PLOT_OWNER_CONSENT_AGREEMENT_SCAN, KRYNICA_CONTRACT.contractId, privatePlotOwnerConsentDto.privatePlotOwnerConsentId)
+        then: "$KRYNICA_PRIVATE_PLOT_OWNER_CONSENT_AGREEMENT_SCAN is added"
             privatePlotOwnerConsentAgreement == KRYNICA_PRIVATE_PLOT_OWNER_CONSENT_AGREEMENT_METADATA
         and: "$KRYNICA_PRIVATE_PLOT_OWNER_CONSENT is accepted"
-            consentsFacade.getConsents(KRYNICA_CONTRACT.contractId) == with(KRYNICA_CONSENTS, [privatePlotOwnerConsents: [with(KRYNICA_PRIVATE_PLOT_OWNER_CONSENT, [consentStatus: ConsentStatus.CONSENT_GIVEN, consentGivenDate: TOMORROW])]])
+            consentsFacade.getConsents(KRYNICA_CONTRACT.contractId) == with(KRYNICA_CONSENTS, [privatePlotOwnerConsents: [with(KRYNICA_PRIVATE_PLOT_OWNER_CONSENT, [consentStatus: CONSENT_GIVEN, consentGivenDate: TOMORROW])]])
     }
 
     def "should add agreement for public owner consent"() {
@@ -75,17 +193,39 @@ class ConsentsSpec extends SozztSpecification {
         and: "$KASIA_CONSENT_CORDINATOR is logged in"
             loginUser(KASIA_CONSENT_CORDINATOR)
         and: "$KASIA_CONSENT_CORDINATOR adds new $KRYNICA_PUBLIC_OWNER_CONSENT"
-            PublicOwnerConsentDto publicOwnerConsentDto = consentsFacade.addPublicOwnerConsent(KRYNICA_CONTRACT.contractId, toAddPublicPlotOwnerConsent(KRYNICA_PUBLIC_OWNER_CONSENT))
+            PublicPlotOwnerConsentDto publicOwnerConsentDto = consentsFacade.addPublicOwnerConsent(KRYNICA_CONTRACT.contractId, toAddPublicPlotOwnerConsent(KRYNICA_PUBLIC_OWNER_CONSENT))
         and: "$IWONA_CONSENT_COLLECTOR is logged in $TOMORROW"
             instantProvider.useFixedClock(TOMORROW)
             loginUser(IWONA_CONSENT_COLLECTOR)
-        when: "$IWONA_CONSENT_COLLECTOR adds $KRYNICA_PUBLIC_OWNER_CONSENT_AGREEMENT"
-            FileDto publicOwnerConsentAgreement = addPublicOwnerConsentAgreement(KRYNICA_PUBLIC_OWNER_CONSENT_AGREEMENT, KRYNICA_CONTRACT.contractId, publicOwnerConsentDto.publicPlotOwnerConsentId)
-        then: "$KRYNICA_PUBLIC_OWNER_CONSENT_AGREEMENT is added"
+        when: "$IWONA_CONSENT_COLLECTOR adds agreement for $KRYNICA_PUBLIC_OWNER_CONSENT"
+            FileDto publicOwnerConsentAgreement = addPublicOwnerConsentAgreement(KRYNICA_PUBLIC_OWNER_CONSENT_AGREEMENT_SCAN, KRYNICA_CONTRACT.contractId, publicOwnerConsentDto.publicPlotOwnerConsentId)
+        then: "$KRYNICA_PUBLIC_OWNER_CONSENT_AGREEMENT_SCAN is added"
             publicOwnerConsentAgreement == KRYNICA_PUBLIC_OWNER_CONSENT_AGREEMENT_METADATA
         and: "$KRYNICA_PUBLIC_OWNER_CONSENT is accepted"
-            consentsFacade.getConsents(KRYNICA_CONTRACT.contractId) == with(KRYNICA_CONSENTS, [publicOwnerConsents: [with(KRYNICA_PUBLIC_OWNER_CONSENT, [consentStatus   : ConsentStatus.CONSENT_GIVEN,
+            consentsFacade.getConsents(KRYNICA_CONTRACT.contractId) == with(KRYNICA_CONSENTS, [publicOwnerConsents: [with(KRYNICA_PUBLIC_OWNER_CONSENT, [consentStatus   : CONSENT_GIVEN,
                                                                                                                                                          consentGivenDate: TOMORROW])]])
+    }
+
+
+    def "should complete consents collection"() {
+        given: "there is $KRYNICA_CONSENTS stage"
+            addKrynicaContractOnStage(BEGIN_CONSENTS_COLLECTION)
+        and: "$KASIA_CONSENT_CORDINATOR is logged in"
+            loginUser(KASIA_CONSENT_CORDINATOR)
+        and: "$KASIA_CONSENT_CORDINATOR adds new $KRYNICA_PUBLIC_OWNER_CONSENT"
+            PublicPlotOwnerConsentDto publicOwnerConsentDto = consentsFacade.addPublicOwnerConsent(KRYNICA_CONTRACT.contractId, toAddPublicPlotOwnerConsent(KRYNICA_PUBLIC_OWNER_CONSENT))
+        and: "$KASIA_CONSENT_CORDINATOR adds new $KRYNICA_PRIVATE_PLOT_OWNER_CONSENT"
+            PrivatePlotOwnerConsentDto privatePlotOwnerConsentDto = consentsFacade.addPrivatePlotOwnerConsent(KRYNICA_CONTRACT.contractId, toAddPrivatePlotOwnerConsent(KRYNICA_PRIVATE_PLOT_OWNER_CONSENT))
+        and: "$KASIA_CONSENT_CORDINATOR added agreement for $KRYNICA_PUBLIC_OWNER_CONSENT"
+            addPublicOwnerConsentAgreement(KRYNICA_PUBLIC_OWNER_CONSENT_AGREEMENT_SCAN, KRYNICA_CONTRACT.contractId, publicOwnerConsentDto.publicPlotOwnerConsentId)
+        and: "$KASIA_CONSENT_CORDINATOR added agreement for $KRYNICA_PRIVATE_PLOT_OWNER_CONSENT"
+            addPrivatePlotOwnerConsentAgreement(KRYNICA_PRIVATE_PLOT_OWNER_CONSENT_AGREEMENT_SCAN, KRYNICA_CONTRACT.contractId, privatePlotOwnerConsentDto.privatePlotOwnerConsentId)
+        when: "$KASIA_CONSENT_CORDINATOR completes consents collection"
+            consentsFacade.completeConsentsCollection(KRYNICA_CONTRACT.contractId)
+        then: "Consents collection is marked as completed"
+            consentsFacade.getConsents(KRYNICA_CONTRACT.contractId) == with(KRYNICA_CONSENTS, [publicOwnerConsents     : [CONFIRMED_PUBLIC_PLOT_OWNER_CONSENT],
+                                                                                               privatePlotOwnerConsents: [CONFIRMED_KRYNICA_PRIVATE_PLOT_OWNER_CONSENT],
+                                                                                               isCompleted             : true])
     }
 
 }

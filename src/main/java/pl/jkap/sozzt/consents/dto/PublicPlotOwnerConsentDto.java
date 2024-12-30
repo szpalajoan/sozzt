@@ -2,6 +2,7 @@ package pl.jkap.sozzt.consents.dto;
 
 import lombok.*;
 import pl.jkap.sozzt.consents.domain.ConsentStatus;
+import pl.jkap.sozzt.consents.domain.DeliveryType;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -12,17 +13,17 @@ import java.util.UUID;
 @AllArgsConstructor
 @EqualsAndHashCode
 @ToString
-public class PublicOwnerConsentDto {
+public class PublicPlotOwnerConsentDto {
     private UUID publicPlotOwnerConsentId;
     private String publicOwnerName;
-    private String street;
-    private String houseNumber;
-    private String apartmentNumber;
-    private String postalCode;
-    private String city;
+    private String comment;
     private String plotNumber;
     private Instant consentCreateDate;
     private Instant consentGivenDate;
     private ConsentStatus consentStatus;
+    private String statusComment;
     private String collectorName;
+    private Instant mailingDate;
+    private DeliveryType deliveryType;
+
 }
