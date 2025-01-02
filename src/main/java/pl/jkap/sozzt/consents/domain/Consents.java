@@ -136,7 +136,7 @@ class Consents {
                 .requestForPlotExtractsSent(requestForPlotExtractsSent)
                 .privatePlotOwnerConsents(privatePlotOwnerConsents.stream().map(PrivatePlotOwnerConsent::dto).toList())
                 .publicOwnerConsents(publicOwnerConsents.stream().map(PublicOwnerConsent::dto).toList())
-                .isCompleted(isCompleted)
+                .completed(isCompleted)
                 .build();
     }
 }

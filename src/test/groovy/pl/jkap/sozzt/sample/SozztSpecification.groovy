@@ -1,9 +1,11 @@
 package pl.jkap.sozzt.sample
 
 import pl.jkap.sozzt.consents.domain.ConsentsConfiguration
+import pl.jkap.sozzt.consents.domain.ConsentsEventPublisherStub
 import pl.jkap.sozzt.consents.domain.ConsentsFacade
 import pl.jkap.sozzt.consents.domain.ConsentsSample
 import pl.jkap.sozzt.consents.domain.PlotOwnerConsentSample
+import pl.jkap.sozzt.consents.dto.ConsentsDto
 import pl.jkap.sozzt.contract.domain.*
 import pl.jkap.sozzt.contract.dto.ContractDto
 import pl.jkap.sozzt.contractsecurity.domain.ContractSecurityConfiguration
@@ -33,7 +35,7 @@ import spock.lang.Specification
 
 import static pl.jkap.sozzt.sample.ExpectedStageSample.*
 
-class SozztSpecification extends Specification implements FileSample, PlotOwnerConsentSample, ConsentsSample, PreliminaryPlanSample, TerrainVisionSample, RoutePreparationSample,
+class SozztSpecification extends Specification implements FileSample, ConsentsSample, PlotOwnerConsentSample, PreliminaryPlanSample, TerrainVisionSample, RoutePreparationSample,
         ContractSample, LocationSample, ContractDetailsSample, ContractStepSample,
         UserSample, InstantSamples {
     Collection<UUID> addedFileIds = []
@@ -45,7 +47,7 @@ class SozztSpecification extends Specification implements FileSample, PlotOwnerC
     TerrainVisionFacade terrainVisionFacade = new TerrainVisionConfiguration().terrainVisionFacade(instantProvider, new TerrainVisionEventPublisherStub(eventInvoker))
     RoutePreparationFacade routePreparationFacade = new RoutePreparationConfiguration().routePreparationFacade(new RoutePreparationEventPublisherStub(eventInvoker))
     FileStorageFacade fileStorageFacade = new FileStorageConfigurator().fileStorageFacade(contractSecurityFacade, new FileEventPublisherStub(eventInvoker))
-    ConsentsFacade consentsFacade = new ConsentsConfiguration().consentsFacade(fileStorageFacade, instantProvider)
+    ConsentsFacade consentsFacade = new ConsentsConfiguration().consentsFacade(fileStorageFacade, instantProvider, new ConsentsEventPublisherStub(eventInvoker))
     ContractFacade contractFacade = new ContractConfiguration().contractFacade(contractSecurityFacade, preliminaryPlanFacade, terrainVisionFacade, routePreparationFacade, consentsFacade, instantProvider)
 
 
@@ -124,6 +126,14 @@ class SozztSpecification extends Specification implements FileSample, PlotOwnerC
             }
 
         }
+        if(step >= COMPLETED_ROUTE_PREPARATION) {
+            loginUser(WALDEK_SURVEYOR)
+            completeRoutePreparation(COMPLETED_KRYNICA_ROUTE_PREPARATION)
+        }
+        if(step >= COMPLETED_CONSENTS_COLLECTION) {
+            loginUser(KASIA_CONSENT_CORDINATOR)
+            completeConsentsCollection(COMPLETED_KRYNICA_CONSENTS)
+        }
     }
 
     private void completeIntroduceContract(ContractDto contractDto) {
@@ -141,5 +151,14 @@ class SozztSpecification extends Specification implements FileSample, PlotOwnerC
         terrainVisionFacade.confirmAllPhotosAreUploaded(terrainVisionDto.terrainVisionId)
         terrainVisionFacade.confirmChangesOnMap(terrainVisionDto.terrainVisionId, mapChange)
         terrainVisionFacade.completeTerrainVision(terrainVisionDto.terrainVisionId)
+    }
+
+    void completeRoutePreparation(RoutePreparationDto routePreparationDto) {
+        uploadGeodeticMap(routePreparationDto, KRYNICA_GEODETIC_MAP)
+        routePreparationFacade.completeRoutePreparation(routePreparationDto.routePreparationId)
+    }
+
+    void completeConsentsCollection(ConsentsDto consentsDto) {
+        consentsFacade.completeConsentsCollection(consentsDto.consentId)
     }
 }

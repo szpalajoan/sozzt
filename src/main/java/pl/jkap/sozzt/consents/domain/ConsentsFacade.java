@@ -3,6 +3,7 @@ package pl.jkap.sozzt.consents.domain;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import pl.jkap.sozzt.consents.dto.*;
+import pl.jkap.sozzt.consents.event.ConsentsCollectionCompletedEvent;
 import pl.jkap.sozzt.consents.exception.ConsentsNotFoundException;
 import pl.jkap.sozzt.filestorage.domain.FileStorageFacade;
 import pl.jkap.sozzt.filestorage.dto.AddFileDto;
@@ -18,6 +19,7 @@ public class ConsentsFacade {
 
     private final ConsentsRepository consentsRepository;
     private final FileStorageFacade fileStorageFacade;
+    private final ConsentsEventPublisher consentsEventPublisher;
     private final InstantProvider instantProvider;
 
 
@@ -136,5 +138,7 @@ public class ConsentsFacade {
                 .orElseThrow(() -> new ConsentsNotFoundException("Consents not found for contractId: " + consentsId));
         consents.markAsCompleted();
         consentsRepository.save(consents);
+        consentsEventPublisher.consentsCollectionCompleted(new ConsentsCollectionCompletedEvent(consentsId));
+        log.info("Consents completed: {}", consentsId);
     }
 }

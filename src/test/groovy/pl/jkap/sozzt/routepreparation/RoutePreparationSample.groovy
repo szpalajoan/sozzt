@@ -10,8 +10,14 @@ trait RoutePreparationSample implements ContractSample {
 
     RoutePreparationDto KRYNICA_ROUTE_PREPARATION = RoutePreparationDto.builder()
             .routePreparationId(KRYNICA_CONTRACT.contractId)
-            .deadline(NOW + Duration.ofDays(51))
+            .deadline(NOW + Duration.ofDays(65))
             .isGeodeticMapUploaded(false)
+            .build()
+
+    RoutePreparationDto COMPLETED_KRYNICA_ROUTE_PREPARATION = RoutePreparationDto.builder()
+            .routePreparationId(KRYNICA_CONTRACT.contractId)
+            .deadline(NOW + Duration.ofDays(65))
+            .isGeodeticMapUploaded(true)
             .build()
 
     RoutePreparationDto with(RoutePreparationDto routePreparationDto, Map<String, Object> properties) {

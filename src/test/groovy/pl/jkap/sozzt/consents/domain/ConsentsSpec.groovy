@@ -212,6 +212,8 @@ class ConsentsSpec extends SozztSpecification {
             addKrynicaContractOnStage(BEGIN_CONSENTS_COLLECTION)
         and: "$KASIA_CONSENT_CORDINATOR is logged in"
             loginUser(KASIA_CONSENT_CORDINATOR)
+        and: "$KASIA_CONSENT_CORDINATOR marked send request for plot extracts as done"
+            consentsFacade.requestForLandExtractsSent(KRYNICA_CONTRACT.contractId)
         and: "$KASIA_CONSENT_CORDINATOR adds new $KRYNICA_PUBLIC_OWNER_CONSENT"
             PublicPlotOwnerConsentDto publicOwnerConsentDto = consentsFacade.addPublicOwnerConsent(KRYNICA_CONTRACT.contractId, toAddPublicPlotOwnerConsent(KRYNICA_PUBLIC_OWNER_CONSENT))
         and: "$KASIA_CONSENT_CORDINATOR adds new $KRYNICA_PRIVATE_PLOT_OWNER_CONSENT"
@@ -223,9 +225,7 @@ class ConsentsSpec extends SozztSpecification {
         when: "$KASIA_CONSENT_CORDINATOR completes consents collection"
             consentsFacade.completeConsentsCollection(KRYNICA_CONTRACT.contractId)
         then: "Consents collection is marked as completed"
-            consentsFacade.getConsents(KRYNICA_CONTRACT.contractId) == with(KRYNICA_CONSENTS, [publicOwnerConsents     : [CONFIRMED_PUBLIC_PLOT_OWNER_CONSENT],
-                                                                                               privatePlotOwnerConsents: [CONFIRMED_KRYNICA_PRIVATE_PLOT_OWNER_CONSENT],
-                                                                                               isCompleted             : true])
+            consentsFacade.getConsents(KRYNICA_CONTRACT.contractId) == COMPLETED_KRYNICA_CONSENTS
     }
 
 }

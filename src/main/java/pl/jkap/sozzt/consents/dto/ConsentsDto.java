@@ -19,5 +19,5 @@ public class ConsentsDto {
     private boolean requestForPlotExtractsSent;
     private Collection<PrivatePlotOwnerConsentDto> privatePlotOwnerConsents;
     private Collection<PublicPlotOwnerConsentDto> publicOwnerConsents;
-    private boolean isCompleted;
+    private boolean completed;
 }
