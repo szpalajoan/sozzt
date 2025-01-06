@@ -10,6 +10,11 @@ import pl.jkap.sozzt.contract.domain.*
 import pl.jkap.sozzt.contract.dto.ContractDto
 import pl.jkap.sozzt.contractsecurity.domain.ContractSecurityConfiguration
 import pl.jkap.sozzt.contractsecurity.domain.ContractSecurityFacade
+import pl.jkap.sozzt.documentation.domain.DocumentationConfiguration
+import pl.jkap.sozzt.documentation.domain.DocumentationFacade
+import pl.jkap.sozzt.documentation.domain.DocumentationSample
+import pl.jkap.sozzt.documentation.domain.RouteDrawingSample
+import pl.jkap.sozzt.documentation.domain.TermVerificationSample
 import pl.jkap.sozzt.filestorage.domain.*
 import pl.jkap.sozzt.filestorage.dto.FileDto
 import pl.jkap.sozzt.inmemory.InMemoryEventInvoker
@@ -35,7 +40,7 @@ import spock.lang.Specification
 
 import static pl.jkap.sozzt.sample.ExpectedStageSample.*
 
-class SozztSpecification extends Specification implements FileSample, ConsentsSample, PlotOwnerConsentSample, PreliminaryPlanSample, TerrainVisionSample, RoutePreparationSample,
+class SozztSpecification extends Specification implements FileSample, TermVerificationSample, RouteDrawingSample, DocumentationSample, ConsentsSample, PlotOwnerConsentSample, PreliminaryPlanSample, TerrainVisionSample, RoutePreparationSample,
         ContractSample, LocationSample, ContractDetailsSample, ContractStepSample,
         UserSample, InstantSamples {
     Collection<UUID> addedFileIds = []
@@ -48,7 +53,10 @@ class SozztSpecification extends Specification implements FileSample, ConsentsSa
     RoutePreparationFacade routePreparationFacade = new RoutePreparationConfiguration().routePreparationFacade(new RoutePreparationEventPublisherStub(eventInvoker))
     FileStorageFacade fileStorageFacade = new FileStorageConfigurator().fileStorageFacade(contractSecurityFacade, new FileEventPublisherStub(eventInvoker))
     ConsentsFacade consentsFacade = new ConsentsConfiguration().consentsFacade(fileStorageFacade, instantProvider, new ConsentsEventPublisherStub(eventInvoker))
-    ContractFacade contractFacade = new ContractConfiguration().contractFacade(contractSecurityFacade, preliminaryPlanFacade, terrainVisionFacade, routePreparationFacade, consentsFacade, instantProvider)
+    DocumentationFacade documentationFacade = new DocumentationConfiguration().documentationFacade(fileStorageFacade,instantProvider)
+    ContractFacade contractFacade = new ContractConfiguration().contractFacade(contractSecurityFacade, preliminaryPlanFacade, terrainVisionFacade,
+            routePreparationFacade, consentsFacade, documentationFacade,
+            instantProvider)
 
 
     def setup() {
@@ -91,16 +99,34 @@ class SozztSpecification extends Specification implements FileSample, ConsentsSa
     }
 
     FileDto addPrivatePlotOwnerConsentAgreement(PreparedFile preparedFile, UUID consentId, UUID privatePlotOwnerConsentId) {
-        FileDto addedFile = consentsFacade.addPrivatePlotOwnerConsentAgreement(consentId, privatePlotOwnerConsentId, toAddFileDto(preparedFile.metadata, preparedFile.fileAsMultipartFile, privatePlotOwnerConsentId))
+        FileDto addedFile = consentsFacade.addPrivatePlotOwnerConsentAgreement(consentId, privatePlotOwnerConsentId, toAddFileDto(preparedFile.metadata, preparedFile.fileAsMultipartFile, consentId, privatePlotOwnerConsentId))
         addedFileIds.add(addedFile.fileId)
         return addedFile
     }
 
     FileDto addPublicOwnerConsentAgreement(PreparedFile preparedFile, UUID consentId, UUID publicOwnerConsentId) {
-        FileDto addedFile = consentsFacade.addPublicOwnerConsentAgreement(consentId, publicOwnerConsentId, toAddFileDto(preparedFile.metadata, preparedFile.fileAsMultipartFile, publicOwnerConsentId))
+        FileDto addedFile = consentsFacade.addPublicOwnerConsentAgreement(consentId, publicOwnerConsentId, toAddFileDto(preparedFile.metadata, preparedFile.fileAsMultipartFile, consentId, publicOwnerConsentId))
         addedFileIds.add(addedFile.fileId)
         return addedFile
 
+    }
+
+    FileDto uploadRouteDrawing(PreparedFile preparedFile, UUID documentationId) {
+        FileDto addedFile = documentationFacade.uploadDrawnRoute(documentationId, toAddFileDto(preparedFile.metadata, preparedFile.fileAsMultipartFile, documentationId))
+        addedFileIds.add(addedFile.fileId)
+        return addedFile
+    }
+
+    FileDto uploadPdfWithRouteAndData(PreparedFile preparedFile, UUID documentationId) {
+        FileDto addedFile = documentationFacade.uploadPdfWithRouteAndData(documentationId, toAddFileDto(preparedFile.metadata, preparedFile.fileAsMultipartFile, documentationId))
+        addedFileIds.add(addedFile.fileId)
+        return addedFile
+    }
+
+    FileDto uploadCompiledDocument(PreparedFile preparedFile, UUID documentationId) {
+        FileDto addedFile = documentationFacade.uploadCompiledDocument(documentationId, toAddFileDto(preparedFile.metadata, preparedFile.fileAsMultipartFile, documentationId))
+        addedFileIds.add(addedFile.fileId)
+        return addedFile
     }
 
     void deleteFile(UUID fileId) {
@@ -130,7 +156,7 @@ class SozztSpecification extends Specification implements FileSample, ConsentsSa
             loginUser(WALDEK_SURVEYOR)
             completeRoutePreparation(COMPLETED_KRYNICA_ROUTE_PREPARATION)
         }
-        if(step >= COMPLETED_CONSENTS_COLLECTION) {
+        if(step >= COMPLETED_CONSENTS_COLLECTION || step >= BEGIN_DOCUMENTATION) {
             loginUser(KASIA_CONSENT_CORDINATOR)
             completeConsentsCollection(COMPLETED_KRYNICA_CONSENTS)
         }

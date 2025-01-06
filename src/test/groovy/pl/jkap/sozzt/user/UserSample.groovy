@@ -11,7 +11,9 @@ trait UserSample {
     UsernamePasswordAuthenticationToken MARCIN_TERRAIN_VISIONER = createUser("Marcin", "ROLE_TERRAIN_VISIONER")
     UsernamePasswordAuthenticationToken WALDEK_SURVEYOR = createUser("Waldek", "ROLE_SURVEYOR")
     UsernamePasswordAuthenticationToken KASIA_CONSENT_CORDINATOR = createUser("Kasia", "ROLE_CONSENT_COORDINATOR")
-    UsernamePasswordAuthenticationToken IWONA_CONSENT_COLLECTOR = createUser("IWONA", "ROLE_CONSENT_COLLECTOR")
+    UsernamePasswordAuthenticationToken IWONA_CONSENT_COLLECTOR = createUser("Iwona", "ROLE_CONSENT_COLLECTOR")
+    UsernamePasswordAuthenticationToken DANIEL_ROUTE_DRAWER = createUser("Daniel", "ROUTE_DRAWER")
+    UsernamePasswordAuthenticationToken WOJTEK_DESIGNER = createUser("Wojtek", "ROLE_DESIGNER")
 
 
     UsernamePasswordAuthenticationToken createUser(String name, String role) {

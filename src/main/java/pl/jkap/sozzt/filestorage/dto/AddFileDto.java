@@ -15,9 +15,13 @@ public class AddFileDto {
 
     private UUID fileId;
     private MultipartFile file;
-    private UUID objectId;
-
+    private UUID contractId;
+    private UUID additionalObjectId;
     public Optional<UUID> getFileId() {
         return Optional.ofNullable(fileId);
+    }
+
+    public Optional<UUID> getAdditionalObjectId() {
+        return Optional.ofNullable(additionalObjectId);
     }
 }

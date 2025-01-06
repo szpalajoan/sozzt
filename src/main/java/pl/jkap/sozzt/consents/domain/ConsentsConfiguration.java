@@ -6,7 +6,6 @@ import pl.jkap.sozzt.filestorage.domain.FileStorageFacade;
 import pl.jkap.sozzt.instant.InstantProvider;
 
 @Configuration
-
 public class ConsentsConfiguration {
 
     @Bean

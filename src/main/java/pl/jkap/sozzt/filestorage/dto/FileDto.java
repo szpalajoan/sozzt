@@ -13,6 +13,7 @@ import java.util.UUID;
 public class FileDto {
     private UUID fileId;
     private String fileName;
-    private UUID objectId;
+    private UUID contractId;
+    private UUID additionalObjectId;
     private FileType fileType;
 }

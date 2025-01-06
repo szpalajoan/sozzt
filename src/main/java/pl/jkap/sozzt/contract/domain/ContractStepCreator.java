@@ -3,6 +3,8 @@ package pl.jkap.sozzt.contract.domain;
 import lombok.Builder;
 import pl.jkap.sozzt.consents.domain.ConsentsFacade;
 import pl.jkap.sozzt.consents.dto.AddConsentsDto;
+import pl.jkap.sozzt.documentation.domain.DocumentationFacade;
+import pl.jkap.sozzt.documentation.dto.AddDocumentationDto;
 import pl.jkap.sozzt.preliminaryplanning.domain.PreliminaryPlanFacade;
 import pl.jkap.sozzt.preliminaryplanning.dto.AddPreliminaryPlanDto;
 import pl.jkap.sozzt.terrainvision.domain.TerrainVisionFacade;
@@ -18,6 +20,7 @@ class ContractStepCreator {
     private final TerrainVisionFacade terrainVisionFacade;
     private final PreliminaryPlanFacade preliminaryPlanFacade;
     private final ConsentsFacade consentsFacade;
+    private final DocumentationFacade documentationFacade;
 
 
     ContractStep createPreliminaryPlanStep(UUID contractId, Instant contractOrderDate) {
@@ -49,8 +52,9 @@ class ContractStepCreator {
         return new ContractStep(ContractStepType.CONSENTS_COLLECTION, ContractStepStatus.ON_HOLD, deadline);
     }
 
-    ContractStep createPreparationOfDocumentationStep(Instant contractOrderDate) {
+    ContractStep createPreparationOfDocumentationStep(UUID contractId, Instant contractOrderDate) {
         Instant deadline = contractOrderDate.plus(Duration.ofDays(183));
+        documentationFacade.addDocumentation(new AddDocumentationDto(contractId, deadline));
         return new ContractStep(ContractStepType.PREPARATION_OF_DOCUMENTATION, ContractStepStatus.ON_HOLD, deadline);
     }
 }
