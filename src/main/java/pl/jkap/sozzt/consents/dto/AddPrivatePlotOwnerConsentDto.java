@@ -1,7 +1,10 @@
 package pl.jkap.sozzt.consents.dto;
 
 import lombok.*;
+import pl.jkap.sozzt.consents.domain.DeliveryType;
 
+import java.time.Instant;
+import java.util.Optional;
 import java.util.UUID;
 
 @Builder
@@ -13,11 +16,18 @@ import java.util.UUID;
 public class AddPrivatePlotOwnerConsentDto {
     private UUID privatePlotOwnerConsentId;
     private String ownerName;
-    private String street;
-    private String houseNumber;
-    private String apartmentNumber;
-    private String postalCode;
-    private String city;
+    private String comment;
     private String plotNumber;
     private String collectorName;
+    private Instant mailingDate;
+    private DeliveryType deliveryType;
+
+    public Optional<UUID> getPrivatePlotOwnerConsentId() {
+        return Optional.ofNullable(privatePlotOwnerConsentId);
+    }
+
+    public Optional<DeliveryType> getDeliveryType() {
+        return Optional.ofNullable(deliveryType);
+    }
+
 }

@@ -39,13 +39,18 @@ class ContractStepCreator {
     }
 
     ContractStep createRoutePreparationStep(Instant contractOrderDate) {
-        Instant deadline = contractOrderDate.plus(Duration.ofDays(51));
+        Instant deadline = contractOrderDate.plus(Duration.ofDays(65));
         return new ContractStep(ContractStepType.ROUTE_PREPARATION, ContractStepStatus.NOT_ACTIVE, deadline);
     }
 
     ContractStep createConsentsCollectionStep(UUID contractId, Instant contractOrderDate) {
-        Instant deadline = contractOrderDate.plus(Duration.ofDays(51));
+        Instant deadline = contractOrderDate.plus(Duration.ofDays(79));
         consentsFacade.addConsents(new AddConsentsDto(contractId, deadline));
-        return new ContractStep(ContractStepType.CONSENTS_COLLECTION, ContractStepStatus.NOT_ACTIVE, deadline);
+        return new ContractStep(ContractStepType.CONSENTS_COLLECTION, ContractStepStatus.ON_HOLD, deadline);
+    }
+
+    ContractStep createPreparationOfDocumentationStep(Instant contractOrderDate) {
+        Instant deadline = contractOrderDate.plus(Duration.ofDays(183));
+        return new ContractStep(ContractStepType.PREPARATION_OF_DOCUMENTATION, ContractStepStatus.ON_HOLD, deadline);
     }
 }

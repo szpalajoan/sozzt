@@ -34,6 +34,10 @@ class ContractStep implements Serializable {
         this.contractStepStatus = ContractStepStatus.DONE;
     }
 
+    boolean isCompleted() {
+        return contractStepStatus == ContractStepStatus.NOT_ACTIVE || contractStepStatus == ContractStepStatus.DONE;
+    }
+
     ContractStepDto dto() {
         return ContractStepDto.builder()
                 .contractStepType(ContractStepDto.ContractStepTypeDto.valueOf(contractStepType.name()))
@@ -41,6 +45,4 @@ class ContractStep implements Serializable {
                 .deadline(deadline)
                 .build();
     }
-
-
 }

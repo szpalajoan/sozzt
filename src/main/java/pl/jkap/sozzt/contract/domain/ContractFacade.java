@@ -3,6 +3,7 @@ package pl.jkap.sozzt.contract.domain;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
+import pl.jkap.sozzt.consents.event.ConsentsCollectionCompletedEvent;
 import pl.jkap.sozzt.contract.dto.ContractDto;
 import pl.jkap.sozzt.contract.dto.CreateContractDto;
 import pl.jkap.sozzt.contract.dto.EditContractDto;
@@ -108,6 +109,13 @@ public class ContractFacade {
         log.info("Route preparation finalized: {}", contract);
     }
 
+    private void completeConsentsCollection(UUID contractId) {
+        Contract contract = findContract(contractId);
+        contract.completeConsentsCollection();
+        contractRepository.save(contract);
+        log.info("Consents collection finalized: {}", contract);
+    }
+
     private void scanUploaded(UUID contractId) {
         Contract contract = findContract(contractId);
         contract.confirmScanUploaded();
@@ -152,6 +160,12 @@ public class ContractFacade {
     @SuppressWarnings("unused")
     public void onRoutePreparationCompletedEvent(RoutePreparationCompletedEvent event) {
         completeRoutePreparation(event.getContractId());
+    }
+
+    @EventListener
+    @SuppressWarnings("unused")
+    public void onConsentsCollectionCompletedEvent(ConsentsCollectionCompletedEvent event) {
+        completeConsentsCollection(event.getContractId());
     }
 
 }

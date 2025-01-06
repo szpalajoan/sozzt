@@ -6,14 +6,23 @@ import pl.jkap.sozzt.sample.SampleModifier
 
 import java.time.Duration
 
-trait ConsentsSample implements ContractSample {
+trait ConsentsSample implements PlotOwnerConsentSample, ContractSample {
 
 
     ConsentsDto KRYNICA_CONSENTS = ConsentsDto.builder()
             .consentId(KRYNICA_CONTRACT.contractId)
-            .deadline(NOW + Duration.ofDays(51))
+            .deadline(NOW + Duration.ofDays(79))
             .privatePlotOwnerConsents([])
             .publicOwnerConsents([])
+            .build()
+
+    ConsentsDto COMPLETED_KRYNICA_CONSENTS = ConsentsDto.builder()
+            .consentId(KRYNICA_CONTRACT.contractId)
+            .deadline(NOW + Duration.ofDays(79))
+            .requestForPlotExtractsSent(true)
+            .privatePlotOwnerConsents([CONFIRMED_KRYNICA_PRIVATE_PLOT_OWNER_CONSENT])
+            .publicOwnerConsents([CONFIRMED_PUBLIC_PLOT_OWNER_CONSENT])
+            .completed(true)
             .build()
 
 

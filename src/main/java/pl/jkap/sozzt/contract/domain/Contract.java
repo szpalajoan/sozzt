@@ -56,6 +56,7 @@ class Contract implements Serializable {
         contractSteps.add(contractStepCreator.createTerrainVisionStep(contractId, contractDetails.getOrderDate()));
         contractSteps.add(contractStepCreator.createRoutePreparationStep(contractDetails.getOrderDate()));
         contractSteps.add(contractStepCreator.createConsentsCollectionStep(contractId, contractDetails.getOrderDate()));
+        contractSteps.add(contractStepCreator.createPreparationOfDocumentationStep(contractDetails.getOrderDate()));
     }
 
     void completePreliminaryPlan(TerrainVisionFacade terrainVisionFacade) {
@@ -83,6 +84,12 @@ class Contract implements Serializable {
 
     void completeRoutePreparation() {
         completeRoutePreparationStep();
+        beginPreparationDocumentationStep();
+    }
+
+    void completeConsentsCollection() {
+        completeConsentsCollectionStep();
+        beginPreparationDocumentationStep();
     }
 
     private void completeRoutePreparationStep() {
@@ -109,6 +116,20 @@ class Contract implements Serializable {
         consentsCollectionStep.beginStep();
     }
 
+    private void completeConsentsCollectionStep() {
+        ContractStep consentsCollectionStep = getContractStep(ContractStepType.CONSENTS_COLLECTION);
+        consentsCollectionStep.completeStep();
+    }
+
+    private void beginPreparationDocumentationStep() {
+        ContractStep consentsCollectionStep = getContractStep(ContractStepType.CONSENTS_COLLECTION);
+        ContractStep routePreparationStep = getContractStep(ContractStepType.ROUTE_PREPARATION);
+        if(consentsCollectionStep.isCompleted() && routePreparationStep.isCompleted()) {
+            ContractStep preparationDocumentationStep = getContractStep(ContractStepType.PREPARATION_OF_DOCUMENTATION);
+            preparationDocumentationStep.beginStep();
+        }
+    }
+
     private ContractStep getContractStep(ContractStepType contractStepType) {
         return contractSteps.stream()
                 .filter(step -> step.getContractStepType() == contractStepType)
@@ -122,6 +143,11 @@ class Contract implements Serializable {
                 && isScanFromTauronUploaded;
     }
 
+    void edit(EditContractDto editContractDto) {
+        contractDetails = new ContractDetails(editContractDto.getContractDetails());
+        location = new Location(editContractDto.getLocation());
+    }
+
     ContractDto dto() {
         return ContractDto.builder()
                 .contractId(contractId)
@@ -132,11 +158,6 @@ class Contract implements Serializable {
                 .isScanFromTauronUploaded(isScanFromTauronUploaded)
                 .contractSteps(contractSteps.stream().map(ContractStep::dto).toList())
                 .build();
-    }
-
-    void edit(EditContractDto editContractDto) {
-        contractDetails = new ContractDetails(editContractDto.getContractDetails());
-        location = new Location(editContractDto.getLocation());
     }
 
 }

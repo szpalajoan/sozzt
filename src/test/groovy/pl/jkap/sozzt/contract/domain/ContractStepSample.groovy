@@ -23,13 +23,19 @@ trait ContractStepSample implements InstantSamples{
     ContractStepDto KRYNICA_CONTRACT_ROUTE_PREPARATION_STEP = with(ContractStepDto.builder().build(),
             [contractStepType  : ContractStepDto.ContractStepTypeDto.ROUTE_PREPARATION,
              contractStepStatus: ContractStepDto.ContractStepStatusDto.NOT_ACTIVE,
-             deadline          : (NOW + Duration.ofDays(51))
+             deadline          : (NOW + Duration.ofDays(65))
             ])
 
-    ContractStepDto KRYNICA_CONSENTS_PREPARATION_STEP = with(ContractStepDto.builder().build(),
+    ContractStepDto KRYNICA_CONSENTS_COLLECTION_STEP = with(ContractStepDto.builder().build(),
             [contractStepType  : ContractStepDto.ContractStepTypeDto.CONSENTS_COLLECTION,
-             contractStepStatus: ContractStepDto.ContractStepStatusDto.NOT_ACTIVE,
-             deadline          : (NOW + Duration.ofDays(51))
+             contractStepStatus: ContractStepDto.ContractStepStatusDto.ON_HOLD,
+             deadline          : (NOW + Duration.ofDays(79))
+            ])
+
+    ContractStepDto KRYNICA_PREPARATION_OF_DOCUMENTATION_STEP = with(ContractStepDto.builder().build(),
+            [contractStepType  : ContractStepDto.ContractStepTypeDto.PREPARATION_OF_DOCUMENTATION,
+             contractStepStatus: ContractStepDto.ContractStepStatusDto.ON_HOLD,
+             deadline          : (NOW + Duration.ofDays(183))
             ])
 
     ContractStepDto with(ContractStepDto contractStepDto, Map<String, Object> properties) {

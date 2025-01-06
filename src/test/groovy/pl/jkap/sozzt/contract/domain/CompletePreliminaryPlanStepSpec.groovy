@@ -1,4 +1,4 @@
-package pl.jkap.sozzt.preliminaryplanning.domain
+package pl.jkap.sozzt.contract.domain
 
 
 import pl.jkap.sozzt.preliminaryplanning.exception.CompletePreliminaryPlanException

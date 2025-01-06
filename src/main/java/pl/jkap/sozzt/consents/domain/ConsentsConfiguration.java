@@ -11,9 +11,11 @@ public class ConsentsConfiguration {
 
     @Bean
     public ConsentsFacade consentsFacade(FileStorageFacade fileStorageFacade,
-                                         InstantProvider instantProvider) {
+                                         InstantProvider instantProvider,
+                                         ConsentsEventPublisher consentsEventPublisher) {
         return ConsentsFacade.builder()
                 .consentsRepository(new InMemoryConsentsRepository())
+                .consentsEventPublisher(consentsEventPublisher)
                 .fileStorageFacade(fileStorageFacade)
                 .instantProvider(instantProvider)
                 .build();

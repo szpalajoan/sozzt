@@ -9,6 +9,7 @@ import pl.jkap.sozzt.user.UserSample
 import static pl.jkap.sozzt.contract.dto.ContractStepDto.ContractStepStatusDto.DONE
 import static pl.jkap.sozzt.contract.dto.ContractStepDto.ContractStepStatusDto.IN_PROGRESS
 import static pl.jkap.sozzt.contract.dto.ContractStepDto.ContractStepStatusDto.NOT_ACTIVE
+import static pl.jkap.sozzt.contract.dto.ContractStepDto.ContractStepStatusDto.ON_HOLD
 
 trait ContractSample implements UserSample, LocationSample, ContractDetailsSample, ContractStepSample, InstantSamples {
 
@@ -26,31 +27,57 @@ trait ContractSample implements UserSample, LocationSample, ContractDetailsSampl
                                                                       contractSteps           : [KRYNICA_CONTRACT_PRELIMINARY_PLAN_STEP,
                                                                                                  KRYNICA_CONTRACT_TERRAIN_VISION_STEP,
                                                                                                  KRYNICA_CONTRACT_ROUTE_PREPARATION_STEP,
-                                                                                                 KRYNICA_CONSENTS_PREPARATION_STEP]])
+                                                                                                 KRYNICA_CONSENTS_COLLECTION_STEP,
+                                                                                                 KRYNICA_PREPARATION_OF_DOCUMENTATION_STEP]])
 
     ContractDto COMPLETED_PRELIMINARY_PLAN_KRYNICA_CONTRACT = with(INTRODUCED_KRYNICA_CONTRACT, [
             contractSteps: [with(KRYNICA_CONTRACT_PRELIMINARY_PLAN_STEP, [contractStepStatus: DONE]),
                             with(KRYNICA_CONTRACT_TERRAIN_VISION_STEP, [contractStepStatus: IN_PROGRESS]),
                             with(KRYNICA_CONTRACT_ROUTE_PREPARATION_STEP, [contractStepStatus: NOT_ACTIVE]),
-                            with(KRYNICA_CONSENTS_PREPARATION_STEP, [contractStepStatus: NOT_ACTIVE])]])
+                            with(KRYNICA_CONSENTS_COLLECTION_STEP, [contractStepStatus: ON_HOLD]),
+                            with(KRYNICA_PREPARATION_OF_DOCUMENTATION_STEP, [contractStepStatus: ON_HOLD])]])
 
     ContractDto COMPLETED_TERRAIN_VISION_KRYNICA_CONTRACT = with(COMPLETED_PRELIMINARY_PLAN_KRYNICA_CONTRACT, [
             contractSteps: [with(KRYNICA_CONTRACT_PRELIMINARY_PLAN_STEP, [contractStepStatus: DONE]),
                             with(KRYNICA_CONTRACT_TERRAIN_VISION_STEP, [contractStepStatus: DONE]),
                             with(KRYNICA_CONTRACT_ROUTE_PREPARATION_STEP, [contractStepStatus: IN_PROGRESS]),
-                            with(KRYNICA_CONSENTS_PREPARATION_STEP, [contractStepStatus: IN_PROGRESS])]])
+                            with(KRYNICA_CONSENTS_COLLECTION_STEP, [contractStepStatus: IN_PROGRESS]),
+                            with(KRYNICA_PREPARATION_OF_DOCUMENTATION_STEP, [contractStepStatus: ON_HOLD])]])
 
     ContractDto COMPLETED_TERRAIN_VISION_KRYNICA_CONTRACT_WITH_NOT_NECESSARY_ROUTE_PREPARATION_STEP = with(COMPLETED_PRELIMINARY_PLAN_KRYNICA_CONTRACT, [
             contractSteps: [with(KRYNICA_CONTRACT_PRELIMINARY_PLAN_STEP, [contractStepStatus: DONE]),
                             with(KRYNICA_CONTRACT_TERRAIN_VISION_STEP, [contractStepStatus: DONE]),
                             with(KRYNICA_CONTRACT_ROUTE_PREPARATION_STEP, [contractStepStatus: NOT_ACTIVE]),
-                            with(KRYNICA_CONSENTS_PREPARATION_STEP, [contractStepStatus: IN_PROGRESS])]])
+                            with(KRYNICA_CONSENTS_COLLECTION_STEP, [contractStepStatus: IN_PROGRESS]),
+                            with(KRYNICA_PREPARATION_OF_DOCUMENTATION_STEP, [contractStepStatus: ON_HOLD])]])
 
     ContractDto COMPLETED_ROUTE_PREPARATION_KRYNICA_CONTRACT = with(COMPLETED_TERRAIN_VISION_KRYNICA_CONTRACT, [
             contractSteps: [with(KRYNICA_CONTRACT_PRELIMINARY_PLAN_STEP, [contractStepStatus: DONE]),
                             with(KRYNICA_CONTRACT_TERRAIN_VISION_STEP, [contractStepStatus: DONE]),
                             with(KRYNICA_CONTRACT_ROUTE_PREPARATION_STEP, [contractStepStatus: DONE]),
-                            with(KRYNICA_CONSENTS_PREPARATION_STEP, [contractStepStatus: IN_PROGRESS])]])
+                            with(KRYNICA_CONSENTS_COLLECTION_STEP, [contractStepStatus: IN_PROGRESS]),
+                            with(KRYNICA_PREPARATION_OF_DOCUMENTATION_STEP, [contractStepStatus: ON_HOLD])]])
+
+    ContractDto COMPLETED_CONSENTS_PREPARATION_KRYNICA_CONTRACT = with(COMPLETED_TERRAIN_VISION_KRYNICA_CONTRACT, [
+            contractSteps: [with(KRYNICA_CONTRACT_PRELIMINARY_PLAN_STEP, [contractStepStatus: DONE]),
+                            with(KRYNICA_CONTRACT_TERRAIN_VISION_STEP, [contractStepStatus: DONE]),
+                            with(KRYNICA_CONTRACT_ROUTE_PREPARATION_STEP, [contractStepStatus: DONE]),
+                            with(KRYNICA_CONSENTS_COLLECTION_STEP, [contractStepStatus: DONE]),
+                            with(KRYNICA_PREPARATION_OF_DOCUMENTATION_STEP, [contractStepStatus: IN_PROGRESS])]])
+
+    ContractDto COMPLETED_CONSENTS_PREPARATION_KRYNICA_CONTRACT_WITH_NOT_COMPLETED_ROUTE_PREPARATION_STEP = with(COMPLETED_TERRAIN_VISION_KRYNICA_CONTRACT, [
+            contractSteps: [with(KRYNICA_CONTRACT_PRELIMINARY_PLAN_STEP, [contractStepStatus: DONE]),
+                            with(KRYNICA_CONTRACT_TERRAIN_VISION_STEP, [contractStepStatus: DONE]),
+                            with(KRYNICA_CONTRACT_ROUTE_PREPARATION_STEP, [contractStepStatus: IN_PROGRESS]),
+                            with(KRYNICA_CONSENTS_COLLECTION_STEP, [contractStepStatus: DONE]),
+                            with(KRYNICA_PREPARATION_OF_DOCUMENTATION_STEP, [contractStepStatus: ON_HOLD])]])
+
+    ContractDto COMPLETED_CONSENTS_PREPARATION_KRYNICA_CONTRACT_WITH_NOT_NECESSARY_ROUTE_PREPARATION_STEP  = with(COMPLETED_TERRAIN_VISION_KRYNICA_CONTRACT, [
+            contractSteps: [with(KRYNICA_CONTRACT_PRELIMINARY_PLAN_STEP, [contractStepStatus: DONE]),
+                            with(KRYNICA_CONTRACT_TERRAIN_VISION_STEP, [contractStepStatus: DONE]),
+                            with(KRYNICA_CONTRACT_ROUTE_PREPARATION_STEP, [contractStepStatus: NOT_ACTIVE]),
+                            with(KRYNICA_CONSENTS_COLLECTION_STEP, [contractStepStatus: DONE]),
+                            with(KRYNICA_PREPARATION_OF_DOCUMENTATION_STEP, [contractStepStatus: IN_PROGRESS])]])
 
     ContractDto with(ContractDto contractDto, Map<String, Object> properties) {
         return SampleModifier.with(ContractDto.class, contractDto, properties)

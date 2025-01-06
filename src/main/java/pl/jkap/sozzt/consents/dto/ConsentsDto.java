@@ -18,5 +18,6 @@ public class ConsentsDto {
     private Instant deadline;
     private boolean requestForPlotExtractsSent;
     private Collection<PrivatePlotOwnerConsentDto> privatePlotOwnerConsents;
-    private Collection<PublicOwnerConsentDto> publicOwnerConsents;
+    private Collection<PublicPlotOwnerConsentDto> publicOwnerConsents;
+    private boolean completed;
 }
