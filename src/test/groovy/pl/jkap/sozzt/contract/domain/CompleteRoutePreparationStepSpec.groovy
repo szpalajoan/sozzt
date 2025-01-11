@@ -3,10 +3,7 @@ package pl.jkap.sozzt.contract.domain
 import pl.jkap.sozzt.sample.SozztSpecification
 
 import static pl.jkap.sozzt.contract.dto.ContractStepDto.ContractStepStatusDto.DONE
-import static pl.jkap.sozzt.contract.dto.ContractStepDto.ContractStepStatusDto.DONE
-import static pl.jkap.sozzt.contract.dto.ContractStepDto.ContractStepStatusDto.DONE
 import static pl.jkap.sozzt.contract.dto.ContractStepDto.ContractStepStatusDto.IN_PROGRESS
-import static pl.jkap.sozzt.contract.dto.ContractStepDto.ContractStepStatusDto.ON_HOLD
 import static pl.jkap.sozzt.sample.ExpectedStageSample.BEGIN_ROUTE_PREPARATION
 
 class CompleteRoutePreparationStepSpec extends SozztSpecification {

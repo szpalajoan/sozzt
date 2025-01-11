@@ -18,16 +18,16 @@ public class TerrainVisionDto {
         COMPLETED
     }
 
-    public enum RoutePreparation {
+    public enum RoutePreparationNeed {
         NONE,
         NECESSARY,
-        NOT_NECESSARY
+        NOT_NEED
     }
 
     private UUID terrainVisionId;
     private boolean allPhotosUploaded;
     private Instant deadline;
     private TerrainVisionStatus terrainVisionStatus;
-    private RoutePreparation routePreparation;
+    private RoutePreparationNeed routePreparationNeed;
 
 }

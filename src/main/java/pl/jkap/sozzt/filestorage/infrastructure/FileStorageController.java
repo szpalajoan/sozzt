@@ -48,16 +48,9 @@ public class FileStorageController {
         return ResponseEntity.ok(addedFile);
     }
 
-    @PostMapping("{contractId}/preliminary-updated-maps")
-    public ResponseEntity<FileDto> addPreliminaryUpdatedMap(@PathVariable UUID contractId, @RequestParam("file") MultipartFile file) {
-        AddFileDto addPreliminaryUpdatedMapDto = AddFileDto.builder().file(file).contractId(contractId).build();
-        FileDto addedFile = fileStorageFacade.addPreliminaryUpdatedMap(addPreliminaryUpdatedMapDto);
-        return ResponseEntity.ok(addedFile);
-    }
-
     @PostMapping("{contractId}/geodetic-maps")
     public ResponseEntity<FileDto> addGeodeticMap(@PathVariable UUID contractId, @RequestParam("file") MultipartFile file) {
-        AddFileDto addPreliminaryUpdatedMapDto = AddFileDto.builder().file(file).objectId(contractId).build();
+        AddFileDto addPreliminaryUpdatedMapDto = AddFileDto.builder().file(file).contractId(contractId).build();
         FileDto addedFile = fileStorageFacade.addGeodeticMap(addPreliminaryUpdatedMapDto);
         return ResponseEntity.ok(addedFile);
     }

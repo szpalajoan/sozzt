@@ -20,10 +20,10 @@ abstract class TerrainVision {
         COMPLETED
     }
 
-    enum RoutePreparation {
+    enum RoutePreparationNeed {
         NONE,
         NECESSARY,
-        NOT_NECESSARY
+        NOT_NEED
     }
 
     @Id
@@ -31,7 +31,7 @@ abstract class TerrainVision {
     protected boolean allPhotosUploaded;
     protected Instant deadline;
     protected TerrainVisionStatus terrainVisionStatus;
-    protected RoutePreparation routePreparation;
+    protected RoutePreparationNeed routePreparationNeed;
 
 
 
@@ -41,7 +41,7 @@ abstract class TerrainVision {
                 .allPhotosUploaded(allPhotosUploaded)
                 .deadline(deadline)
                 .terrainVisionStatus(TerrainVisionDto.TerrainVisionStatus.valueOf(terrainVisionStatus.name()))
-                .routePreparation(TerrainVisionDto.RoutePreparation.valueOf(routePreparation.name()))
+                .routePreparationNeed(TerrainVisionDto.RoutePreparationNeed.valueOf(routePreparationNeed.name()))
                 .build();
     }
 }

@@ -4,8 +4,8 @@ package pl.jkap.sozzt.contract.domain
 import pl.jkap.sozzt.sample.SozztSpecification
 
 import static pl.jkap.sozzt.sample.ExpectedStageSample.*
-import static pl.jkap.sozzt.terrainvision.dto.TerrainVisionDto.MapChange.MODIFIED
-import static pl.jkap.sozzt.terrainvision.dto.TerrainVisionDto.MapChange.NOT_NECESSARY
+import static pl.jkap.sozzt.terrainvision.dto.TerrainVisionDto.RoutePreparationNeed.NECESSARY
+import static pl.jkap.sozzt.terrainvision.dto.TerrainVisionDto.RoutePreparationNeed.NOT_NEED
 
 class CompleteTerrainVisionStepSpec extends SozztSpecification {
 
@@ -16,8 +16,8 @@ class CompleteTerrainVisionStepSpec extends SozztSpecification {
             loginUser(MARCIN_TERRAIN_VISIONER)
         and: "$MARCIN_TERRAIN_VISIONER confirmed that all photos are uploaded"
             terrainVisionFacade.confirmAllPhotosAreUploaded(KRYNICA_CONTRACT.contractId)
-        and: "$MARCIN_TERRAIN_VISIONER confirmed changes on map as $MODIFIED"
-            terrainVisionFacade.confirmChangesOnMap(KRYNICA_CONTRACT.contractId, MODIFIED)
+        and: "$MARCIN_TERRAIN_VISIONER confirmed that route preparation is necessary"
+            terrainVisionFacade.setRoutePreparationNeed(KRYNICA_CONTRACT.contractId, NECESSARY)
         when: "$MARCIN_TERRAIN_VISIONER completes the terrain vision"
             terrainVisionFacade.completeTerrainVision(KRYNICA_CONTRACT.contractId)
         then: "Terrain vision is completed"
@@ -31,8 +31,8 @@ class CompleteTerrainVisionStepSpec extends SozztSpecification {
             loginUser(MARCIN_TERRAIN_VISIONER)
         and: "$MARCIN_TERRAIN_VISIONER confirmed that all photos are uploaded"
             terrainVisionFacade.confirmAllPhotosAreUploaded(KRYNICA_CONTRACT.contractId)
-        and: "$MARCIN_TERRAIN_VISIONER confirmed changes on map as $NOT_NECESSARY"
-            terrainVisionFacade.confirmChangesOnMap(KRYNICA_CONTRACT.contractId, NOT_NECESSARY)
+        and: "$MARCIN_TERRAIN_VISIONER sets that route preparation is not need"
+            terrainVisionFacade.setRoutePreparationNeed(KRYNICA_CONTRACT.contractId, NOT_NEED)
         when: "$MARCIN_TERRAIN_VISIONER completes the terrain vision"
             terrainVisionFacade.completeTerrainVision(KRYNICA_CONTRACT.contractId)
         then: "Terrain vision is completed"

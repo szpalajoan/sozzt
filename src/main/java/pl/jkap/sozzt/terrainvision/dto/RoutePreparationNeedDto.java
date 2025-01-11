@@ -7,6 +7,6 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class RoutePreparationNecessaryDto {
-    private TerrainVisionDto.RoutePreparation routePreparation;
+public class RoutePreparationNeedDto {
+    private TerrainVisionDto.RoutePreparationNeed routePreparationNeed;
 }

@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import pl.jkap.sozzt.terrainvision.domain.TerrainVisionFacade;
-import pl.jkap.sozzt.terrainvision.dto.RoutePreparationNecessaryDto;
+import pl.jkap.sozzt.terrainvision.dto.RoutePreparationNeedDto;
 import pl.jkap.sozzt.terrainvision.dto.TerrainVisionDto;
 
 import java.util.UUID;
@@ -29,10 +29,10 @@ public class TerrainVisionController {
         terrainVisionFacade.confirmAllPhotosAreUploaded(idContract);
     }
 
-    @PostMapping("{idContract}/route-preparation-necessary")
+    @PostMapping("{idContract}/route-preparation-need")
     @ResponseStatus(HttpStatus.OK)
-    public void setRoutePreparationNecessary(@PathVariable UUID idContract, @RequestBody RoutePreparationNecessaryDto routePreparationNecessaryDto) {
-        terrainVisionFacade.setRoutePreparationNecessary(idContract, routePreparationNecessaryDto.getRoutePreparation());
+    public void setRoutePreparationNeed(@PathVariable UUID idContract, @RequestBody RoutePreparationNeedDto routePreparationNeedDto) {
+        terrainVisionFacade.setRoutePreparationNeed(idContract, routePreparationNeedDto.getRoutePreparationNeed());
     }
 
     @PostMapping("{idContract}/complete")

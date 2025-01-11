@@ -49,12 +49,12 @@ public class TerrainVisionFacade {
 
     }
 
-    public void setRoutePreparationNecessary(UUID terrainVisionId, TerrainVisionDto.RoutePreparation routePreparation) {
-        log.info("Setting route preparation necessary: {} - {}", terrainVisionId, routePreparation);
+    public void setRoutePreparationNeed(UUID terrainVisionId, TerrainVisionDto.RoutePreparationNeed routePreparationNeed) {
+        log.info("Setting route preparation need: {} - {}", terrainVisionId, routePreparationNeed);
         checkCanModifyTerrainVision();
         InProgressTerrainVision inProgressTerrainVision = terrainVisionRepository.findInProgressTerrainVisionById(terrainVisionId)
                 .orElseThrow(() -> new TerrainVisionNotFoundException("TerrainVision not found: " + terrainVisionId));
-        inProgressTerrainVision.setRoutePreparationNecessary(routePreparation);
+        inProgressTerrainVision.setRoutePreparationNeed(routePreparationNeed);
         terrainVisionRepository.save(inProgressTerrainVision);
     }
 
@@ -65,7 +65,7 @@ public class TerrainVisionFacade {
         CompletedTerrainVision completedTerrainVision = inProgressTerrainVision.complete();
         terrainVisionRepository.save(completedTerrainVision);
         terrainVisionEventPublisher.terrainVisionCompleted(new TerrainVisionCompletedEvent(terrainVisionId,
-                        completedTerrainVision.getRoutePreparation().equals(TerrainVision.RoutePreparation.NECESSARY)));
+                        completedTerrainVision.getRoutePreparationNeed().equals(TerrainVision.RoutePreparationNeed.NECESSARY)));
     }
 
     private void checkCanModifyTerrainVision() {

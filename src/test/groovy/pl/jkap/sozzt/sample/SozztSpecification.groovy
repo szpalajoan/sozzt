@@ -172,10 +172,10 @@ class SozztSpecification extends Specification implements FileSample, TermVerifi
         preliminaryPlanFacade.completePreliminaryPlan(preliminaryPlanDto.preliminaryPlanId)
     }
 
-    private void completeTerrainVision(TerrainVisionDto terrainVisionDto, boolean withMapChange = false) {
-        TerrainVisionDto.RoutePreparation mapChange = withMapChange ? TerrainVisionDto.RoutePreparation.NECESSARY : TerrainVisionDto.RoutePreparation.NOT_NECESSARY
+    private void completeTerrainVision(TerrainVisionDto terrainVisionDto, boolean withRoutePreparation = false) {
+        TerrainVisionDto.RoutePreparationNeed routePreparationNeed = withRoutePreparation ? TerrainVisionDto.RoutePreparationNeed.NECESSARY : TerrainVisionDto.RoutePreparationNeed.NOT_NEED
         terrainVisionFacade.confirmAllPhotosAreUploaded(terrainVisionDto.terrainVisionId)
-        terrainVisionFacade.setRoutePreparationNecessary(terrainVisionDto.terrainVisionId, mapChange)
+        terrainVisionFacade.setRoutePreparationNeed(terrainVisionDto.terrainVisionId, routePreparationNeed)
         terrainVisionFacade.completeTerrainVision(terrainVisionDto.terrainVisionId)
     }
 
