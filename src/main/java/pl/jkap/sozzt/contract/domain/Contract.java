@@ -56,7 +56,7 @@ class Contract implements Serializable {
         contractSteps.add(contractStepCreator.createTerrainVisionStep(contractId, contractDetails.getOrderDate()));
         contractSteps.add(contractStepCreator.createRoutePreparationStep(contractDetails.getOrderDate()));
         contractSteps.add(contractStepCreator.createConsentsCollectionStep(contractId, contractDetails.getOrderDate()));
-        contractSteps.add(contractStepCreator.createPreparationOfDocumentationStep(contractDetails.getOrderDate()));
+        contractSteps.add(contractStepCreator.createPreparationOfDocumentationStep(contractId, contractDetails.getOrderDate()));
     }
 
     void completePreliminaryPlan(TerrainVisionFacade terrainVisionFacade) {

@@ -40,16 +40,16 @@ public class FileStorageFacade {
     }
 
     public FileDto addContractScan(AddFileDto addContractScanDto) {
-        contractSecurityFacade.checkCanAddContractScan(addContractScanDto.getObjectId());
+        contractSecurityFacade.checkCanAddContractScan(addContractScanDto.getContractId());
         File addedFile = addFile(
                 addContractScanDto,
                 FileType.CONTRACT_SCAN_FROM_TAURON);
-        fileEventPublisher.contractScanUploaded(new ContractScanAddedEvent(addedFile.getObjectId()));
+        fileEventPublisher.contractScanUploaded(new ContractScanAddedEvent(addedFile.getContractId()));
         return addedFile.dto();
     }
 
     public FileDto addPreliminaryMap(AddFileDto addPreliminaryMapFileDto) {
-        contractSecurityFacade.checkCanAddPreliminaryMap(addPreliminaryMapFileDto.getObjectId());
+        contractSecurityFacade.checkCanAddPreliminaryMap(addPreliminaryMapFileDto.getContractId());
         File addedFile = addFile(
                 addPreliminaryMapFileDto,
                 FileType.PRELIMINARY_MAP);
@@ -95,22 +95,44 @@ public class FileStorageFacade {
         return addedFile.dto();
     }
 
+    public FileDto addMapWithRoute(AddFileDto mapWithRouteFileDto) {
+        File addedFile = addFile(
+                mapWithRouteFileDto,
+                FileType.MAP_WITH_ROUTE);
+        return addedFile.dto();
+    }
+
+    public FileDto addPdfWithRouteAndData(AddFileDto addFileDto) {
+        File addedFile = addFile(
+                addFileDto,
+                FileType.PDF_WITH_ROUTE_AND_DATA);
+        return addedFile.dto();
+    }
+
+    public FileDto addCompiledDocument(AddFileDto addFileDto) {
+        File addedFile = addFile(
+                addFileDto,
+                FileType.COMPILED_DOCUMENT);
+        return addedFile.dto();
+    }
+
     private File addFile(AddFileDto addFileDto, FileType fileType) {
         UUID fileId = addFileDto.getFileId().orElseGet(UUID::randomUUID);
 
         checkFileNotExists(fileId);
 
-        String path = calculatePath(fileType, addFileDto.getObjectId());
+        String path = calculatePath(fileType, addFileDto);
         String savedFilePath = fileSystemStorage.store(addFileDto.getFile(), path);
         File newFile = File.builder()
                 .fileId(fileId)
                 .fileName(addFileDto.getFile().getOriginalFilename())
                 .fileType(fileType)
-                .objectId(addFileDto.getObjectId())
+                .contractId(addFileDto.getContractId())
+                .additionalObjectId(addFileDto.getAdditionalObjectId().orElse(null))
                 .path(savedFilePath)
                 .build();
         fileRepository.save(newFile);
-        publishEvent(addFileDto.getObjectId(), fileType);
+        publishEvent(addFileDto.getContractId(), fileType);
         return newFile;
     }
 
@@ -125,8 +147,16 @@ public class FileStorageFacade {
         }
     }
 
-    private String calculatePath(FileType fileType, UUID contractId) {
-        return  contractId + "/" + fileType + "/";
+    private String calculatePath(FileType fileType, AddFileDto addFileDto) {
+        return switch (fileType) {
+            case PDF_WITH_ROUTE_AND_DATA, MAP_WITH_ROUTE, COMPILED_DOCUMENT ->
+                    addFileDto.getContractId() + "/DOCUMENTATION/" + fileType + "/";
+            case PRIVATE_PLOT_OWNER_CONSENT_AGREEMENT, PUBLIC_OWNER_CONSENT_AGREEMENT -> {
+                String consentId = addFileDto.getAdditionalObjectId().isPresent() ? addFileDto.getAdditionalObjectId().get().toString() : "UNKNOWN_CONSENT_ID";
+                yield addFileDto.getContractId() + "/CONSENTS/" + consentId + "/" + fileType + "/";
+            }
+            default -> addFileDto.getContractId() + "/" + fileType + "/";
+        };
     }
 
     private void checkFileNotExists(UUID fileId) {
@@ -150,7 +180,7 @@ public class FileStorageFacade {
     private void publishDeletedFileEvent(File file) {
         switch (file.getFileType()) {
             case CONTRACT_SCAN_FROM_TAURON:
-                fileEventPublisher.contractScanDeleted(new ContractScanDeletedEvent(file.getObjectId()));
+                fileEventPublisher.contractScanDeleted(new ContractScanDeletedEvent(file.getContractId()));
                 break;
         }
     }

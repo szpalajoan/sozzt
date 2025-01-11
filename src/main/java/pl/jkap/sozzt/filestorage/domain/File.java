@@ -16,14 +16,16 @@ class File implements Serializable {
     @Id
     private final UUID fileId;
     private final String fileName;
-    private final UUID objectId;
+    private final UUID contractId;
+    private final UUID additionalObjectId;
     private final FileType fileType;
     private final String path;
 
-    File(UUID fileId, String fileName, UUID objectId, FileType fileType, String path) {
+    File(UUID fileId, String fileName, UUID contractId, UUID additionalObjectId, FileType fileType, String path) {
         this.fileId = fileId;
         this.fileName = fileName;
-        this.objectId = objectId;
+        this.contractId = contractId;
+        this.additionalObjectId = additionalObjectId;
         this.fileType = fileType;
         this.path = path;
     }
@@ -33,7 +35,8 @@ class File implements Serializable {
                 .fileId(fileId)
                 .fileName(fileName)
                 .fileType(fileType)
-                .objectId(objectId)
+                .contractId(contractId)
+                .additionalObjectId(additionalObjectId)
                 .build();
     }
 }

@@ -28,7 +28,7 @@ public class FileStorageController {
     @PostMapping("{contractId}/contract-scans")
     public ResponseEntity<FileDto> addContractScan(@PathVariable UUID contractId, @RequestParam("file") MultipartFile file) {
 
-        AddFileDto addContractScanDto = AddFileDto.builder().file(file).objectId(contractId).build();
+        AddFileDto addContractScanDto = AddFileDto.builder().file(file).contractId(contractId).build();
         FileDto addedFile = fileStorageFacade.addContractScan(addContractScanDto);
         return ResponseEntity.ok(addedFile);
     }
@@ -36,21 +36,21 @@ public class FileStorageController {
 
     @PostMapping("{contractId}/preliminary-maps")
     public ResponseEntity<FileDto> addPreliminaryMap(@PathVariable UUID contractId, @RequestParam("file") MultipartFile file) {
-        AddFileDto addPreliminaryMapFileDto = AddFileDto.builder().file(file).objectId(contractId).build();
+        AddFileDto addPreliminaryMapFileDto = AddFileDto.builder().file(file).contractId(contractId).build();
         FileDto addedFile = fileStorageFacade.addPreliminaryMap(addPreliminaryMapFileDto);
         return ResponseEntity.ok(addedFile);
     }
 
     @PostMapping("{contractId}/photos-from-place-of-the-contract")
     public ResponseEntity<FileDto> addPhotoFromPlaceOfTheContract(@PathVariable UUID contractId, @RequestParam("file") MultipartFile file) {
-        AddFileDto addPreliminaryMapFileDto = AddFileDto.builder().file(file).objectId(contractId).build();
+        AddFileDto addPreliminaryMapFileDto = AddFileDto.builder().file(file).contractId(contractId).build();
         FileDto addedFile = fileStorageFacade.addPhotoFromPlaceOfTheContract(addPreliminaryMapFileDto);
         return ResponseEntity.ok(addedFile);
     }
 
     @PostMapping("{contractId}/preliminary-updated-maps")
     public ResponseEntity<FileDto> addPreliminaryUpdatedMap(@PathVariable UUID contractId, @RequestParam("file") MultipartFile file) {
-        AddFileDto addPreliminaryUpdatedMapDto = AddFileDto.builder().file(file).objectId(contractId).build();
+        AddFileDto addPreliminaryUpdatedMapDto = AddFileDto.builder().file(file).contractId(contractId).build();
         FileDto addedFile = fileStorageFacade.addPreliminaryUpdatedMap(addPreliminaryUpdatedMapDto);
         return ResponseEntity.ok(addedFile);
     }
