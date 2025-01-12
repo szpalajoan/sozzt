@@ -1,5 +1,6 @@
 package pl.jkap.sozzt.inmemory;
 
+import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
@@ -13,11 +14,22 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 public class InMemoryEventInvoker implements ApplicationEventPublisher {
 
     private final Map<Class<?>, Object> instances = new HashMap<>();
 
     public InMemoryEventInvoker() {
+    }
+
+    @Override
+    public void publishEvent(@NotNull ApplicationEvent event) {
+        invokeEvent(event);
+    }
+
+    @Override
+    public void publishEvent(@NotNull Object event) {
+        invokeEvent(event);
     }
 
     public void addFacades(@NotNull Object... facades) {
@@ -46,9 +58,9 @@ public class InMemoryEventInvoker implements ApplicationEventPublisher {
                     }
                 }
             }
-            System.out.println("The event handling method was not found: " + eventClass.getName());
+            log.error("The event handling method was not found: " + eventClass.getName());
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Failed to handle event: " + eventClass.getName(), e);
         }
     }
 
@@ -78,13 +90,5 @@ public class InMemoryEventInvoker implements ApplicationEventPublisher {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public void publishEvent(@NotNull ApplicationEvent event) {
-        invokeEvent(event);
-    }
 
-    @Override
-    public void publishEvent(@NotNull Object event) {
-        invokeEvent(event);
-    }
 }

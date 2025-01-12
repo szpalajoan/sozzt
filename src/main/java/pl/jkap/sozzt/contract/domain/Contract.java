@@ -92,6 +92,10 @@ class Contract implements Serializable {
         beginPreparationDocumentationStep();
     }
 
+    void completePreparationDocumentation() {
+        completePreparationDocumentationStep();
+    }
+
     private void completeRoutePreparationStep() {
         ContractStep routePreparationStep = getContractStep(ContractStepType.ROUTE_PREPARATION);
         routePreparationStep.completeStep();
@@ -128,6 +132,11 @@ class Contract implements Serializable {
             ContractStep preparationDocumentationStep = getContractStep(ContractStepType.PREPARATION_OF_DOCUMENTATION);
             preparationDocumentationStep.beginStep();
         }
+    }
+
+    private void completePreparationDocumentationStep() {
+        ContractStep preparationDocumentationStep = getContractStep(ContractStepType.PREPARATION_OF_DOCUMENTATION);
+        preparationDocumentationStep.completeStep();
     }
 
     private ContractStep getContractStep(ContractStepType contractStepType) {

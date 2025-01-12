@@ -327,6 +327,7 @@ class DocumentationSpec extends SozztSpecification {
                                                                                                               documentCompilation : new DocumentCompilationDto(KRYNICA_COMPILED_DOCUMENT_METADATA.fileId),
                                                                                                               tauronCommunication : new TauronCommunicationDto(isPrintedDocumentationSentToTauron: true, isApprovedByTauron: true),
                                                                                                               termVerification    : COMPLETED_KRYNICA_TERM_VERIFICATION])
+            contractFacade.getContract(KRYNICA_CONTRACT.contractId) == COMPLETED_PREPARATION_OF_DOCUMENTATION_STEP
     }
 
 }
