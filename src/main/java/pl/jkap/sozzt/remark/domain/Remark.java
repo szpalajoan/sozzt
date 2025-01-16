@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import pl.jkap.sozzt.remark.dto.EditRemarkDto;
 import pl.jkap.sozzt.remark.dto.RemarkDto;
 
 import java.time.Instant;
@@ -34,8 +35,15 @@ class Remark {
         remarkStatus = RemarkStatus.DONE;
     }
 
-    public void cancel() {
+    void cancel() {
         remarkStatus = RemarkStatus.CANCELED;
+    }
+
+    void update(EditRemarkDto editRemarkDto) {
+        title = editRemarkDto.getTitle();
+        description = editRemarkDto.getDescription();
+        assignedTo = editRemarkDto.getAssignedTo();
+        deadline = editRemarkDto.getDeadline();
     }
 
     RemarkDto dto() {
@@ -52,7 +60,4 @@ class Remark {
                 .remarkStatus(remarkStatus)
                 .build();
     }
-
-
-
 }

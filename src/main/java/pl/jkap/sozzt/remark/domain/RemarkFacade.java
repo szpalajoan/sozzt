@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import pl.jkap.sozzt.instant.InstantProvider;
 import pl.jkap.sozzt.remark.dto.AddRemarkDto;
+import pl.jkap.sozzt.remark.dto.EditRemarkDto;
 import pl.jkap.sozzt.remark.dto.RemarkDto;
 import pl.jkap.sozzt.remark.exception.RemarkNotFoundException;
 
@@ -59,6 +60,13 @@ public class RemarkFacade {
     RemarkDto cancelRemark(UUID remarkId) {
         Remark remark = remarkRepository.findById(remarkId).orElseThrow(() -> new RemarkNotFoundException("Remark not found: " + remarkId));
         remark.cancel();
+        remarkRepository.save(remark);
+        return remark.dto();
+    }
+
+    RemarkDto editRemark(EditRemarkDto editRemarkDto) {
+        Remark remark = remarkRepository.findById(editRemarkDto.getRemarkId()).orElseThrow(() -> new RemarkNotFoundException("Remark not found: " + editRemarkDto.getRemarkId()));
+        remark.update(editRemarkDto);
         remarkRepository.save(remark);
         return remark.dto();
     }

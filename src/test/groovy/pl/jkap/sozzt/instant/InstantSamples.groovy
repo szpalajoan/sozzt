@@ -15,4 +15,6 @@ trait InstantSamples {
     Instant TOMORROW = NOW.plus(1, ChronoUnit.DAYS)
 
     Instant WEEK_AHEAD = NOW.plus(7, ChronoUnit.DAYS)
+
+    Instant TWO_WEEKS_AHEAD = NOW.plus(14, ChronoUnit.DAYS)
 }
