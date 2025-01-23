@@ -11,8 +11,8 @@ import pl.jkap.sozzt.user.UserSample
 
 trait RemarkSample implements ContractStepSample, ContractSample, UserSample, InstantSamples {
 
-    RemarkDto REMARK_FOR_KRYNICA_PRELIMINARY_PLAN = RemarkDto.builder()
-            .remarkId(UUID.randomUUID())
+    RemarkDto REMARK_FOR_KRYNICA_PRELIMINARY_PLAN_BY_MARCIN = RemarkDto.builder()
+            .remarkId(UUID.fromString("ed5cc224-a85c-4673-b106-ceeae512a83d"))
             .contractId(KRYNICA_CONTRACT.contractId)
             .remarkContractStep(RemarkContractStep.PRELIMINARY_PLAN)
             .remarkStatus(RemarkStatus.IN_PROGRESS)
@@ -25,7 +25,21 @@ trait RemarkSample implements ContractStepSample, ContractSample, UserSample, In
             .remarkStatus(RemarkStatus.NEW)
             .build()
 
-    RemarkDto REMARK_FOR_KRYNICA_ROUTE_PREPARATION = RemarkDto.builder()
+    RemarkDto REMARK_FOR_KRYNICA_PRELIMINARY_PLAN_BY_DANIEL = RemarkDto.builder()
+            .remarkId(UUID.fromString("723d0542-49bd-4c05-b629-b3c39cb30bbf"))
+            .contractId(KRYNICA_CONTRACT.contractId)
+            .remarkContractStep(RemarkContractStep.PRELIMINARY_PLAN)
+            .remarkStatus(RemarkStatus.IN_PROGRESS)
+            .title("Review Circuit Layout")
+            .description("Ensure the circuit layout meets the project specifications.")
+            .createdBy(DANIEL_ROUTE_DRAWER.name)
+            .createdAt(NOW)
+            .assignedTo(DAREK_PRELIMINARY_PLANER.name)
+            .deadline(TWO_WEEKS_AHEAD)
+            .remarkStatus(RemarkStatus.NEW)
+            .build()
+
+    RemarkDto REMARK_FOR_KRYNICA_ROUTE_PREPARATION_BY_DANIEL = RemarkDto.builder()
             .remarkId(UUID.randomUUID())
             .contractId(KRYNICA_CONTRACT.contractId)
             .remarkContractStep(RemarkContractStep.ROUTE_PREPARATION)

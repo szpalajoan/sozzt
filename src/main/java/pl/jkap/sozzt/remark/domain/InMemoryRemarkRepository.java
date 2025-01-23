@@ -3,6 +3,7 @@ package pl.jkap.sozzt.remark.domain;
 import pl.jkap.sozzt.inmemory.InMemoryRepository;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.UUID;
 
 class InMemoryRemarkRepository extends InMemoryRepository<Remark, UUID> implements RemarkRepository {
@@ -15,6 +16,7 @@ class InMemoryRemarkRepository extends InMemoryRepository<Remark, UUID> implemen
     public Collection<Remark> findByContractIdAndRemarkContractStep(UUID contractId, RemarkContractStep remarkContractStep) {
         return table.values().stream()
                 .filter(remark -> remark.getContractId().equals(contractId) && remark.getRemarkContractStep().equals(remarkContractStep))
+                .sorted(Comparator.comparing(Remark::getDeadline))
                 .toList();
     }
 }
