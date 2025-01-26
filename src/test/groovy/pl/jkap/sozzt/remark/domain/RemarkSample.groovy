@@ -49,7 +49,7 @@ trait RemarkSample implements ContractStepSample, ContractSample, UserSample, In
             .createdBy(DANIEL_ROUTE_DRAWER.name)
             .createdAt(NOW)
             .assignedTo(WALDEK_SURVEYOR.name)
-            .deadline(WEEK_AHEAD)
+            .deadline(TOMORROW)
             .remarkStatus(RemarkStatus.NEW)
             .build()
 

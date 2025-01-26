@@ -19,4 +19,12 @@ class InMemoryRemarkRepository extends InMemoryRepository<Remark, UUID> implemen
                 .sorted(Comparator.comparing(Remark::getDeadline))
                 .toList();
     }
+
+    @Override
+    public Collection<Remark> findByContractId(UUID contractId) {
+        return table.values().stream()
+                .filter(remark -> remark.getContractId().equals(contractId))
+                .sorted(Comparator.comparing(Remark::getDeadline))
+                .toList();
+    }
 }

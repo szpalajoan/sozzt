@@ -42,6 +42,11 @@ public class RemarkFacade {
         return remarks.stream().map(Remark::dto).toList();
     }
 
+    Collection<RemarkDto> getRemarksForContract(UUID contractId) {
+        Collection<Remark> remarks = remarkRepository.findByContractId(contractId);
+        return remarks.stream().map(Remark::dto).toList();
+    }
+
     RemarkDto markRemarkAsInProgress(UUID remarkId) {
         Remark remark = remarkRepository.findById(remarkId).orElseThrow(() -> new RemarkNotFoundException("Remark not found: " + remarkId));
         remark.markAsInProgress();

@@ -181,9 +181,41 @@ class RemarkSpec extends SozztSpecification {
             remarkFacade.addRemark(toAddRemarkDto(REMARK_FOR_KRYNICA_PRELIMINARY_PLAN_BY_DANIEL))
         and: "$DANIEL_ROUTE_DRAWER added remark to $KRYNICA_CONTRACT_ROUTE_PREPARATION_STEP $YESTERDAY"
             remarkFacade.addRemark(toAddRemarkDto(REMARK_FOR_KRYNICA_ROUTE_PREPARATION_BY_DANIEL))
-        when: "$MARCIN_TERRAIN_VISIONER gets remarks for $KRYNICA_CONTRACT contract and $remarkContractStep"
-            Collection<RemarkDto> remarks = remarkFacade.getRemarksForContract(KRYNICA_CONTRACT.contractId, remarkContractStep as RemarkContractStep)
+        when: "$MARCIN_TERRAIN_VISIONER gets remarks for $KRYNICA_CONTRACT contract and $PRELIMINARY_PLAN step"
+            Collection<RemarkDto> remarks = remarkFacade.getRemarksForContract(KRYNICA_CONTRACT.contractId, PRELIMINARY_PLAN)
         then: "$MARCIN_TERRAIN_VISIONER gets $REMARK_FOR_KRYNICA_PRELIMINARY_PLAN_BY_MARCIN and $REMARK_FOR_KRYNICA_PRELIMINARY_PLAN_BY_DANIEL remarks for $PRELIMINARY_PLAN sort by closest deadline"
             remarks == [with(REMARK_FOR_KRYNICA_PRELIMINARY_PLAN_BY_MARCIN, [createdAt: WEEK_AGO]), with(REMARK_FOR_KRYNICA_PRELIMINARY_PLAN_BY_DANIEL, [createdAt: YESTERDAY])]
     }
+
+    def "should not get remarks for contract step if remark does not exist"() {
+        given: "there is $KRYNICA_CONTRACT contract on $KRYNICA_CONTRACT_TERRAIN_VISION_STEP stage added $TWO_WEEKS_AGO"
+            instantProvider.useFixedClock(TWO_WEEKS_AGO)
+            addKrynicaContractOnStage(BEGIN_TERRAIN_VISION)
+        expect: "there are no remarks for $PRELIMINARY_PLAN step"
+            remarkFacade.getRemarksForContract(KRYNICA_CONTRACT.contractId, PRELIMINARY_PLAN) == []
+    }
+
+    def "should get all remarks for contract"() {
+        given: "there is $KRYNICA_CONTRACT contract on $KRYNICA_CONTRACT_TERRAIN_VISION_STEP stage added $TWO_WEEKS_AGO"
+            instantProvider.useFixedClock(TWO_WEEKS_AGO)
+            addKrynicaContractOnStage(BEGIN_TERRAIN_VISION)
+        and: "$MARCIN_TERRAIN_VISIONER added remark to $KRYNICA_CONTRACT_PRELIMINARY_PLAN_STEP $WEEK_AGO"
+            instantProvider.useFixedClock(WEEK_AGO)
+            loginUser(MARCIN_TERRAIN_VISIONER)
+            remarkFacade.addRemark(toAddRemarkDto(REMARK_FOR_KRYNICA_PRELIMINARY_PLAN_BY_MARCIN))
+        and: "$DANIEL_ROUTE_DRAWER added next remark to $KRYNICA_CONTRACT_PRELIMINARY_PLAN_STEP $YESTERDAY"
+            instantProvider.useFixedClock(YESTERDAY)
+            loginUser(DANIEL_ROUTE_DRAWER)
+            remarkFacade.addRemark(toAddRemarkDto(REMARK_FOR_KRYNICA_PRELIMINARY_PLAN_BY_DANIEL))
+        and: "$DANIEL_ROUTE_DRAWER added remark to $KRYNICA_CONTRACT_ROUTE_PREPARATION_STEP $NOW"
+            instantProvider.useFixedClock(NOW)
+            remarkFacade.addRemark(toAddRemarkDto(REMARK_FOR_KRYNICA_ROUTE_PREPARATION_BY_DANIEL))
+        when: "$MARCIN_TERRAIN_VISIONER gets remarks for $KRYNICA_CONTRACT contract"
+            Collection<RemarkDto> remarks = remarkFacade.getRemarksForContract(KRYNICA_CONTRACT.contractId)
+        then: "$MARCIN_TERRAIN_VISIONER gets $REMARK_FOR_KRYNICA_PRELIMINARY_PLAN_BY_MARCIN and $REMARK_FOR_KRYNICA_PRELIMINARY_PLAN_BY_DANIEL remarks for $PRELIMINARY_PLAN sort by closest deadline"
+            remarks == [with(REMARK_FOR_KRYNICA_ROUTE_PREPARATION_BY_DANIEL, [deadline: TOMORROW]),
+                        with(REMARK_FOR_KRYNICA_PRELIMINARY_PLAN_BY_MARCIN, [createdAt: WEEK_AGO, deadline: WEEK_AHEAD]),
+                        with(REMARK_FOR_KRYNICA_PRELIMINARY_PLAN_BY_DANIEL, [createdAt: YESTERDAY, deadline: TWO_WEEKS_AHEAD])]
+    }
+
 }
