@@ -5,6 +5,7 @@ import pl.jkap.sozzt.consents.dto.PublicPlotOwnerConsentDto
 import pl.jkap.sozzt.sample.SozztSpecification
 
 import static pl.jkap.sozzt.sample.ExpectedStageSample.BEGIN_CONSENTS_COLLECTION
+import static pl.jkap.sozzt.sample.ExpectedStageSample.BEGIN_DOCUMENTATION
 import static pl.jkap.sozzt.sample.ExpectedStageSample.COMPLETED_TERRAIN_VISION_WITHOUT_MAP_REQUIRED
 
 class CompleteConsentsStepSpec extends SozztSpecification {
