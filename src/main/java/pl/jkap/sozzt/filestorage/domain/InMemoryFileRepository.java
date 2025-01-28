@@ -21,4 +21,9 @@ class InMemoryFileRepository extends InMemoryRepository<File, UUID> implements F
     public List<File> findByObjectIdAndFileType(UUID objectId, FileType fileType) {
         return table.values().stream().filter(file -> file.getContractId().equals(objectId) && file.getFileType().equals(fileType)).toList();
     }
+
+    @Override
+    public List<File> findByObjectIdAndAdditionalObjectIdAndFileType(UUID objectId, UUID additionalObjectId, FileType fileType) {
+        return table.values().stream().filter(file -> file.getContractId().equals(objectId) && file.getAdditionalObjectId().equals(additionalObjectId) && file.getFileType().equals(fileType)).toList();
+    }
 }
