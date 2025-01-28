@@ -1,7 +1,6 @@
 package pl.jkap.sozzt.inmemory;
 
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.util.ClasspathHelper;
@@ -9,6 +8,7 @@ import org.reflections.util.ConfigurationBuilder;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
+import org.springframework.lang.NonNull;
 
 import java.lang.reflect.Method;
 import java.util.*;
@@ -23,16 +23,16 @@ public class InMemoryEventInvoker implements ApplicationEventPublisher {
     }
 
     @Override
-    public void publishEvent(@NotNull ApplicationEvent event) {
+    public void publishEvent(@NonNull ApplicationEvent event) {
         invokeEvent(event);
     }
 
     @Override
-    public void publishEvent(@NotNull Object event) {
+    public void publishEvent(@NonNull Object event) {
         invokeEvent(event);
     }
 
-    public void addFacades(@NotNull Object... facades) {
+    public void addFacades(@NonNull Object... facades) {
         for (Object facade : facades) {
             instances.put(facade.getClass(), facade);
         }
