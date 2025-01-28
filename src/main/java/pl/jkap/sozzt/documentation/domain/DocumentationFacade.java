@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import pl.jkap.sozzt.documentation.dto.AddDocumentationDto;
 import pl.jkap.sozzt.documentation.dto.DocumentationDto;
+import pl.jkap.sozzt.documentation.event.DocumentationCompletedEvent;
 import pl.jkap.sozzt.documentation.exception.DocumentationNotFoundException;
 import pl.jkap.sozzt.documentation.exception.InvalidPersonResponsibleForRouteDrawingException;
 import pl.jkap.sozzt.filestorage.domain.FileStorageFacade;
@@ -17,6 +18,7 @@ import java.util.UUID;
 @Builder
 public class DocumentationFacade {
     DocumentationRepository documentationRepository;
+    DocumentationEventPublisher documentationEventPublisher;
     FileStorageFacade fileStorageFacade;
     InstantProvider instantProvider;
 
@@ -92,7 +94,7 @@ public class DocumentationFacade {
         return fileDto;
     }
 
-    void markPrintedDocumentationSentToTauronAsDone(UUID uuid) {
+    public void markPrintedDocumentationSentToTauronAsDone(UUID uuid) {
         Documentation documentation = documentationRepository.findById(uuid)
                 .orElseThrow(() -> new DocumentationNotFoundException("Documentation not found: " + uuid));
         documentation.markPrintedDocumentationSentToTauronAsDone();
@@ -100,7 +102,7 @@ public class DocumentationFacade {
         log.info("Printed documentation sent to Tauron: {}", uuid);
     }
 
-    void addTauronApprove(UUID uuid) {
+    public void addTauronApprove(UUID uuid) {
         Documentation documentation = documentationRepository.findById(uuid)
                 .orElseThrow(() -> new DocumentationNotFoundException("Documentation not found: " + uuid));
         documentation.addTauronApprove();
@@ -108,7 +110,7 @@ public class DocumentationFacade {
         log.info("Tauron approve added: {}", uuid);
     }
 
-    void choosePersonResponsibleForTermVerification(UUID uuid, String verifierName) {
+    public void choosePersonResponsibleForTermVerification(UUID uuid, String verifierName) {
         Documentation documentation = documentationRepository.findById(uuid)
                 .orElseThrow(() -> new DocumentationNotFoundException("Documentation not found: " + uuid));
         documentation.startTermVerification(verifierName);
@@ -116,7 +118,7 @@ public class DocumentationFacade {
         log.info("Person responsible for term verification chosen: {}", uuid);
     }
 
-    void approveThatAllTermsAreActual(UUID uuid) {
+    public void approveThatAllTermsAreActual(UUID uuid) {
         Documentation documentation = documentationRepository.findById(uuid)
                 .orElseThrow(() -> new DocumentationNotFoundException("Documentation not found: " + uuid));
         documentation.approveThatAllTermsAreActual();
@@ -124,11 +126,12 @@ public class DocumentationFacade {
         log.info("All terms are actual: {}", uuid);
     }
 
-    void completeDocumentation(UUID uuid) {
+    public void completeDocumentation(UUID uuid) {
         Documentation documentation = documentationRepository.findById(uuid)
                 .orElseThrow(() -> new DocumentationNotFoundException("Documentation not found: " + uuid));
         documentation.complete();
         documentationRepository.save(documentation);
+        documentationEventPublisher.documentationCompleted(new DocumentationCompletedEvent(uuid));
         log.info("Documentation completed: {}", uuid);
     }
 }

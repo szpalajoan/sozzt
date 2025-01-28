@@ -8,7 +8,12 @@ import pl.jkap.sozzt.instant.InstantProvider;
 @Configuration
 public class DocumentationConfiguration {
     @Bean
-    public DocumentationFacade documentationFacade(FileStorageFacade fileStorageFacade, InstantProvider instantProvider) {
-        return new DocumentationFacade(new InMemoryDocumentationRepository(), fileStorageFacade, instantProvider);
+    public DocumentationFacade documentationFacade(DocumentationEventPublisher documentationEventPublisher, FileStorageFacade fileStorageFacade, InstantProvider instantProvider) {
+        return DocumentationFacade.builder()
+                .documentationRepository(new InMemoryDocumentationRepository())
+                .fileStorageFacade(fileStorageFacade)
+                .documentationEventPublisher(documentationEventPublisher)
+                .instantProvider(instantProvider)
+                .build();
     }
 }

@@ -11,6 +11,7 @@ import pl.jkap.sozzt.contract.dto.ContractDto
 import pl.jkap.sozzt.contractsecurity.domain.ContractSecurityConfiguration
 import pl.jkap.sozzt.contractsecurity.domain.ContractSecurityFacade
 import pl.jkap.sozzt.documentation.domain.DocumentationConfiguration
+import pl.jkap.sozzt.documentation.domain.DocumentationEventPublisherStub
 import pl.jkap.sozzt.documentation.domain.DocumentationFacade
 import pl.jkap.sozzt.documentation.domain.DocumentationSample
 import pl.jkap.sozzt.documentation.domain.RouteDrawingSample
@@ -25,6 +26,9 @@ import pl.jkap.sozzt.preliminaryplanning.domain.PreliminaryPlanEventPublisherStu
 import pl.jkap.sozzt.preliminaryplanning.domain.PreliminaryPlanFacade
 import pl.jkap.sozzt.preliminaryplanning.domain.PreliminaryPlanSample
 import pl.jkap.sozzt.preliminaryplanning.dto.PreliminaryPlanDto
+import pl.jkap.sozzt.remark.domain.RemarkConfiguration
+import pl.jkap.sozzt.remark.domain.RemarkFacade
+import pl.jkap.sozzt.remark.domain.RemarkSample
 import pl.jkap.sozzt.routepreparation.RoutePreparationSample
 import pl.jkap.sozzt.routepreparation.domain.RoutePreparationConfiguration
 import pl.jkap.sozzt.routepreparation.domain.RoutePreparationEventPublisherStub
@@ -40,7 +44,7 @@ import spock.lang.Specification
 
 import static pl.jkap.sozzt.sample.ExpectedStageSample.*
 
-class SozztSpecification extends Specification implements FileSample, TermVerificationSample, RouteDrawingSample, DocumentationSample, ConsentsSample, PlotOwnerConsentSample, PreliminaryPlanSample, TerrainVisionSample, RoutePreparationSample,
+class SozztSpecification extends Specification implements FileSample, RemarkSample, TermVerificationSample, RouteDrawingSample, DocumentationSample, ConsentsSample, PlotOwnerConsentSample, PreliminaryPlanSample, TerrainVisionSample, RoutePreparationSample,
         ContractSample, LocationSample, ContractDetailsSample, ContractStepSample,
         UserSample, InstantSamples {
     Collection<UUID> addedFileIds = []
@@ -53,7 +57,8 @@ class SozztSpecification extends Specification implements FileSample, TermVerifi
     RoutePreparationFacade routePreparationFacade = new RoutePreparationConfiguration().routePreparationFacade(new RoutePreparationEventPublisherStub(eventInvoker))
     FileStorageFacade fileStorageFacade = new FileStorageConfigurator().fileStorageFacade(contractSecurityFacade, new FileEventPublisherStub(eventInvoker))
     ConsentsFacade consentsFacade = new ConsentsConfiguration().consentsFacade(fileStorageFacade, instantProvider, new ConsentsEventPublisherStub(eventInvoker))
-    DocumentationFacade documentationFacade = new DocumentationConfiguration().documentationFacade(fileStorageFacade,instantProvider)
+    DocumentationFacade documentationFacade = new DocumentationConfiguration().documentationFacade(new DocumentationEventPublisherStub(eventInvoker), fileStorageFacade, instantProvider)
+    RemarkFacade remarkFacade = new RemarkConfiguration().remarkFacade(instantProvider)
     ContractFacade contractFacade = new ContractConfiguration().contractFacade(contractSecurityFacade, preliminaryPlanFacade, terrainVisionFacade,
             routePreparationFacade, consentsFacade, documentationFacade,
             instantProvider)
