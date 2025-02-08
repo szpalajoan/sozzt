@@ -22,7 +22,7 @@ public class DocumentationFacade {
     FileStorageFacade fileStorageFacade;
     InstantProvider instantProvider;
 
-    DocumentationDto getDocumentation(UUID uuid) {
+    public DocumentationDto getDocumentation(UUID uuid) {
         return documentationRepository.findById(uuid).orElseThrow(() -> new DocumentationNotFoundException("Documentation not found: " + uuid)).dto();
     }
 
