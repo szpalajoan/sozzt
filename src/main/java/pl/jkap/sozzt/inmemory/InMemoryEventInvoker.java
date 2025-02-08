@@ -10,6 +10,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.lang.NonNull;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -59,6 +60,12 @@ public class InMemoryEventInvoker implements ApplicationEventPublisher {
                 }
             }
             log.error("The event handling method was not found: " + eventClass.getName());
+        } catch (InvocationTargetException e) {
+            log.warn("Handled method threw an exception: " + eventClass.getName());
+            Throwable targetException = e.getTargetException();
+            if (targetException instanceof RuntimeException) {
+                throw (RuntimeException) targetException;
+            }
         } catch (Exception e) {
             log.error("Failed to handle event: " + eventClass.getName(), e);
         }

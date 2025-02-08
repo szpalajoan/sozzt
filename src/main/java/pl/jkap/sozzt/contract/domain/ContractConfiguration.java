@@ -7,6 +7,7 @@ import pl.jkap.sozzt.contractsecurity.domain.ContractSecurityFacade;
 import pl.jkap.sozzt.documentation.domain.DocumentationFacade;
 import pl.jkap.sozzt.instant.InstantProvider;
 import pl.jkap.sozzt.preliminaryplanning.domain.PreliminaryPlanFacade;
+import pl.jkap.sozzt.remark.domain.RemarkFacade;
 import pl.jkap.sozzt.routepreparation.domain.RoutePreparationFacade;
 import pl.jkap.sozzt.terrainvision.domain.TerrainVisionFacade;
 
@@ -22,17 +23,17 @@ public class ContractConfiguration {
                                   RoutePreparationFacade routePreparationFacade,
                                   ConsentsFacade consentsFacade,
                                   DocumentationFacade documentationFacade,
+                                  RemarkFacade remarkFacade,
                                   InstantProvider instantProvider) {
         ContractCreator contractCreator = new ContractCreator(instantProvider);
         return ContractFacade.builder()
                 .contractRepository(new InMemoryContractRepository())
                 .contractSecurityFacade(contractSecurityFacade)
-                .preliminaryPlanFacade(preliminaryPlanFacade)
                 .terrainVisionFacade(terrainVisionFacade)
                 .routePreparationFacade(routePreparationFacade)
                 .contractCreator(contractCreator)
                 .contractStepCreator(contractStepCreator(preliminaryPlanFacade, terrainVisionFacade, consentsFacade, documentationFacade))
-                .instantProvider(instantProvider)
+                .remarkFacade(remarkFacade)
                 .build();
     }
 

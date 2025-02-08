@@ -99,7 +99,7 @@ class RemarkSpec extends SozztSpecification {
         when: "$MARCIN_TERRAIN_VISIONER cancels remark"
             RemarkDto remark = remarkFacade.cancelRemark(REMARK_FOR_KRYNICA_PRELIMINARY_PLAN_BY_MARCIN.remarkId)
         then: "remark is canceled"
-            remark == with(REMARK_FOR_KRYNICA_PRELIMINARY_PLAN_BY_MARCIN, [remarkStatus: RemarkStatus.CANCELED,
+            remark == with(REMARK_FOR_KRYNICA_PRELIMINARY_PLAN_BY_MARCIN, [remarkStatus: RemarkStatus.CANCELLED,
                                                                            createdAt   : WEEK_AGO])
     }
 

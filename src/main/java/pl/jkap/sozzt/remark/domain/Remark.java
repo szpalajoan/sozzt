@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 import pl.jkap.sozzt.remark.dto.EditRemarkDto;
 import pl.jkap.sozzt.remark.dto.RemarkDto;
 
@@ -14,6 +15,7 @@ import java.util.UUID;
 @Getter
 @Builder
 @AllArgsConstructor
+@ToString
 class Remark {
 
     private UUID remarkId;
@@ -36,7 +38,7 @@ class Remark {
     }
 
     void cancel() {
-        remarkStatus = RemarkStatus.CANCELED;
+        remarkStatus = RemarkStatus.CANCELLED;
     }
 
     void update(EditRemarkDto editRemarkDto) {

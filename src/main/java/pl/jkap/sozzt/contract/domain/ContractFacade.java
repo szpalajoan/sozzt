@@ -9,14 +9,13 @@ import pl.jkap.sozzt.contract.dto.CreateContractDto;
 import pl.jkap.sozzt.contract.dto.EditContractDto;
 import pl.jkap.sozzt.contract.exception.ContractFinalizeException;
 import pl.jkap.sozzt.contract.exception.ContractNotFoundException;
+import pl.jkap.sozzt.contractsecurity.domain.ContractSecurityFacade;
+import pl.jkap.sozzt.contractsecurity.dto.AddSecurityContractDto;
 import pl.jkap.sozzt.documentation.event.DocumentationCompletedEvent;
 import pl.jkap.sozzt.filestorage.event.ContractScanAddedEvent;
 import pl.jkap.sozzt.filestorage.event.ContractScanDeletedEvent;
-import pl.jkap.sozzt.instant.InstantProvider;
-import pl.jkap.sozzt.contractsecurity.domain.ContractSecurityFacade;
-import pl.jkap.sozzt.contractsecurity.dto.AddSecurityContractDto;
-import pl.jkap.sozzt.preliminaryplanning.domain.PreliminaryPlanFacade;
 import pl.jkap.sozzt.preliminaryplanning.event.PreliminaryPlanCompletedEvent;
+import pl.jkap.sozzt.remark.domain.RemarkFacade;
 import pl.jkap.sozzt.routepreparation.domain.RoutePreparationFacade;
 import pl.jkap.sozzt.routepreparation.event.RoutePreparationCompletedEvent;
 import pl.jkap.sozzt.terrainvision.domain.TerrainVisionFacade;
@@ -36,10 +35,9 @@ public class ContractFacade {
     private final ContractRepository contractRepository;
     private final ContractCreator contractCreator;
     private final ContractStepCreator contractStepCreator;
-    private final PreliminaryPlanFacade preliminaryPlanFacade;
     private final TerrainVisionFacade terrainVisionFacade;
     private final RoutePreparationFacade routePreparationFacade;
-    private final InstantProvider instantProvider;
+    private final RemarkFacade remarkFacade;
 
     public ContractDto addContract(CreateContractDto createContractDto) {
         requireNonNull(createContractDto);
@@ -117,6 +115,17 @@ public class ContractFacade {
         log.info("Consents collection finalized: {}", contract);
     }
 
+    private void completeDocumentation(UUID contractId) {
+        Contract contract = findContract(contractId);
+        boolean hasActiveRemarks = remarkFacade.hasActiveRemarksForContract(contractId);
+        if (hasActiveRemarks) {
+            throw new ContractFinalizeException("Contract has active remarks, cannot finalize documentation: " + contractId);
+        }
+        contract.completePreparationDocumentation();
+        contractRepository.save(contract);
+        log.info("Documentation completed for contract: {}", contractId);
+    }
+
     private void scanUploaded(UUID contractId) {
         Contract contract = findContract(contractId);
         contract.confirmScanUploaded();
@@ -172,9 +181,7 @@ public class ContractFacade {
     @EventListener
     @SuppressWarnings("unused")
     public void onDocumentationCompletedEvent(DocumentationCompletedEvent event) {
-        Contract contract = findContract(event.getContractId());
-        contract.completePreparationDocumentation();
-        contractRepository.save(contract);
+        completeDocumentation(event.getContractId());
     }
 
 }

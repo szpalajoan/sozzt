@@ -60,7 +60,7 @@ class SozztSpecification extends Specification implements FileSample, RemarkSamp
     DocumentationFacade documentationFacade = new DocumentationConfiguration().documentationFacade(new DocumentationEventPublisherStub(eventInvoker), fileStorageFacade, instantProvider)
     RemarkFacade remarkFacade = new RemarkConfiguration().remarkFacade(instantProvider)
     ContractFacade contractFacade = new ContractConfiguration().contractFacade(contractSecurityFacade, preliminaryPlanFacade, terrainVisionFacade,
-            routePreparationFacade, consentsFacade, documentationFacade,
+            routePreparationFacade, consentsFacade, documentationFacade, remarkFacade,
             instantProvider)
 
 
