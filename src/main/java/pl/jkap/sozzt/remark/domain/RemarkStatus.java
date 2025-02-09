@@ -4,5 +4,5 @@ public enum RemarkStatus {
     NEW,
     IN_PROGRESS,
     DONE,
-    CANCELED
+    CANCELLED
 }

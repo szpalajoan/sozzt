@@ -4,7 +4,6 @@ import pl.jkap.sozzt.contract.domain.ContractSample
 import pl.jkap.sozzt.contract.domain.ContractStepSample
 import pl.jkap.sozzt.instant.InstantSamples
 import pl.jkap.sozzt.remark.dto.AddRemarkDto
-import pl.jkap.sozzt.remark.dto.EditRemarkDto
 import pl.jkap.sozzt.remark.dto.RemarkDto
 import pl.jkap.sozzt.sample.SampleModifier
 import pl.jkap.sozzt.user.UserSample

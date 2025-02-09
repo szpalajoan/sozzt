@@ -9,7 +9,6 @@ import pl.jkap.sozzt.remark.dto.EditRemarkDto;
 import pl.jkap.sozzt.remark.dto.RemarkDto;
 import pl.jkap.sozzt.remark.exception.RemarkNotFoundException;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -19,7 +18,7 @@ public class RemarkFacade {
     RemarkRepository remarkRepository;
     InstantProvider instantProvider;
 
-    RemarkDto addRemark(AddRemarkDto addRemarkDto) {
+    public RemarkDto addRemark(AddRemarkDto addRemarkDto) {
         Remark remark = Remark.builder()
                 .remarkId(addRemarkDto.getRemarkId())
                 .contractId(addRemarkDto.getContractId())
@@ -37,17 +36,17 @@ public class RemarkFacade {
         return remark.dto();
     }
 
-    Collection<RemarkDto> getRemarksForContract(UUID contractId, RemarkContractStep remarkContractStep) {
+    public Collection<RemarkDto> getRemarksForContract(UUID contractId, RemarkContractStep remarkContractStep) {
         Collection<Remark> remarks = remarkRepository.findByContractIdAndRemarkContractStep(contractId, remarkContractStep);
         return remarks.stream().map(Remark::dto).toList();
     }
 
-    Collection<RemarkDto> getRemarksForContract(UUID contractId) {
+    public Collection<RemarkDto> getRemarksForContract(UUID contractId) {
         Collection<Remark> remarks = remarkRepository.findByContractId(contractId);
         return remarks.stream().map(Remark::dto).toList();
     }
 
-    RemarkDto markRemarkAsInProgress(UUID remarkId) {
+    public RemarkDto markRemarkAsInProgress(UUID remarkId) {
         Remark remark = remarkRepository.findById(remarkId).orElseThrow(() -> new RemarkNotFoundException("Remark not found: " + remarkId));
         remark.markAsInProgress();
         remarkRepository.save(remark);
@@ -55,24 +54,31 @@ public class RemarkFacade {
 
     }
 
-    RemarkDto markRemarkAsDone(UUID remarkId) {
+    public RemarkDto markRemarkAsDone(UUID remarkId) {
         Remark remark = remarkRepository.findById(remarkId).orElseThrow(() -> new RemarkNotFoundException("Remark not found: " + remarkId));
         remark.markAsDone();
         remarkRepository.save(remark);
         return remark.dto();
     }
 
-    RemarkDto cancelRemark(UUID remarkId) {
+    public RemarkDto cancelRemark(UUID remarkId) {
         Remark remark = remarkRepository.findById(remarkId).orElseThrow(() -> new RemarkNotFoundException("Remark not found: " + remarkId));
         remark.cancel();
         remarkRepository.save(remark);
         return remark.dto();
     }
 
-    RemarkDto editRemark(EditRemarkDto editRemarkDto) {
+    public RemarkDto editRemark(EditRemarkDto editRemarkDto) {
         Remark remark = remarkRepository.findById(editRemarkDto.getRemarkId()).orElseThrow(() -> new RemarkNotFoundException("Remark not found: " + editRemarkDto.getRemarkId()));
         remark.update(editRemarkDto);
         remarkRepository.save(remark);
         return remark.dto();
+    }
+
+    public boolean hasActiveRemarksForContract(UUID contractId) {
+        Collection<Remark> remarks = remarkRepository.findByContractId(contractId);
+        return remarks.stream()
+                .anyMatch(remark -> remark.getRemarkStatus() != RemarkStatus.DONE 
+                        && remark.getRemarkStatus() != RemarkStatus.CANCELLED);
     }
 }
