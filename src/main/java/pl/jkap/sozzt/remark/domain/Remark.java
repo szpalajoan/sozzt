@@ -20,7 +20,7 @@ class Remark {
 
     private UUID remarkId;
     private UUID contractId;
-    private RemarkContractStep remarkContractStep;
+    private RemarkType remarkType;
     private String title;
     private String description;
     private String createdBy;
@@ -52,7 +52,7 @@ class Remark {
         return RemarkDto.builder()
                 .remarkId(remarkId)
                 .contractId(contractId)
-                .remarkContractStep(remarkContractStep)
+                .remarkType(remarkType)
                 .title(title)
                 .description(description)
                 .createdBy(createdBy)

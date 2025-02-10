@@ -20,9 +20,9 @@ public class RemarkFacade {
 
     public RemarkDto addRemark(AddRemarkDto addRemarkDto) {
         Remark remark = Remark.builder()
-                .remarkId(addRemarkDto.getRemarkId())
+                .remarkId(addRemarkDto.getRemarkId().orElse(UUID.randomUUID()))
                 .contractId(addRemarkDto.getContractId())
-                .remarkContractStep(addRemarkDto.getRemarkContractStep())
+                .remarkType(addRemarkDto.getRemarkType())
                 .title(addRemarkDto.getTitle())
                 .description(addRemarkDto.getDescription())
                 .createdBy(SecurityContextHolder.getContext().getAuthentication().getName())
@@ -36,8 +36,8 @@ public class RemarkFacade {
         return remark.dto();
     }
 
-    public Collection<RemarkDto> getRemarksForContract(UUID contractId, RemarkContractStep remarkContractStep) {
-        Collection<Remark> remarks = remarkRepository.findByContractIdAndRemarkContractStep(contractId, remarkContractStep);
+    public Collection<RemarkDto> getRemarksForContract(UUID contractId, RemarkType remarkType) {
+        Collection<Remark> remarks = remarkRepository.findByContractIdAndRemarkContractStep(contractId, remarkType);
         return remarks.stream().map(Remark::dto).toList();
     }
 

@@ -1,7 +1,7 @@
 package pl.jkap.sozzt.remark.dto;
 
 import lombok.*;
-import pl.jkap.sozzt.remark.domain.RemarkContractStep;
+import pl.jkap.sozzt.remark.domain.RemarkType;
 import pl.jkap.sozzt.remark.domain.RemarkStatus;
 
 import java.time.Instant;
@@ -16,7 +16,7 @@ import java.util.UUID;
 public class RemarkDto {
     private UUID remarkId;
     private UUID contractId;
-    private RemarkContractStep remarkContractStep;
+    private RemarkType remarkType;
     private String title;
     private String description;
     private String createdBy;

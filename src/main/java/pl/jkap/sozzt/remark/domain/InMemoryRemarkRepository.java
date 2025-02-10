@@ -13,9 +13,9 @@ class InMemoryRemarkRepository extends InMemoryRepository<Remark, UUID> implemen
     }
 
     @Override
-    public Collection<Remark> findByContractIdAndRemarkContractStep(UUID contractId, RemarkContractStep remarkContractStep) {
+    public Collection<Remark> findByContractIdAndRemarkContractStep(UUID contractId, RemarkType remarkType) {
         return table.values().stream()
-                .filter(remark -> remark.getContractId().equals(contractId) && remark.getRemarkContractStep().equals(remarkContractStep))
+                .filter(remark -> remark.getContractId().equals(contractId) && remark.getRemarkType().equals(remarkType))
                 .sorted(Comparator.comparing(Remark::getDeadline))
                 .toList();
     }

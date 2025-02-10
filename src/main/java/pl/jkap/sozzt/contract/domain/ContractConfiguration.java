@@ -14,8 +14,6 @@ import pl.jkap.sozzt.terrainvision.domain.TerrainVisionFacade;
 @Configuration
 public class ContractConfiguration {
 
-
-
     @Bean
     public ContractFacade contractFacade(ContractSecurityFacade contractSecurityFacade,
                                   PreliminaryPlanFacade preliminaryPlanFacade,

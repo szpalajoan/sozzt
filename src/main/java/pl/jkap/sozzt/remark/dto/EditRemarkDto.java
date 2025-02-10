@@ -1,7 +1,6 @@
 package pl.jkap.sozzt.remark.dto;
 
 import lombok.*;
-import pl.jkap.sozzt.remark.domain.RemarkContractStep;
 
 import java.time.Instant;
 import java.util.UUID;
