@@ -6,6 +6,9 @@ import pl.jkap.sozzt.consents.dto.PrivatePlotOwnerConsentDto
 import pl.jkap.sozzt.consents.dto.PublicPlotOwnerConsentDto
 import pl.jkap.sozzt.consents.dto.UpdatePrivatePlotOwnerConsentDto
 import pl.jkap.sozzt.consents.dto.UpdatePublicPlotOwnerConsentDto
+import pl.jkap.sozzt.consents.dto.ZudConsentDto
+import pl.jkap.sozzt.consents.dto.AddZudConsentDto
+import pl.jkap.sozzt.consents.dto.UpdateZudConsentDto
 import pl.jkap.sozzt.instant.InstantSamples
 import pl.jkap.sozzt.sample.SampleModifier
 import pl.jkap.sozzt.user.UserSample
@@ -55,6 +58,26 @@ trait PlotOwnerConsentSample implements UserSample, InstantSamples {
             .deliveryType(DeliveryType.NOT_SPECIFIED)
             .build()
 
+    ZudConsentDto KRYNICA_ZUD_CONSENT = ZudConsentDto.builder()
+            .zudConsentId(UUID.fromString("93f82b5f-2656-4e2e-a7f5-b3c0800c3b0f"))
+            .institutionName("ZUD Krynica")
+            .plotNumber("8573/3")
+            .consentCreateDate(NOW)
+            .consentStatus(ConsentStatus.CONSENT_CREATED)
+            .collectorName(IWONA_CONSENT_COLLECTOR.name)
+            .deliveryType(DeliveryType.NOT_SPECIFIED)
+            .build()
+
+    ZudConsentDto CONFIRMED_KRYNICA_ZUD_CONSENT = ZudConsentDto.builder()
+            .zudConsentId(UUID.fromString("93f82b5f-2656-4e2e-a7f5-b3c0800c3b0f"))
+            .institutionName("ZUD Krynica")
+            .plotNumber("8573/3")
+            .consentCreateDate(NOW)
+            .consentStatus(ConsentStatus.CONSENT_GIVEN)
+            .consentGivenDate(NOW)
+            .collectorName(IWONA_CONSENT_COLLECTOR.name)
+            .deliveryType(DeliveryType.NOT_SPECIFIED)
+            .build()
 
     AddPrivatePlotOwnerConsentDto toAddPrivatePlotOwnerConsent(PrivatePlotOwnerConsentDto privatePlotOwnerConsentDto) {
         return AddPrivatePlotOwnerConsentDto.builder()
@@ -102,6 +125,29 @@ trait PlotOwnerConsentSample implements UserSample, InstantSamples {
                 .build()
     }
 
+    AddZudConsentDto toAddZudConsent(ZudConsentDto zudConsentDto) {
+        return AddZudConsentDto.builder()
+                .zudConsentId(zudConsentDto.zudConsentId)
+                .institutionName(zudConsentDto.institutionName)
+                .plotNumber(zudConsentDto.plotNumber)
+                .collectorName(zudConsentDto.collectorName)
+                .deliveryType(zudConsentDto.deliveryType)
+                .comment(zudConsentDto.comment)
+                .mailingDate(zudConsentDto.mailingDate)
+                .build()
+    }
+
+    UpdateZudConsentDto toUpdateZudConsent(ZudConsentDto zudConsentDto) {
+        return UpdateZudConsentDto.builder()
+                .institutionName(zudConsentDto.institutionName)
+                .plotNumber(zudConsentDto.plotNumber)
+                .collectorName(zudConsentDto.collectorName)
+                .deliveryType(zudConsentDto.deliveryType)
+                .comment(zudConsentDto.comment)
+                .mailingDate(zudConsentDto.mailingDate)
+                .build()
+    }
+
     PrivatePlotOwnerConsentDto with(PrivatePlotOwnerConsentDto consentsDto, Map<String, Object> properties) {
         return SampleModifier.with(PrivatePlotOwnerConsentDto.class, consentsDto, properties)
     }
@@ -116,5 +162,9 @@ trait PlotOwnerConsentSample implements UserSample, InstantSamples {
 
     UpdatePublicPlotOwnerConsentDto with(UpdatePublicPlotOwnerConsentDto consentsDto, Map<String, Object> properties) {
         return SampleModifier.with(UpdatePublicPlotOwnerConsentDto.class, consentsDto, properties)
+    }
+
+    ZudConsentDto with(ZudConsentDto consentsDto, Map<String, Object> properties) {
+        return SampleModifier.with(ZudConsentDto.class, consentsDto, properties)
     }
 }

@@ -141,4 +141,46 @@ public class ConsentsFacade {
         consentsEventPublisher.consentsCollectionCompleted(new ConsentsCollectionCompletedEvent(consentsId));
         log.info("Consents completed: {}", consentsId);
     }
+
+    public ZudConsentDto addZudConsent(UUID consentsId, AddZudConsentDto addZudConsentDto) {
+        Consents consents = consentsRepository.findById(consentsId)
+                .orElseThrow(() -> new ConsentsNotFoundException("Consents not found: " + consentsId));
+        ZudConsent zudConsent = consents.addZudConsent(addZudConsentDto, instantProvider);
+        consentsRepository.save(consents);
+        log.info("ZUD consent added: {}", addZudConsentDto);
+        return zudConsent.dto();
+    }
+
+    public void updateZudConsent(UUID consentsId, UpdateZudConsentDto updateZudConsentDto) {
+        Consents consents = consentsRepository.findById(consentsId)
+                .orElseThrow(() -> new ConsentsNotFoundException("Consents not found for contractId: " + consentsId));
+        consents.updateZudConsent(updateZudConsentDto);
+        consentsRepository.save(consents);
+        log.info("ZUD consent updated: {}", updateZudConsentDto);
+    }
+
+    public FileDto addZudConsentAgreement(UUID consentsId, UUID zudConsentId, AddFileDto addFileDto) {
+        Consents consents = consentsRepository.findById(consentsId)
+                .orElseThrow(() -> new ConsentsNotFoundException("Consents not found: " + consentsId));
+        consents.acceptZudConsent(instantProvider);
+        FileDto addedAgreement = fileStorageFacade.addZudConsentAgreement(addFileDto);
+        log.info("ZUD consent accepted: {}", zudConsentId);
+        return addedAgreement;
+    }
+
+    public void markZudConsentAsSentByMail(UUID consentsId) {
+        Consents consents = consentsRepository.findById(consentsId)
+                .orElseThrow(() -> new ConsentsNotFoundException("Consents not found for contractId: " + consentsId));
+        consents.markZudConsentAsSentByMail(instantProvider);
+        consentsRepository.save(consents);
+        log.info("ZUD consent sent by mail for consentsId: {}", consentsId);
+    }
+
+    public void invalidateZudConsent(UUID consentsId, String reason) {
+        Consents consents = consentsRepository.findById(consentsId)
+                .orElseThrow(() -> new ConsentsNotFoundException("Consents not found for contractId: " + consentsId));
+        consents.invalidateZudConsent(reason, instantProvider);
+        consentsRepository.save(consents);
+        log.info("ZUD consent invalidated for consentsId: {}", consentsId);
+    }
 }

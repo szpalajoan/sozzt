@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import pl.jkap.sozzt.consents.dto.*;
+import pl.jkap.sozzt.consents.exception.ConsentUpdateException;
 import pl.jkap.sozzt.instant.InstantProvider;
 
 import java.time.Instant;
@@ -23,6 +24,7 @@ class Consents {
     private Collection<PrivatePlotOwnerConsent> privatePlotOwnerConsents;
     private Collection<PublicOwnerConsent> publicOwnerConsents;
     private boolean isCompleted;
+    private ZudConsent zudConsent;
 
     void requestForLandExtractsSent() {
         requestForPlotExtractsSent = true;
@@ -65,8 +67,6 @@ class Consents {
                 .ifPresent(privatePlotOwnerConsent -> privatePlotOwnerConsent.accept(instantProvider.now()));
     }
 
-
-
     void acceptPublicOwnerConsent(UUID publicPlotOwnerConsentId, InstantProvider instantProvider) {
         publicOwnerConsents.stream()
                 .filter(publicOwnerConsent -> publicOwnerConsent.getPublicOwnerConsentId().equals(publicPlotOwnerConsentId))
@@ -87,7 +87,6 @@ class Consents {
                 .findFirst()
                 .ifPresent(publicOwnerConsent -> publicOwnerConsent.update(updatePublicPlotOwnerConsentDto));
     }
-
 
     void markPrivatePlotOwnerConsentAsSentByMail(UUID privatePlotOwnerConsentId, InstantProvider instantProvider) {
         privatePlotOwnerConsents.stream()
@@ -124,9 +123,52 @@ class Consents {
         isCompleted = true;
     }
 
+    ZudConsent addZudConsent(AddZudConsentDto addZudConsentDto, InstantProvider instantProvider) {
+        zudConsent = ZudConsent.builder()
+                .zudConsentId(addZudConsentDto.getZudConsentId().orElse(UUID.randomUUID()))
+                .institutionName(addZudConsentDto.getInstitutionName())
+                .comment(addZudConsentDto.getComment())
+                .plotNumber(addZudConsentDto.getPlotNumber())
+                .consentCreateDate(instantProvider.now())
+                .consentStatus(ConsentStatus.CONSENT_CREATED)
+                .collectorName(addZudConsentDto.getCollectorName())
+                .deliveryType(addZudConsentDto.getDeliveryType().orElse(DeliveryType.NOT_SPECIFIED))
+                .build();
+        return zudConsent;
+    }
+
+    void updateZudConsent(UpdateZudConsentDto updateZudConsentDto) {
+        if(zudConsent == null) {
+            throw new ConsentUpdateException("ZudConsent not exist");
+        }
+        zudConsent.update(updateZudConsentDto);
+    }
+
+    void acceptZudConsent(InstantProvider instantProvider) {
+        if(zudConsent == null) {
+            throw new ConsentUpdateException("ZudConsent not exist");
+        }
+        zudConsent.accept(instantProvider.now());
+    }
+
+    void markZudConsentAsSentByMail(InstantProvider instantProvider) {
+        if(zudConsent == null) {
+            throw new ConsentUpdateException("ZudConsent not exist");
+        }
+        zudConsent.markAsSentByMail(instantProvider);
+    }
+
+    void invalidateZudConsent(String reason, InstantProvider instantProvider) {
+        if(zudConsent == null) {
+            throw new ConsentUpdateException("ZudConsent not exist");
+        }
+        zudConsent.invalidate(reason, instantProvider);
+    }
+
     private boolean isReadyForCompletion() {
         return privatePlotOwnerConsents.stream().allMatch(PrivatePlotOwnerConsent::isConsentAccepted)
-                && publicOwnerConsents.stream().allMatch(PublicOwnerConsent::isConsentAccepted);
+                && publicOwnerConsents.stream().allMatch(PublicOwnerConsent::isConsentAccepted)
+                && zudConsent.isConsentAccepted();
     }
 
     ConsentsDto dto() {
@@ -136,6 +178,7 @@ class Consents {
                 .requestForPlotExtractsSent(requestForPlotExtractsSent)
                 .privatePlotOwnerConsents(privatePlotOwnerConsents.stream().map(PrivatePlotOwnerConsent::dto).toList())
                 .publicOwnerConsents(publicOwnerConsents.stream().map(PublicOwnerConsent::dto).toList())
+                .zudConsent(zudConsent.dto())
                 .completed(isCompleted)
                 .build();
     }

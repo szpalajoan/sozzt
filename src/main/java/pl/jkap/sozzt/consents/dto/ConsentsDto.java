@@ -20,4 +20,5 @@ public class ConsentsDto {
     private Collection<PrivatePlotOwnerConsentDto> privatePlotOwnerConsents;
     private Collection<PublicPlotOwnerConsentDto> publicOwnerConsents;
     private boolean completed;
+    private ZudConsentDto zudConsent;
 }

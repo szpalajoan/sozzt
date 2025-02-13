@@ -2,6 +2,7 @@ package pl.jkap.sozzt.consents.domain
 
 import pl.jkap.sozzt.consents.dto.PrivatePlotOwnerConsentDto
 import pl.jkap.sozzt.consents.dto.PublicPlotOwnerConsentDto
+import pl.jkap.sozzt.consents.dto.ZudConsentDto
 import pl.jkap.sozzt.filestorage.dto.FileDto
 import pl.jkap.sozzt.sample.SozztSpecification
 
@@ -226,6 +227,74 @@ class ConsentsSpec extends SozztSpecification {
             consentsFacade.completeConsentsCollection(KRYNICA_CONTRACT.contractId)
         then: "Consents collection is marked as completed"
             consentsFacade.getConsents(KRYNICA_CONTRACT.contractId) == COMPLETED_KRYNICA_CONSENTS
+    }
+
+    def "should add new ZUD consent"() {
+        given: "there is $KRYNICA_CONSENTS stage"
+            addKrynicaContractOnStage(BEGIN_CONSENTS_COLLECTION)
+        and: "$KASIA_CONSENT_CORDINATOR is logged in"
+            loginUser(KASIA_CONSENT_CORDINATOR)
+        when: "$KASIA_CONSENT_CORDINATOR adds new $KRYNICA_ZUD_CONSENT"
+            consentsFacade.addZudConsent(KRYNICA_CONTRACT.contractId, toAddZudConsent(KRYNICA_ZUD_CONSENT))
+        then: "New consent $KRYNICA_ZUD_CONSENT is added"
+            consentsFacade.getConsents(KRYNICA_CONTRACT.contractId) == with(KRYNICA_CONSENTS, [zudConsent: KRYNICA_ZUD_CONSENT])
+    }
+
+    def "should update ZUD consent"() {
+        given: "there is $KRYNICA_CONSENTS stage"
+            addKrynicaContractOnStage(BEGIN_CONSENTS_COLLECTION)
+        and: "$KASIA_CONSENT_CORDINATOR is logged in"
+            loginUser(KASIA_CONSENT_CORDINATOR)
+        and: "there is $KRYNICA_ZUD_CONSENT in $KRYNICA_CONSENTS"
+            consentsFacade.addZudConsent(KRYNICA_CONTRACT.contractId, toAddZudConsent(KRYNICA_ZUD_CONSENT))
+        when: "$KASIA_CONSENT_CORDINATOR updates $KRYNICA_ZUD_CONSENT"
+            consentsFacade.updateZudConsent(KRYNICA_CONTRACT.contractId,
+                    toUpdateZudConsent(with(KRYNICA_ZUD_CONSENT, [(updateField): updateValue])))
+        then: "ZUD consent is updated"
+            consentsFacade.getConsents(KRYNICA_CONTRACT.contractId) == with(KRYNICA_CONSENTS, [zudConsent: with(KRYNICA_ZUD_CONSENT, [(updateField): updateValue])])
+        where:
+            updateField       | updateValue
+            "institutionName" | "ZUD Kraków"
+            "comment"        | "Wymaga dodatkowych uzgodnień"
+            "plotNumber"     | "23/123"
+            "collectorName"  | "BEATA"
+            "mailingDate"    | Instant.now()
+            "deliveryType"   | DeliveryType.POST
+    }
+
+    def "should mark ZUD consent as sent by mail"() {
+        given: "there is $KRYNICA_CONSENTS stage"
+            addKrynicaContractOnStage(BEGIN_CONSENTS_COLLECTION)
+        and: "$KASIA_CONSENT_CORDINATOR is logged in"
+            loginUser(KASIA_CONSENT_CORDINATOR)
+        and: "there is $KRYNICA_ZUD_CONSENT in $KRYNICA_CONSENTS"
+            consentsFacade.addZudConsent(KRYNICA_CONTRACT.contractId, toAddZudConsent(KRYNICA_ZUD_CONSENT))
+        and: "it is $TOMORROW"
+            instantProvider.useFixedClock(TOMORROW)
+        when: "$KASIA_CONSENT_CORDINATOR marks $KRYNICA_ZUD_CONSENT as sent by mail"
+            consentsFacade.markZudConsentAsSentByMail(KRYNICA_CONTRACT.contractId)
+        then: "ZUD consent is marked as sent by mail"
+            consentsFacade.getConsents(KRYNICA_CONTRACT.contractId) == with(KRYNICA_CONSENTS, [zudConsent: with(KRYNICA_ZUD_CONSENT, [consentStatus: SENT,
+                                                                                                                                    mailingDate  : TOMORROW,
+                                                                                                                                    deliveryType : DeliveryType.POST])])
+    }
+
+    def "should add agreement for ZUD consent"() {
+        given: "there is $KRYNICA_CONSENTS stage"
+            addKrynicaContractOnStage(BEGIN_CONSENTS_COLLECTION)
+        and: "$KASIA_CONSENT_CORDINATOR is logged in"
+            loginUser(KASIA_CONSENT_CORDINATOR)
+        and: "$KASIA_CONSENT_CORDINATOR adds new $KRYNICA_ZUD_CONSENT"
+            consentsFacade.addZudConsent(KRYNICA_CONTRACT.contractId, toAddZudConsent(KRYNICA_ZUD_CONSENT))
+        and: "$IWONA_CONSENT_COLLECTOR is logged in $TOMORROW"
+            instantProvider.useFixedClock(TOMORROW)
+            loginUser(IWONA_CONSENT_COLLECTOR)
+        when: "$IWONA_CONSENT_COLLECTOR adds agreement for $KRYNICA_ZUD_CONSENT"
+            FileDto zudConsentAgreement = addZudConsentAgreement(KRYNICA_ZUD_CONSENT_AGREEMENT_SCAN, KRYNICA_CONTRACT.contractId)
+        then: "$KRYNICA_ZUD_CONSENT_AGREEMENT_SCAN is added"
+            zudConsentAgreement == KRYNICA_ZUD_CONSENT_AGREEMENT_METADATA
+        and: "$KRYNICA_ZUD_CONSENT is accepted"
+            consentsFacade.getConsents(KRYNICA_CONTRACT.contractId) == with(KRYNICA_CONSENTS, [zudConsent: with(KRYNICA_ZUD_CONSENT, [consentStatus: CONSENT_GIVEN, consentGivenDate: TOMORROW])])
     }
 
 }
