@@ -126,12 +126,12 @@ class Contract implements Serializable {
     }
 
     private void beginPreparationDocumentationStep() {
-      //  ContractStep consentsCollectionStep = getContractStep(ContractStepType.CONSENTS_COLLECTION);
+        ContractStep consentsCollectionStep = getContractStep(ContractStepType.CONSENTS_COLLECTION);
         ContractStep routePreparationStep = getContractStep(ContractStepType.ROUTE_PREPARATION);
-        if( routePreparationStep.isCompleted()) {
+        if(consentsCollectionStep.isCompleted() && routePreparationStep.isCompleted()) {
             ContractStep preparationDocumentationStep = getContractStep(ContractStepType.PREPARATION_OF_DOCUMENTATION);
             preparationDocumentationStep.beginStep();
-        } //todo cofnąć too
+        }
     }
 
     private void completePreparationDocumentationStep() {

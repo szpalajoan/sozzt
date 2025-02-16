@@ -2,6 +2,7 @@ package pl.jkap.sozzt.consents.infrastructure;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.jkap.sozzt.consents.domain.ConsentsFacade;
@@ -72,5 +73,11 @@ public class ConsentsController {
     @ResponseStatus(HttpStatus.OK)
     public void invalidatePublicOwnerConsent(@PathVariable UUID idContract, @PathVariable UUID publicPlotOwnerConsentId, @RequestBody InvalidatePublicPlotOwnerConsentDto invalidatePublicPlotOwnerConsentDto) {
         consentsFacade.invalidatePublicPlotOwnerConsent(idContract, publicPlotOwnerConsentId, invalidatePublicPlotOwnerConsentDto.getReason());
+    }
+
+    @PutMapping("{idContract}/complete")
+    @ResponseStatus(HttpStatus.OK)
+    public void completeConsentsCollection(@PathVariable UUID idContract) {
+        consentsFacade.completeConsentsCollection(idContract);
     }
 }
