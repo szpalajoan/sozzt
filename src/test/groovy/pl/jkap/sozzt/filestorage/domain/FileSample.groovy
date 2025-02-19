@@ -25,6 +25,7 @@ trait FileSample implements ContractSample, PreliminaryPlanSample, RoutePreparat
     MultipartFile KRYNICA_MAP_WITH_ROUTE_FILE = new MockMultipartFile("KRYNICA_MAP_WITH_ROUTE", "KRYNICA_MAP_WITH_ROUTE.pdf", "application/pdf", Files.readAllBytes(Paths.get("src/test/resources/documentation/mapWithRoute/KRYNICA_MAP_WITH_ROUTE.pdf")))
     MultipartFile KRYNICA_PDF_WITH_ROUTE_AND_DATA_FILE = new MockMultipartFile("KRYNICA_PDF_WITH_ROUTE_AND_DATA", "KRYNICA_PDF_WITH_ROUTE_AND_DATA.pdf", "application/pdf", Files.readAllBytes(Paths.get("src/test/resources/documentation/pdfWithRouteAndData/KRYNICA_PDF_WITH_ROUTE_AND_DATA.pdf")))
     MultipartFile KRYNICA_COMPILED_DOCUMENT_FILE = new MockMultipartFile("KRYNICA_COMPILED_DOCUMENT", "KRYNICA_COMPILED_DOCUMENT.pdf", "application/pdf", Files.readAllBytes(Paths.get("src/test/resources/documentation/compiled/KRYNICA_COMPILED_DOCUMENT.pdf")))
+    MultipartFile KRYNICA_ZUD_CONSENT_AGREEMENT_FILE = new MockMultipartFile("KRYNICA_ZUD_CONSENT_AGREEMENT", "KRYNICA_ZUD_CONSENT_AGREEMENT.pdf", "application/pdf", Files.readAllBytes(Paths.get("src/test/resources/consents/zud_consent/KRYNICA_ZUD_CONSENT_AGREEMENT.pdf")))
 
     FileDto KRYNICA_CONTRACT_SCAN_METADATA = FileDto.builder()
             .fileId(UUID.fromString("4fb55d25-7e7c-4bea-9c78-cb000f9b823a"))
@@ -84,6 +85,14 @@ trait FileSample implements ContractSample, PreliminaryPlanSample, RoutePreparat
             .fileType(COMPILED_DOCUMENT)
             .build()
 
+    FileDto KRYNICA_ZUD_CONSENT_AGREEMENT_METADATA = FileDto.builder()
+            .fileId(UUID.fromString("f7890123-4567-89ab-cdef-0123456789ab"))
+            .fileName(KRYNICA_ZUD_CONSENT_AGREEMENT_FILE.getOriginalFilename())
+            .contractId(KRYNICA_CONTRACT.contractId)
+            .additionalObjectId(KRYNICA_ZUD_CONSENT.zudConsentId)
+            .fileType(ZUD_CONSENT_AGREEMENT)
+            .build()
+
     PreparedFile KRYNICA_CONTRACT_SCAN = new PreparedFile(KRYNICA_CONTRACT_SCAN_METADATA, KRYNICA_CONTRACT_SCAN_FILE)
     PreparedFile KRYNICA_PRELIMINARY_MAP = new PreparedFile(KRYNICA_PRELIMINARY_MAP_METADATA, KRYNICA_PRELIMINARY_MAP_FILE)
     PreparedFile KRYNICA_GEODETIC_MAP = new PreparedFile(KRYNICA_GEODETIC_MAP_METADATA, KRYNICA_GEODETIC_MAP_FILE)
@@ -92,6 +101,7 @@ trait FileSample implements ContractSample, PreliminaryPlanSample, RoutePreparat
     PreparedFile KRYNICA_MAP_WITH_ROUTE = new PreparedFile(KRYNICA_MAP_WITH_ROUTE_METADATA, KRYNICA_MAP_WITH_ROUTE_FILE)
     PreparedFile KRYNICA_PDF_WITH_ROUTE_AND_DATA = new PreparedFile(KRYNICA_PDF_WITH_ROUTE_AND_DATA_METADATA, KRYNICA_PDF_WITH_ROUTE_AND_DATA_FILE)
     PreparedFile KRYNICA_COMPILED_DOCUMENT = new PreparedFile(KRYNICA_COMPILED_DOCUMENT_METADATA, KRYNICA_COMPILED_DOCUMENT_FILE)
+    PreparedFile KRYNICA_ZUD_CONSENT_AGREEMENT_SCAN = new PreparedFile(KRYNICA_ZUD_CONSENT_AGREEMENT_METADATA, KRYNICA_ZUD_CONSENT_AGREEMENT_FILE)
 
     FileDto with(FileDto fileDto, Map<String, Object> properties) {
         return SampleModifier.with(FileDto.class, fileDto, properties)

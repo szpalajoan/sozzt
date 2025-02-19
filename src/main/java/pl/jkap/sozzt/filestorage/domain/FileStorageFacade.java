@@ -116,6 +116,13 @@ public class FileStorageFacade {
         return addedFile.dto();
     }
 
+    public FileDto addZudConsentAgreement(AddFileDto zudConsentAgreementFileDto) {
+        File addedFile = addFile(
+                zudConsentAgreementFileDto,
+                FileType.ZUD_CONSENT_AGREEMENT);
+        return addedFile.dto();
+    }
+
     private File addFile(AddFileDto addFileDto, FileType fileType) {
         UUID fileId = addFileDto.getFileId().orElseGet(UUID::randomUUID);
 

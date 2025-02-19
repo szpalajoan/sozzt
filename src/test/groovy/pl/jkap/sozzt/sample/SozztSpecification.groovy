@@ -134,6 +134,12 @@ class SozztSpecification extends Specification implements FileSample, RemarkSamp
         return addedFile
     }
 
+    FileDto addZudConsentAgreement(PreparedFile preparedFile, UUID consentId, UUID zudConsentId) {
+        FileDto addedFile = consentsFacade.addZudConsentAgreement(consentId, zudConsentId, toAddFileDto(preparedFile.metadata, preparedFile.fileAsMultipartFile, consentId, zudConsentId))
+        addedFileIds.add(addedFile.fileId)
+        return addedFile
+    }
+
     void deleteFile(UUID fileId) {
         fileStorageFacade.deleteFile(fileId)
         addedFileIds.remove(fileId)

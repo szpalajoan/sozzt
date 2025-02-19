@@ -285,12 +285,12 @@ class ConsentsSpec extends SozztSpecification {
         and: "$KASIA_CONSENT_CORDINATOR is logged in"
             loginUser(KASIA_CONSENT_CORDINATOR)
         and: "$KASIA_CONSENT_CORDINATOR adds new $KRYNICA_ZUD_CONSENT"
-            consentsFacade.addZudConsent(KRYNICA_CONTRACT.contractId, toAddZudConsent(KRYNICA_ZUD_CONSENT))
+            ZudConsentDto zudConsentDto = consentsFacade.addZudConsent(KRYNICA_CONTRACT.contractId, toAddZudConsent(KRYNICA_ZUD_CONSENT))
         and: "$IWONA_CONSENT_COLLECTOR is logged in $TOMORROW"
             instantProvider.useFixedClock(TOMORROW)
             loginUser(IWONA_CONSENT_COLLECTOR)
         when: "$IWONA_CONSENT_COLLECTOR adds agreement for $KRYNICA_ZUD_CONSENT"
-            FileDto zudConsentAgreement = addZudConsentAgreement(KRYNICA_ZUD_CONSENT_AGREEMENT_SCAN, KRYNICA_CONTRACT.contractId)
+            FileDto zudConsentAgreement = addZudConsentAgreement(KRYNICA_ZUD_CONSENT_AGREEMENT_SCAN, KRYNICA_CONTRACT.contractId, zudConsentDto.zudConsentId)
         then: "$KRYNICA_ZUD_CONSENT_AGREEMENT_SCAN is added"
             zudConsentAgreement == KRYNICA_ZUD_CONSENT_AGREEMENT_METADATA
         and: "$KRYNICA_ZUD_CONSENT is accepted"
