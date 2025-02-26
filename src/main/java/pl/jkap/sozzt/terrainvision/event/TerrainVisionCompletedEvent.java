@@ -9,5 +9,5 @@ import java.util.UUID;
 @AllArgsConstructor
 public class TerrainVisionCompletedEvent {
     private final UUID contractId;
-    private final boolean isProjectPurposesMapPreparationNeed;
+    private final boolean projectPurposesMapPreparationNeed;
 }

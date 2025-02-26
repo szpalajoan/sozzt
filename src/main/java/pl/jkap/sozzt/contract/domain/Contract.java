@@ -97,7 +97,7 @@ class Contract implements Serializable {
     }
 
     private void completeProjectPurposesMapPreparationStep() {
-        ContractStep projectPurposesMapPreparationStep = getContractStep(ContractStepType.PROJECT_PURPOSES_MAP_PREPARATION_NEED);
+        ContractStep projectPurposesMapPreparationStep = getContractStep(ContractStepType.PROJECT_PURPOSES_MAP_PREPARATION);
         projectPurposesMapPreparationStep.completeStep();
     }
 
@@ -107,7 +107,7 @@ class Contract implements Serializable {
     }
 
     private void beginProjectPurposesMapPreparationStep(ProjectPurposesMapPreparationFacade projectPurposesMapPreparationFacade) {
-        ContractStep projectPurposesMapPreparationStep = getContractStep(ContractStepType.PROJECT_PURPOSES_MAP_PREPARATION_NEED);
+        ContractStep projectPurposesMapPreparationStep = getContractStep(ContractStepType.PROJECT_PURPOSES_MAP_PREPARATION);
         projectPurposesMapPreparationFacade.addProjectPurposesMapPreparation(AddProjectPurposesMapPreparationDto.builder()
                 .projectPurposesMapPreparationId(contractId)
                 .deadline(projectPurposesMapPreparationStep.getDeadline())
@@ -127,7 +127,7 @@ class Contract implements Serializable {
 
     private void beginPreparationDocumentationStep() {
         ContractStep consentsCollectionStep = getContractStep(ContractStepType.CONSENTS_COLLECTION);
-        ContractStep projectPurposesMapPreparationStep = getContractStep(ContractStepType.PROJECT_PURPOSES_MAP_PREPARATION_NEED);
+        ContractStep projectPurposesMapPreparationStep = getContractStep(ContractStepType.PROJECT_PURPOSES_MAP_PREPARATION);
         if(consentsCollectionStep.isCompleted() && projectPurposesMapPreparationStep.isCompleted()) {
             ContractStep preparationDocumentationStep = getContractStep(ContractStepType.PREPARATION_OF_DOCUMENTATION);
             preparationDocumentationStep.beginStep();

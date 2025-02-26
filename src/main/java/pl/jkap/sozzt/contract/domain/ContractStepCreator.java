@@ -43,7 +43,7 @@ class ContractStepCreator {
 
     ContractStep createProjectPurposesMapPreparationStep(Instant contractOrderDate) {
         Instant deadline = contractOrderDate.plus(Duration.ofDays(65));
-        return new ContractStep(ContractStepType.PROJECT_PURPOSES_MAP_PREPARATION_NEED, ContractStepStatus.NOT_ACTIVE, deadline);
+        return new ContractStep(ContractStepType.PROJECT_PURPOSES_MAP_PREPARATION, ContractStepStatus.NOT_ACTIVE, deadline);
     }
 
     ContractStep createConsentsCollectionStep(UUID contractId, Instant contractOrderDate) {

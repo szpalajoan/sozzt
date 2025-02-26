@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 import pl.jkap.sozzt.consents.event.ConsentsCollectionCompletedEvent;
-import pl.jkap.sozzt.terrainvision.event.TerrainVisionCompletedEvent;
 
 @Component
 public class ConsentsEventPublisher {
