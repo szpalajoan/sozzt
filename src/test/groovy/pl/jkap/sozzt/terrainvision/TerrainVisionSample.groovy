@@ -2,7 +2,6 @@ package pl.jkap.sozzt.terrainvision
 
 import pl.jkap.sozzt.contract.domain.ContractSample
 import pl.jkap.sozzt.sample.SampleModifier
-import pl.jkap.sozzt.terrainvision.domain.ProjectPurposesMapPreparationNeed
 import pl.jkap.sozzt.terrainvision.dto.TerrainVisionDto
 
 import java.time.Duration

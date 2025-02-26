@@ -74,9 +74,9 @@ class Contract implements Serializable {
         terrainVisionStep.beginStep();
     }
 
-    void completeTerrainVision(ProjectPurposesMapPreparationFacade projectPurposesMapPreparationFacade, boolean isProjectPurposesMapPreparationNeed) {
+    void completeTerrainVision(ProjectPurposesMapPreparationFacade projectPurposesMapPreparationFacade, boolean projectPurposesMapPreparationNeed) {
         completeTerrainVisionStep();
-        if(isProjectPurposesMapPreparationNeed){
+        if(projectPurposesMapPreparationNeed){
             beginProjectPurposesMapPreparationStep(projectPurposesMapPreparationFacade);
         }
         beginConsentsCollectionStep();

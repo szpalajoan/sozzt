@@ -2,7 +2,6 @@ package pl.jkap.sozzt.consents.infrastructure;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.jkap.sozzt.consents.domain.ConsentsFacade;

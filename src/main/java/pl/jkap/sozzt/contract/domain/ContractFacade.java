@@ -94,9 +94,9 @@ public class ContractFacade {
         log.info("Preliminary plan finalized: {}", contract);
     }
 
-    private void completeTerrainVision(UUID contractId, boolean isProjectPurposesMapPreparationNeed) {
+    private void completeTerrainVision(UUID contractId, boolean projectPurposesMapPreparationNeed) {
         Contract contract = findContract(contractId);
-        contract.completeTerrainVision(projectPurposesMapPreparationFacade, isProjectPurposesMapPreparationNeed);
+        contract.completeTerrainVision(projectPurposesMapPreparationFacade, projectPurposesMapPreparationNeed);
         contractRepository.save(contract);
         log.info("Terrain vision finalized: {}", contract);
     }
