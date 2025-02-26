@@ -5,10 +5,10 @@ import java.util.UUID;
 
 class HoldTerrainVision extends TerrainVision {
     HoldTerrainVision(UUID terrainVisionId, Instant deadline) {
-        super(terrainVisionId, false, deadline, TerrainVisionStatus.HOLD, RoutePreparationNeed.NONE);
+        super(terrainVisionId, false, deadline, TerrainVisionStatus.HOLD, ProjectPurposesMapPreparationNeed.NONE);
     }
 
     InProgressTerrainVision begin() {
-        return new InProgressTerrainVision(terrainVisionId, deadline, routePreparationNeed);
+        return new InProgressTerrainVision(terrainVisionId, deadline, projectPurposesMapPreparationNeed);
     }
 }

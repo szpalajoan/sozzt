@@ -2,9 +2,12 @@ package pl.jkap.sozzt.terrainvision
 
 import pl.jkap.sozzt.contract.domain.ContractSample
 import pl.jkap.sozzt.sample.SampleModifier
+import pl.jkap.sozzt.terrainvision.domain.ProjectPurposesMapPreparationNeed
 import pl.jkap.sozzt.terrainvision.dto.TerrainVisionDto
 
 import java.time.Duration
+
+import static pl.jkap.sozzt.terrainvision.domain.ProjectPurposesMapPreparationNeed.*
 
 trait TerrainVisionSample implements ContractSample{
 
@@ -13,7 +16,7 @@ trait TerrainVisionSample implements ContractSample{
             .allPhotosUploaded(false)
             .deadline(KRYNICA_CONTRACT.contractDetails.orderDate + Duration.ofDays(21))
             .terrainVisionStatus(TerrainVisionDto.TerrainVisionStatus.IN_PROGRESS)
-            .routePreparationNeed(TerrainVisionDto.RoutePreparationNeed.NONE)
+            .projectPurposesMapPreparationNeed(NONE)
             .build()
 
     TerrainVisionDto COMPLETED_KRYNICA_TERRAIN_VISION = TerrainVisionDto.builder()
@@ -21,7 +24,7 @@ trait TerrainVisionSample implements ContractSample{
             .allPhotosUploaded(true)
             .deadline(KRYNICA_CONTRACT.contractDetails.orderDate + Duration.ofDays(21))
             .terrainVisionStatus(TerrainVisionDto.TerrainVisionStatus.COMPLETED)
-            .routePreparationNeed(TerrainVisionDto.RoutePreparationNeed.NECESSARY)
+            .projectPurposesMapPreparationNeed(NECESSARY)
             .build()
 
 

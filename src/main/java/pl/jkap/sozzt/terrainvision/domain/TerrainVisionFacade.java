@@ -12,6 +12,8 @@ import pl.jkap.sozzt.terrainvision.exception.TerrainVisionNotFoundException;
 
 import java.util.UUID;
 
+import static pl.jkap.sozzt.terrainvision.domain.ProjectPurposesMapPreparationNeed.NECESSARY;
+
 @Builder
 @Slf4j
 public class TerrainVisionFacade {
@@ -49,12 +51,12 @@ public class TerrainVisionFacade {
 
     }
 
-    public void setRoutePreparationNeed(UUID terrainVisionId, TerrainVisionDto.RoutePreparationNeed routePreparationNeed) {
-        log.info("Setting route preparation need: {} - {}", terrainVisionId, routePreparationNeed);
+    public void setProjectPurposesMapPreparationNeed(UUID terrainVisionId, ProjectPurposesMapPreparationNeed projectPurposesMapPreparationNeed) {
+        log.info("Setting project purposes map preparation need: {}", terrainVisionId);
         checkCanModifyTerrainVision();
         InProgressTerrainVision inProgressTerrainVision = terrainVisionRepository.findInProgressTerrainVisionById(terrainVisionId)
                 .orElseThrow(() -> new TerrainVisionNotFoundException("TerrainVision not found: " + terrainVisionId));
-        inProgressTerrainVision.setRoutePreparationNeed(routePreparationNeed);
+        inProgressTerrainVision.setProjectPurposesMapPreparationNeed(projectPurposesMapPreparationNeed);
         terrainVisionRepository.save(inProgressTerrainVision);
     }
 
@@ -65,7 +67,7 @@ public class TerrainVisionFacade {
         CompletedTerrainVision completedTerrainVision = inProgressTerrainVision.complete();
         terrainVisionRepository.save(completedTerrainVision);
         terrainVisionEventPublisher.terrainVisionCompleted(new TerrainVisionCompletedEvent(terrainVisionId,
-                        completedTerrainVision.getRoutePreparationNeed().equals(TerrainVision.RoutePreparationNeed.NECESSARY)));
+                        completedTerrainVision.getProjectPurposesMapPreparationNeed().equals(NECESSARY)));
     }
 
     private void checkCanModifyTerrainVision() {

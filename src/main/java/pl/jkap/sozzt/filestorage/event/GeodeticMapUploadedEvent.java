@@ -8,5 +8,5 @@ import java.util.UUID;
 @Getter
 @AllArgsConstructor
 public class GeodeticMapUploadedEvent {
-    private final UUID routePreparationId;
+    private final UUID projectPurposesMapPreparationId;
 }

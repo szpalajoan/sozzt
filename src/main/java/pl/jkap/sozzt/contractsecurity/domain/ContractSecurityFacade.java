@@ -74,7 +74,7 @@ public class ContractSecurityFacade {
     public void checkCanUploadGeodeticMap() {
         if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
                 .noneMatch(role -> role.getAuthority().equals("ROLE_SURVEYOR"))) {
-            throw new UnauthorizedRoutePreparationEditException("upload geodetic map is not allowed");
+            throw new UnauthorizedProjectPurposesMapPreparationEditException("upload geodetic map is not allowed");
         }
     }
 }

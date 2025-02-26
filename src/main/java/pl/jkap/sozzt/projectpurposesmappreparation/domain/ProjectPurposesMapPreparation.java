@@ -1,4 +1,4 @@
-package pl.jkap.sozzt.routepreparation.domain;
+package pl.jkap.sozzt.projectpurposesmappreparation.domain;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
-import pl.jkap.sozzt.routepreparation.dto.RoutePreparationDto;
+import pl.jkap.sozzt.projectpurposesmappreparation.dto.ProjectPurposesMapPreparationDto;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -16,16 +16,16 @@ import java.util.UUID;
 @Getter
 @AllArgsConstructor
 @ToString
-class RoutePreparation {
+class ProjectPurposesMapPreparation {
 
     @Id
-    private UUID routePreparationId;
+    private UUID projectPurposesMapPreparationId;
     Instant deadline;
     boolean isGeodeticMapUploaded;
 
-    public RoutePreparationDto dto() {
-        return RoutePreparationDto.builder()
-                .routePreparationId(routePreparationId)
+    public ProjectPurposesMapPreparationDto dto() {
+        return ProjectPurposesMapPreparationDto.builder()
+                .projectPurposesMapPreparationId(projectPurposesMapPreparationId)
                 .deadline(deadline)
                 .isGeodeticMapUploaded(isGeodeticMapUploaded)
                 .build();

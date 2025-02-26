@@ -3,11 +3,11 @@ package pl.jkap.sozzt.terrainvision
 import pl.jkap.sozzt.sample.ExpectedStageSample
 import pl.jkap.sozzt.sample.SozztSpecification
 import pl.jkap.sozzt.terrainvision.exception.CompletionTerrainVisionException
-import pl.jkap.sozzt.terrainvision.exception.InvalidRoutePreparationNeedException
+import pl.jkap.sozzt.terrainvision.exception.InvalidProjectPurposesMapPreparationNeedException
 import pl.jkap.sozzt.terrainvision.exception.TerrainVisionAccessException
 import pl.jkap.sozzt.terrainvision.exception.TerrainVisionNotFoundException
 
-import static pl.jkap.sozzt.terrainvision.dto.TerrainVisionDto.RoutePreparationNeed.*
+import static pl.jkap.sozzt.terrainvision.domain.ProjectPurposesMapPreparationNeed.*
 
 class TerrainVisionSpec extends SozztSpecification {
 
@@ -50,49 +50,49 @@ class TerrainVisionSpec extends SozztSpecification {
             thrown(TerrainVisionNotFoundException)
     }
 
-    def "should confirm route preparation need"() {
+    def "should confirm project purposes map preparation need"() {
         given: "there is $KRYNICA_TERRAIN_VISION stage"
             addKrynicaContractOnStage(ExpectedStageSample.BEGIN_TERRAIN_VISION)
         and: "$MARCIN_TERRAIN_VISIONER is logged in"
             loginUser(MARCIN_TERRAIN_VISIONER)
-        when: "$MARCIN_TERRAIN_VISIONER sets route preparation need as $routePreparationNeed"
-            terrainVisionFacade.setRoutePreparationNeed(KRYNICA_CONTRACT.contractId, routePreparationNeed)
-        then: "Terrain vision has confirmed route preparation as $routePreparationNeed"
-            terrainVisionFacade.getTerrainVision(KRYNICA_CONTRACT.contractId) == with(KRYNICA_TERRAIN_VISION, [routePreparationNeed: routePreparationNeed])
+        when: "$MARCIN_TERRAIN_VISIONER sets project purposes map preparation need as $projectPurposesMapPreparationNeed"
+            terrainVisionFacade.setProjectPurposesMapPreparationNeed(KRYNICA_CONTRACT.contractId, projectPurposesMapPreparationNeed)
+        then: "Terrain vision has confirmed project purposes map preparation as $projectPurposesMapPreparationNeed"
+            terrainVisionFacade.getTerrainVision(KRYNICA_CONTRACT.contractId) == with(KRYNICA_TERRAIN_VISION, [projectPurposesMapPreparationNeed: projectPurposesMapPreparationNeed])
         where:
-            routePreparationNeed << [NECESSARY, NOT_NEED]
+        projectPurposesMapPreparationNeed << [NECESSARY, NOT_NEED]
     }
 
-    def "should not confirm route preparation need as none"() {
+    def "should not confirm project purposes map preparation need as none"() {
         given: "there is $KRYNICA_TERRAIN_VISION stage"
             addKrynicaContractOnStage(ExpectedStageSample.BEGIN_TERRAIN_VISION)
         and: "$MARCIN_TERRAIN_VISIONER is logged in"
             loginUser(MARCIN_TERRAIN_VISIONER)
-        when: "$MARCIN_TERRAIN_VISIONER tries to set route preparation need as none"
-            terrainVisionFacade.setRoutePreparationNeed(KRYNICA_CONTRACT.contractId, NONE)
-        then: "Terrain vision has not confirmed route preparation need"
-            thrown(InvalidRoutePreparationNeedException)
+        when: "$MARCIN_TERRAIN_VISIONER tries to set project purposes map preparation need as none"
+            terrainVisionFacade.setProjectPurposesMapPreparationNeed(KRYNICA_CONTRACT.contractId, NONE)
+        then: "Terrain vision has not confirmed project purposes map preparation need"
+            thrown(InvalidProjectPurposesMapPreparationNeedException)
     }
 
-    def "should not allow confirm route preparation need for not privileged user"() {
+    def "should not allow confirm project purposes map preparation need for not privileged user"() {
         given: "there is $KRYNICA_TERRAIN_VISION stage"
             addKrynicaContractOnStage(ExpectedStageSample.BEGIN_TERRAIN_VISION)
         and: "$MONIKA_CONTRACT_INTRODUCER is logged in"
             loginUser(MONIKA_CONTRACT_INTRODUCER)
-        when: "$MONIKA_CONTRACT_INTRODUCER tries to set route preparation need"
-            terrainVisionFacade.setRoutePreparationNeed(KRYNICA_CONTRACT.contractId, mapChange)
-        then: "Setting of route preparation need is not allowed for not privileged user account"
+        when: "$MONIKA_CONTRACT_INTRODUCER tries to set project purposes map preparation need"
+            terrainVisionFacade.setProjectPurposesMapPreparationNeed(KRYNICA_CONTRACT.contractId, mapChange)
+        then: "Setting of project purposes map preparation need is not allowed for not privileged user account"
             thrown(TerrainVisionAccessException)
         where:
             mapChange << [NECESSARY, NOT_NEED]
     }
 
-    def "should not confirm route preparation need for not existing terrain vision stage"() {
+    def "should not confirm project purposes map preparation need for not existing terrain vision stage"() {
         given: "$MARCIN_TERRAIN_VISIONER is logged in"
             loginUser(MARCIN_TERRAIN_VISIONER)
-        when: "$MARCIN_TERRAIN_VISIONER tries to confirmroute preparation need on not existing terrain vision stage"
-            terrainVisionFacade.setRoutePreparationNeed(KRYNICA_CONTRACT.contractId, mapChange)
-        then: "Setting of route preparation need is not possible for not existing terrain vision stage"
+        when: "$MARCIN_TERRAIN_VISIONER tries to confirmproject purposes map preparation need on not existing terrain vision stage"
+            terrainVisionFacade.setProjectPurposesMapPreparationNeed(KRYNICA_CONTRACT.contractId, mapChange)
+        then: "Setting of project purposes map preparation need is not possible for not existing terrain vision stage"
             thrown(TerrainVisionNotFoundException)
         where:
             mapChange << [NECESSARY, NOT_NEED]
@@ -105,14 +105,14 @@ class TerrainVisionSpec extends SozztSpecification {
             loginUser(MARCIN_TERRAIN_VISIONER)
         and: "$MARCIN_TERRAIN_VISIONER confirmed that all photos are uploaded"
             terrainVisionFacade.confirmAllPhotosAreUploaded(KRYNICA_CONTRACT.contractId)
-        and: "$MARCIN_TERRAIN_VISIONER sets route preparation need as $routePreparationNeed"
-            terrainVisionFacade.setRoutePreparationNeed(KRYNICA_CONTRACT.contractId, routePreparationNeed)
+        and: "$MARCIN_TERRAIN_VISIONER sets project purposes map preparation need as $projectPurposesMapPreparationNeed"
+            terrainVisionFacade.setProjectPurposesMapPreparationNeed(KRYNICA_CONTRACT.contractId, projectPurposesMapPreparationNeed)
         when: "$MARCIN_TERRAIN_VISIONER completes the terrain vision"
             terrainVisionFacade.completeTerrainVision(KRYNICA_CONTRACT.contractId)
         then: "Terrain vision is completed"
-            terrainVisionFacade.getTerrainVision(KRYNICA_CONTRACT.contractId) == with(COMPLETED_KRYNICA_TERRAIN_VISION, [routePreparationNeed : routePreparationNeed])
+            terrainVisionFacade.getTerrainVision(KRYNICA_CONTRACT.contractId) == with(COMPLETED_KRYNICA_TERRAIN_VISION, [projectPurposesMapPreparationNeed : projectPurposesMapPreparationNeed])
         where:
-        routePreparationNeed << [NECESSARY, NOT_NEED]
+            projectPurposesMapPreparationNeed << [NECESSARY, NOT_NEED]
     }
 
     def "should not complete terrain vision if not all photos are uploaded"() {
@@ -125,7 +125,7 @@ class TerrainVisionSpec extends SozztSpecification {
             thrown(CompletionTerrainVisionException)
     }
 
-    def "should not complete terrain vision if route preparation need is not specified"() {
+    def "should not complete terrain vision if project purposes map preparation need is not specified"() {
         given: "there is $KRYNICA_TERRAIN_VISION stage"
             addKrynicaContractOnStage(ExpectedStageSample.BEGIN_TERRAIN_VISION)
         and: "$MARCIN_TERRAIN_VISIONER is logged in"
@@ -135,7 +135,7 @@ class TerrainVisionSpec extends SozztSpecification {
         when: "$MARCIN_TERRAIN_VISIONER tries to complete the terrain vision"
             terrainVisionFacade.completeTerrainVision(KRYNICA_CONTRACT.contractId)
         then: "Terrain vision is not completed"
-            thrown(InvalidRoutePreparationNeedException)
+            thrown(InvalidProjectPurposesMapPreparationNeedException)
     }
 
 
@@ -166,8 +166,8 @@ class TerrainVisionSpec extends SozztSpecification {
             loginUser(MARCIN_TERRAIN_VISIONER)
         and: "$MARCIN_TERRAIN_VISIONER confirmed that all photos are uploaded"
             terrainVisionFacade.confirmAllPhotosAreUploaded(KRYNICA_CONTRACT.contractId)
-        and: "$MARCIN_TERRAIN_VISIONER confirmed route preparation need as $NECESSARY"
-            terrainVisionFacade.setRoutePreparationNeed(KRYNICA_CONTRACT.contractId, NECESSARY)
+        and: "$MARCIN_TERRAIN_VISIONER confirmed project purposes map preparation need as $NECESSARY"
+            terrainVisionFacade.setProjectPurposesMapPreparationNeed(KRYNICA_CONTRACT.contractId, NECESSARY)
         and: "$MARCIN_TERRAIN_VISIONER completes the terrain vision"
             terrainVisionFacade.completeTerrainVision(KRYNICA_CONTRACT.contractId)
         when: "$MARCIN_TERRAIN_VISIONER tries to complete the terrain vision again"
