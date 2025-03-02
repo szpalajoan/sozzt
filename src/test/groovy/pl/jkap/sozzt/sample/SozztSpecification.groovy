@@ -29,12 +29,13 @@ import pl.jkap.sozzt.preliminaryplanning.dto.PreliminaryPlanDto
 import pl.jkap.sozzt.remark.domain.RemarkConfiguration
 import pl.jkap.sozzt.remark.domain.RemarkFacade
 import pl.jkap.sozzt.remark.domain.RemarkSample
-import pl.jkap.sozzt.routepreparation.RoutePreparationSample
-import pl.jkap.sozzt.routepreparation.domain.RoutePreparationConfiguration
-import pl.jkap.sozzt.routepreparation.domain.RoutePreparationEventPublisherStub
-import pl.jkap.sozzt.routepreparation.domain.RoutePreparationFacade
-import pl.jkap.sozzt.routepreparation.dto.RoutePreparationDto
+import pl.jkap.sozzt.projectpurposesmappreparation.ProjectPurposesMapPreparationSample
+import pl.jkap.sozzt.projectpurposesmappreparation.domain.ProjectPurposesMapPreparationConfiguration
+import pl.jkap.sozzt.projectpurposesmappreparation.domain.ProjectPurposesMapPreparationEventPublisherStub
+import pl.jkap.sozzt.projectpurposesmappreparation.domain.ProjectPurposesMapPreparationFacade
+import pl.jkap.sozzt.projectpurposesmappreparation.dto.ProjectPurposesMapPreparationDto
 import pl.jkap.sozzt.terrainvision.TerrainVisionSample
+import pl.jkap.sozzt.terrainvision.domain.ProjectPurposesMapPreparationNeed
 import pl.jkap.sozzt.terrainvision.domain.TerrainVisionConfiguration
 import pl.jkap.sozzt.terrainvision.domain.TerrainVisionEventPublisherStub
 import pl.jkap.sozzt.terrainvision.domain.TerrainVisionFacade
@@ -43,8 +44,9 @@ import pl.jkap.sozzt.user.UserSample
 import spock.lang.Specification
 
 import static pl.jkap.sozzt.sample.ExpectedStageSample.*
+import static pl.jkap.sozzt.terrainvision.domain.ProjectPurposesMapPreparationNeed.*
 
-class SozztSpecification extends Specification implements FileSample, RemarkSample, TermVerificationSample, RouteDrawingSample, DocumentationSample, ConsentsSample, PlotOwnerConsentSample, PreliminaryPlanSample, TerrainVisionSample, RoutePreparationSample,
+class SozztSpecification extends Specification implements FileSample, RemarkSample, TermVerificationSample, RouteDrawingSample, DocumentationSample, ConsentsSample, PlotOwnerConsentSample, PreliminaryPlanSample, TerrainVisionSample, ProjectPurposesMapPreparationSample,
         ContractSample, LocationSample, ContractDetailsSample, ContractStepSample,
         UserSample, InstantSamples {
     Collection<UUID> addedFileIds = []
@@ -54,13 +56,13 @@ class SozztSpecification extends Specification implements FileSample, RemarkSamp
     ContractSecurityFacade contractSecurityFacade = new ContractSecurityConfiguration().contractSecurityFacade()
     PreliminaryPlanFacade preliminaryPlanFacade = new PreliminaryPlanConfiguration().preliminaryPlanFacade(new PreliminaryPlanEventPublisherStub(eventInvoker))
     TerrainVisionFacade terrainVisionFacade = new TerrainVisionConfiguration().terrainVisionFacade(instantProvider, new TerrainVisionEventPublisherStub(eventInvoker))
-    RoutePreparationFacade routePreparationFacade = new RoutePreparationConfiguration().routePreparationFacade(new RoutePreparationEventPublisherStub(eventInvoker))
+    ProjectPurposesMapPreparationFacade projectPurposesMapPreparationFacade = new ProjectPurposesMapPreparationConfiguration().projectPurposesMapPreparationFacade(new ProjectPurposesMapPreparationEventPublisherStub(eventInvoker))
     FileStorageFacade fileStorageFacade = new FileStorageConfigurator().fileStorageFacade(contractSecurityFacade, new FileEventPublisherStub(eventInvoker))
     ConsentsFacade consentsFacade = new ConsentsConfiguration().consentsFacade(fileStorageFacade, instantProvider, new ConsentsEventPublisherStub(eventInvoker))
     DocumentationFacade documentationFacade = new DocumentationConfiguration().documentationFacade(new DocumentationEventPublisherStub(eventInvoker), fileStorageFacade, instantProvider)
     RemarkFacade remarkFacade = new RemarkConfiguration().remarkFacade(instantProvider)
     ContractFacade contractFacade = new ContractConfiguration().contractFacade(contractSecurityFacade, preliminaryPlanFacade, terrainVisionFacade,
-            routePreparationFacade, consentsFacade, documentationFacade, remarkFacade,
+            projectPurposesMapPreparationFacade, consentsFacade, documentationFacade, remarkFacade,
             instantProvider)
 
 
@@ -68,7 +70,7 @@ class SozztSpecification extends Specification implements FileSample, RemarkSamp
         instantProvider.useFixedClock(NOW)
         eventInvoker.addFacades(contractFacade,
                 preliminaryPlanFacade,
-                routePreparationFacade)
+                projectPurposesMapPreparationFacade)
     }
 
     def cleanup(){
@@ -97,8 +99,8 @@ class SozztSpecification extends Specification implements FileSample, RemarkSamp
         return addedFile
     }
 
-    FileDto uploadGeodeticMap(RoutePreparationDto routePreparationDto, PreparedFile preparedFile ) {
-        FileDto addedFile = fileStorageFacade.addGeodeticMap(toAddFileDto(preparedFile.metadata, preparedFile.fileAsMultipartFile, routePreparationDto.routePreparationId))
+    FileDto uploadGeodeticMap(ProjectPurposesMapPreparationDto routePreparationDto, PreparedFile preparedFile ) {
+        FileDto addedFile = fileStorageFacade.addGeodeticMap(toAddFileDto(preparedFile.metadata, preparedFile.fileAsMultipartFile, routePreparationDto.projectPurposesMapPreparationId))
         addedFileIds.add(addedFile.fileId)
         return addedFile
     }
@@ -160,7 +162,7 @@ class SozztSpecification extends Specification implements FileSample, RemarkSamp
         }
         if(step >= COMPLETED_ROUTE_PREPARATION) {
             loginUser(WALDEK_SURVEYOR)
-            completeRoutePreparation(COMPLETED_KRYNICA_ROUTE_PREPARATION)
+            completeProjectPurposesMapPreparation(COMPLETED_KRYNICA_PROJECT_PURPOSE_MAP_PREPARATION)
         }
         if(step >= COMPLETED_CONSENTS_COLLECTION || step >= BEGIN_DOCUMENTATION) {
             loginUser(KASIA_CONSENT_CORDINATOR)
@@ -178,16 +180,16 @@ class SozztSpecification extends Specification implements FileSample, RemarkSamp
         preliminaryPlanFacade.completePreliminaryPlan(preliminaryPlanDto.preliminaryPlanId)
     }
 
-    private void completeTerrainVision(TerrainVisionDto terrainVisionDto, boolean withMapChange = false) {
-        TerrainVisionDto.MapChange mapChange = withMapChange ? TerrainVisionDto.MapChange.MODIFIED : TerrainVisionDto.MapChange.NOT_NECESSARY
+    private void completeTerrainVision(TerrainVisionDto terrainVisionDto, boolean withProjectPurposesMapPreparation = false) {
+        ProjectPurposesMapPreparationNeed projectPurposesMapPreparationNeed = withProjectPurposesMapPreparation ? NECESSARY : NOT_NEED
         terrainVisionFacade.confirmAllPhotosAreUploaded(terrainVisionDto.terrainVisionId)
-        terrainVisionFacade.confirmChangesOnMap(terrainVisionDto.terrainVisionId, mapChange)
+        terrainVisionFacade.setProjectPurposesMapPreparationNeed(terrainVisionDto.terrainVisionId, projectPurposesMapPreparationNeed)
         terrainVisionFacade.completeTerrainVision(terrainVisionDto.terrainVisionId)
     }
 
-    void completeRoutePreparation(RoutePreparationDto routePreparationDto) {
+    void completeProjectPurposesMapPreparation(ProjectPurposesMapPreparationDto routePreparationDto) {
         uploadGeodeticMap(routePreparationDto, KRYNICA_GEODETIC_MAP)
-        routePreparationFacade.completeRoutePreparation(routePreparationDto.routePreparationId)
+        projectPurposesMapPreparationFacade.completeProjectPurposesMapPreparation(routePreparationDto.projectPurposesMapPreparationId)
     }
 
     void completeConsentsCollection(ConsentsDto consentsDto, boolean isZudRequired = true) {

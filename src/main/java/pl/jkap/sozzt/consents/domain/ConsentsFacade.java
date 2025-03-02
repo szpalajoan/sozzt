@@ -2,6 +2,7 @@ package pl.jkap.sozzt.consents.domain;
 
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.multipart.MultipartFile;
 import pl.jkap.sozzt.consents.dto.*;
 import pl.jkap.sozzt.consents.event.ConsentsCollectionCompletedEvent;
 import pl.jkap.sozzt.consents.exception.ConsentsNotFoundException;
@@ -24,7 +25,7 @@ public class ConsentsFacade {
 
 
 
-    ConsentsDto getConsents(UUID uuid) {
+    public ConsentsDto getConsents(UUID uuid) {
         return consentsRepository.findById(uuid)
                 .orElseThrow(() -> new ConsentsNotFoundException("Consents not found: " + uuid))
                 .dto();

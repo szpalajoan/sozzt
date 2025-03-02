@@ -1,6 +1,7 @@
 package pl.jkap.sozzt.remark.domain;
 
-public enum RemarkContractStep {
+public enum RemarkType {
+    GENERAL_CONTRACT,
     PRELIMINARY_PLAN,
     TERRAIN_VISION,
     ROUTE_PREPARATION,

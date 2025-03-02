@@ -3,11 +3,11 @@ package pl.jkap.sozzt.terrainvision
 import pl.jkap.sozzt.sample.ExpectedStageSample
 import pl.jkap.sozzt.sample.SozztSpecification
 import pl.jkap.sozzt.terrainvision.exception.CompletionTerrainVisionException
-import pl.jkap.sozzt.terrainvision.exception.InvalidMapChangeException
+import pl.jkap.sozzt.terrainvision.exception.InvalidProjectPurposesMapPreparationNeedException
 import pl.jkap.sozzt.terrainvision.exception.TerrainVisionAccessException
 import pl.jkap.sozzt.terrainvision.exception.TerrainVisionNotFoundException
 
-import static pl.jkap.sozzt.terrainvision.dto.TerrainVisionDto.MapChange.*
+import static pl.jkap.sozzt.terrainvision.domain.ProjectPurposesMapPreparationNeed.*
 
 class TerrainVisionSpec extends SozztSpecification {
 
@@ -50,52 +50,52 @@ class TerrainVisionSpec extends SozztSpecification {
             thrown(TerrainVisionNotFoundException)
     }
 
-    def "should confirm changes on map"() {
+    def "should confirm project purposes map preparation need"() {
         given: "there is $KRYNICA_TERRAIN_VISION stage"
             addKrynicaContractOnStage(ExpectedStageSample.BEGIN_TERRAIN_VISION)
         and: "$MARCIN_TERRAIN_VISIONER is logged in"
             loginUser(MARCIN_TERRAIN_VISIONER)
-        when: "$MARCIN_TERRAIN_VISIONER confirm changes on map as $mapChange"
-            terrainVisionFacade.confirmChangesOnMap(KRYNICA_CONTRACT.contractId, mapChange)
-        then: "Terrain vision has confirmed changes on map as $mapChange"
-            terrainVisionFacade.getTerrainVision(KRYNICA_CONTRACT.contractId) == with(KRYNICA_TERRAIN_VISION, [mapChange: mapChange])
+        when: "$MARCIN_TERRAIN_VISIONER sets project purposes map preparation need as $projectPurposesMapPreparationNeed"
+            terrainVisionFacade.setProjectPurposesMapPreparationNeed(KRYNICA_CONTRACT.contractId, projectPurposesMapPreparationNeed)
+        then: "Terrain vision has confirmed project purposes map preparation as $projectPurposesMapPreparationNeed"
+            terrainVisionFacade.getTerrainVision(KRYNICA_CONTRACT.contractId) == with(KRYNICA_TERRAIN_VISION, [projectPurposesMapPreparationNeed: projectPurposesMapPreparationNeed])
         where:
-            mapChange << [MODIFIED, NOT_NECESSARY]
+        projectPurposesMapPreparationNeed << [NECESSARY, NOT_NEED]
     }
 
-    def "should not confirm changes on map as none"() {
+    def "should not confirm project purposes map preparation need as none"() {
         given: "there is $KRYNICA_TERRAIN_VISION stage"
             addKrynicaContractOnStage(ExpectedStageSample.BEGIN_TERRAIN_VISION)
         and: "$MARCIN_TERRAIN_VISIONER is logged in"
             loginUser(MARCIN_TERRAIN_VISIONER)
-        when: "$MARCIN_TERRAIN_VISIONER tries to confirm changes on map as none"
-            terrainVisionFacade.confirmChangesOnMap(KRYNICA_CONTRACT.contractId, NONE)
-        then: "Terrain vision has not confirmed changes on map"
-            thrown(InvalidMapChangeException)
+        when: "$MARCIN_TERRAIN_VISIONER tries to set project purposes map preparation need as none"
+            terrainVisionFacade.setProjectPurposesMapPreparationNeed(KRYNICA_CONTRACT.contractId, NONE)
+        then: "Terrain vision has not confirmed project purposes map preparation need"
+            thrown(InvalidProjectPurposesMapPreparationNeedException)
     }
 
-    def "should not allow confirm changes on map for not privileged user"() {
+    def "should not allow confirm project purposes map preparation need for not privileged user"() {
         given: "there is $KRYNICA_TERRAIN_VISION stage"
             addKrynicaContractOnStage(ExpectedStageSample.BEGIN_TERRAIN_VISION)
         and: "$MONIKA_CONTRACT_INTRODUCER is logged in"
             loginUser(MONIKA_CONTRACT_INTRODUCER)
-        when: "$MONIKA_CONTRACT_INTRODUCER tries to confirm changes on map"
-            terrainVisionFacade.confirmChangesOnMap(KRYNICA_CONTRACT.contractId, mapChange)
-        then: "Confirmation of changes on map is not possible"
+        when: "$MONIKA_CONTRACT_INTRODUCER tries to set project purposes map preparation need"
+            terrainVisionFacade.setProjectPurposesMapPreparationNeed(KRYNICA_CONTRACT.contractId, mapChange)
+        then: "Setting of project purposes map preparation need is not allowed for not privileged user account"
             thrown(TerrainVisionAccessException)
         where:
-            mapChange << [MODIFIED, NOT_NECESSARY]
+            mapChange << [NECESSARY, NOT_NEED]
     }
 
-    def "should not confirm changes on map for not existing terrain vision stage"() {
+    def "should not confirm project purposes map preparation need for not existing terrain vision stage"() {
         given: "$MARCIN_TERRAIN_VISIONER is logged in"
             loginUser(MARCIN_TERRAIN_VISIONER)
-        when: "$MARCIN_TERRAIN_VISIONER tries to confirm changes on map on not existing terrain vision stage"
-            terrainVisionFacade.confirmChangesOnMap(KRYNICA_CONTRACT.contractId, mapChange)
-        then: "Confirmation of changes on map is not possible for not existing terrain vision stage"
+        when: "$MARCIN_TERRAIN_VISIONER tries to confirmproject purposes map preparation need on not existing terrain vision stage"
+            terrainVisionFacade.setProjectPurposesMapPreparationNeed(KRYNICA_CONTRACT.contractId, mapChange)
+        then: "Setting of project purposes map preparation need is not possible for not existing terrain vision stage"
             thrown(TerrainVisionNotFoundException)
         where:
-            mapChange << [MODIFIED, NOT_NECESSARY]
+            mapChange << [NECESSARY, NOT_NEED]
     }
 
     def "should complete terrain vision"() {
@@ -105,14 +105,14 @@ class TerrainVisionSpec extends SozztSpecification {
             loginUser(MARCIN_TERRAIN_VISIONER)
         and: "$MARCIN_TERRAIN_VISIONER confirmed that all photos are uploaded"
             terrainVisionFacade.confirmAllPhotosAreUploaded(KRYNICA_CONTRACT.contractId)
-        and: "$MARCIN_TERRAIN_VISIONER confirmed changes on map as $mapChange"
-            terrainVisionFacade.confirmChangesOnMap(KRYNICA_CONTRACT.contractId, mapChange)
+        and: "$MARCIN_TERRAIN_VISIONER sets project purposes map preparation need as $projectPurposesMapPreparationNeed"
+            terrainVisionFacade.setProjectPurposesMapPreparationNeed(KRYNICA_CONTRACT.contractId, projectPurposesMapPreparationNeed)
         when: "$MARCIN_TERRAIN_VISIONER completes the terrain vision"
             terrainVisionFacade.completeTerrainVision(KRYNICA_CONTRACT.contractId)
         then: "Terrain vision is completed"
-            terrainVisionFacade.getTerrainVision(KRYNICA_CONTRACT.contractId) == with(COMPLETED_KRYNICA_TERRAIN_VISION, [mapChange : mapChange])
+            terrainVisionFacade.getTerrainVision(KRYNICA_CONTRACT.contractId) == with(COMPLETED_KRYNICA_TERRAIN_VISION, [projectPurposesMapPreparationNeed : projectPurposesMapPreparationNeed])
         where:
-            mapChange << [MODIFIED, NOT_NECESSARY]
+            projectPurposesMapPreparationNeed << [NECESSARY, NOT_NEED]
     }
 
     def "should not complete terrain vision if not all photos are uploaded"() {
@@ -125,7 +125,7 @@ class TerrainVisionSpec extends SozztSpecification {
             thrown(CompletionTerrainVisionException)
     }
 
-    def "should not complete terrain vision if changes on map are not specified"() {
+    def "should not complete terrain vision if project purposes map preparation need is not specified"() {
         given: "there is $KRYNICA_TERRAIN_VISION stage"
             addKrynicaContractOnStage(ExpectedStageSample.BEGIN_TERRAIN_VISION)
         and: "$MARCIN_TERRAIN_VISIONER is logged in"
@@ -135,7 +135,7 @@ class TerrainVisionSpec extends SozztSpecification {
         when: "$MARCIN_TERRAIN_VISIONER tries to complete the terrain vision"
             terrainVisionFacade.completeTerrainVision(KRYNICA_CONTRACT.contractId)
         then: "Terrain vision is not completed"
-            thrown(CompletionTerrainVisionException)
+            thrown(InvalidProjectPurposesMapPreparationNeedException)
     }
 
 
@@ -166,8 +166,8 @@ class TerrainVisionSpec extends SozztSpecification {
             loginUser(MARCIN_TERRAIN_VISIONER)
         and: "$MARCIN_TERRAIN_VISIONER confirmed that all photos are uploaded"
             terrainVisionFacade.confirmAllPhotosAreUploaded(KRYNICA_CONTRACT.contractId)
-        and: "$MARCIN_TERRAIN_VISIONER confirmed changes on map as $MODIFIED"
-            terrainVisionFacade.confirmChangesOnMap(KRYNICA_CONTRACT.contractId, MODIFIED)
+        and: "$MARCIN_TERRAIN_VISIONER confirmed project purposes map preparation need as $NECESSARY"
+            terrainVisionFacade.setProjectPurposesMapPreparationNeed(KRYNICA_CONTRACT.contractId, NECESSARY)
         and: "$MARCIN_TERRAIN_VISIONER completes the terrain vision"
             terrainVisionFacade.completeTerrainVision(KRYNICA_CONTRACT.contractId)
         when: "$MARCIN_TERRAIN_VISIONER tries to complete the terrain vision again"

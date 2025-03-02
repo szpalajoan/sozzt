@@ -5,7 +5,7 @@ import org.springframework.web.multipart.MultipartFile
 import pl.jkap.sozzt.consents.domain.PlotOwnerConsentSample
 import pl.jkap.sozzt.contract.domain.ContractSample
 import pl.jkap.sozzt.preliminaryplanning.domain.PreliminaryPlanSample
-import pl.jkap.sozzt.routepreparation.RoutePreparationSample
+import pl.jkap.sozzt.projectpurposesmappreparation.ProjectPurposesMapPreparationSample
 import pl.jkap.sozzt.sample.SampleModifier
 import pl.jkap.sozzt.filestorage.dto.AddFileDto
 import pl.jkap.sozzt.filestorage.dto.FileDto
@@ -15,11 +15,11 @@ import java.nio.file.Paths
 
 import static pl.jkap.sozzt.filestorage.domain.FileType.*
 
-trait FileSample implements ContractSample, PreliminaryPlanSample, RoutePreparationSample, PlotOwnerConsentSample {
+trait FileSample implements ContractSample, PreliminaryPlanSample, ProjectPurposesMapPreparationSample, PlotOwnerConsentSample {
 
     MultipartFile KRYNICA_CONTRACT_SCAN_FILE = new MockMultipartFile("KRYNICA_CONTRACT", "KRYNICA_CONTRACT.pdf", "application/pdf", Files.readAllBytes(Paths.get("src/test/resources/contract/KRYNICA_CONTRACT.pdf")))
     MultipartFile KRYNICA_PRELIMINARY_MAP_FILE = new MockMultipartFile("KRYNICA_PRELIMINARY_MAP", "KRYNICA_PRELIMINARY_MAP.pdf", "application/pdf", Files.readAllBytes(Paths.get("src/test/resources/preliminary/KRYNICA_PRELIMINARY_MAP.pdf")))
-    MultipartFile KRYNICA_GEODETIC_MAP_FILE = new MockMultipartFile("KRYNICA_GEODETIC_MAP", "KRYNICA_GEODETIC_MAP.pdf", "application/pdf", Files.readAllBytes(Paths.get("src/test/resources/routePreparation/KRYNICA_GEODETIC_MAP.pdf")))
+    MultipartFile KRYNICA_GEODETIC_MAP_FILE = new MockMultipartFile("KRYNICA_GEODETIC_MAP", "KRYNICA_GEODETIC_MAP.pdf", "application/pdf", Files.readAllBytes(Paths.get("src/test/resources/projectpurposesmappreparation/KRYNICA_GEODETIC_MAP.pdf")))
     MultipartFile KRYNICA_PRIVATE_PLOT_OWNER_CONSENT_AGREEMENT_FILE = new MockMultipartFile("KRYNICA_PRIVATE_PLOT_OWNER_CONSENT_AGREEMENT", "KRYNICA_PRIVATE_PLOT_OWNER_CONSENT_AGREEMENT.pdf", "application/pdf", Files.readAllBytes(Paths.get("src/test/resources/consents/private_plot_owner_consent/KRYNICA_PRIVATE_PLOT_OWNER_CONSENT_AGREEMENT.pdf")))
     MultipartFile KRYNICA_PUBLIC_OWNER_CONSENT_AGREEMENT_FILE = new MockMultipartFile("KRYNICA_PUBLIC_OWNER_CONSENT_AGREEMENT", "KRYNICA_PUBLIC_OWNER_CONSENT_AGREEMENT.pdf", "application/pdf", Files.readAllBytes(Paths.get("src/test/resources/consents/public_plot_owner_consent/KRYNICA_PUBLIC_OWNER_CONSENT_AGREEMENT.pdf")))
     MultipartFile KRYNICA_MAP_WITH_ROUTE_FILE = new MockMultipartFile("KRYNICA_MAP_WITH_ROUTE", "KRYNICA_MAP_WITH_ROUTE.pdf", "application/pdf", Files.readAllBytes(Paths.get("src/test/resources/documentation/mapWithRoute/KRYNICA_MAP_WITH_ROUTE.pdf")))
@@ -44,7 +44,7 @@ trait FileSample implements ContractSample, PreliminaryPlanSample, RoutePreparat
     FileDto KRYNICA_GEODETIC_MAP_METADATA = FileDto.builder()
             .fileId(UUID.fromString("0f48c2dc-86f6-4cfd-a7d2-72e166dc85ca"))
             .fileName(KRYNICA_GEODETIC_MAP_FILE.getOriginalFilename())
-            .contractId(KRYNICA_ROUTE_PREPARATION.routePreparationId)
+            .contractId(KRYNICA_PROJECT_PURPOSE_MAP_PREPARATION.projectPurposesMapPreparationId)
             .fileType(GEODETIC_MAP)
             .build()
 

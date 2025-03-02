@@ -8,19 +8,17 @@ import pl.jkap.sozzt.documentation.domain.DocumentationFacade;
 import pl.jkap.sozzt.instant.InstantProvider;
 import pl.jkap.sozzt.preliminaryplanning.domain.PreliminaryPlanFacade;
 import pl.jkap.sozzt.remark.domain.RemarkFacade;
-import pl.jkap.sozzt.routepreparation.domain.RoutePreparationFacade;
+import pl.jkap.sozzt.projectpurposesmappreparation.domain.ProjectPurposesMapPreparationFacade;
 import pl.jkap.sozzt.terrainvision.domain.TerrainVisionFacade;
 
 @Configuration
 public class ContractConfiguration {
 
-
-
     @Bean
     public ContractFacade contractFacade(ContractSecurityFacade contractSecurityFacade,
                                   PreliminaryPlanFacade preliminaryPlanFacade,
                                   TerrainVisionFacade terrainVisionFacade,
-                                  RoutePreparationFacade routePreparationFacade,
+                                  ProjectPurposesMapPreparationFacade projectPurposesMapPreparationFacade,
                                   ConsentsFacade consentsFacade,
                                   DocumentationFacade documentationFacade,
                                   RemarkFacade remarkFacade,
@@ -30,7 +28,7 @@ public class ContractConfiguration {
                 .contractRepository(new InMemoryContractRepository())
                 .contractSecurityFacade(contractSecurityFacade)
                 .terrainVisionFacade(terrainVisionFacade)
-                .routePreparationFacade(routePreparationFacade)
+                .projectPurposesMapPreparationFacade(projectPurposesMapPreparationFacade)
                 .contractCreator(contractCreator)
                 .contractStepCreator(contractStepCreator(preliminaryPlanFacade, terrainVisionFacade, consentsFacade, documentationFacade))
                 .remarkFacade(remarkFacade)

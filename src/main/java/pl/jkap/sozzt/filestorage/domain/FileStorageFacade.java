@@ -64,14 +64,6 @@ public class FileStorageFacade {
         return addedFile.dto();
     }
 
-    public FileDto addPreliminaryUpdatedMap(AddFileDto addPreliminaryUpdatedMapDto) {
-        contractSecurityFacade.checkCanEditTerrainVision();
-        File addedFile = addFile(
-                addPreliminaryUpdatedMapDto,
-                FileType.PRELIMINARY_UPDATED_MAP);
-        return addedFile.dto();
-    }
-
     public FileDto addGeodeticMap(AddFileDto geodeticMapFileDto) {
         contractSecurityFacade.checkCanUploadGeodeticMap();
         File addedFile = addFile(
