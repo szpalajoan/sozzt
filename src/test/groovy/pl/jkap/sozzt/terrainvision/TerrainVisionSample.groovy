@@ -6,6 +6,8 @@ import pl.jkap.sozzt.terrainvision.dto.TerrainVisionDto
 
 import java.time.Duration
 
+import static pl.jkap.sozzt.terrainvision.domain.ProjectPurposesMapPreparationNeed.*
+
 trait TerrainVisionSample implements ContractSample{
 
     TerrainVisionDto KRYNICA_TERRAIN_VISION = TerrainVisionDto.builder()
@@ -13,7 +15,7 @@ trait TerrainVisionSample implements ContractSample{
             .allPhotosUploaded(false)
             .deadline(KRYNICA_CONTRACT.contractDetails.orderDate + Duration.ofDays(21))
             .terrainVisionStatus(TerrainVisionDto.TerrainVisionStatus.IN_PROGRESS)
-            .mapChange(TerrainVisionDto.MapChange.NONE)
+            .projectPurposesMapPreparationNeed(NONE)
             .build()
 
     TerrainVisionDto COMPLETED_KRYNICA_TERRAIN_VISION = TerrainVisionDto.builder()
@@ -21,7 +23,7 @@ trait TerrainVisionSample implements ContractSample{
             .allPhotosUploaded(true)
             .deadline(KRYNICA_CONTRACT.contractDetails.orderDate + Duration.ofDays(21))
             .terrainVisionStatus(TerrainVisionDto.TerrainVisionStatus.COMPLETED)
-            .mapChange(TerrainVisionDto.MapChange.MODIFIED)
+            .projectPurposesMapPreparationNeed(NECESSARY)
             .build()
 
 

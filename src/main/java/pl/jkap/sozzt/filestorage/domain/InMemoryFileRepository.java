@@ -12,10 +12,6 @@ class InMemoryFileRepository extends InMemoryRepository<File, UUID> implements F
         return entity.getFileId();
     }
 
-    @Override
-    public boolean existsByObjectIdAndFileType(UUID objectId, FileType fileType) {
-        return table.values().stream().anyMatch(file -> file.getContractId().equals(objectId) && file.getFileType().equals(fileType));
-    }
 
     @Override
     public List<File> findByObjectIdAndFileType(UUID objectId, FileType fileType) {

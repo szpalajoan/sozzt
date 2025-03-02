@@ -1,4 +1,4 @@
-package pl.jkap.sozzt.routepreparation.dto;
+package pl.jkap.sozzt.projectpurposesmappreparation.dto;
 
 import lombok.*;
 
@@ -10,7 +10,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class AddRoutePreparationDto {
-    UUID routePreparationId;
+public class AddProjectPurposesMapPreparationDto {
+    UUID projectPurposesMapPreparationId;
     Instant deadline;
 }

@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import pl.jkap.sozzt.terrainvision.domain.TerrainVisionFacade;
-import pl.jkap.sozzt.terrainvision.dto.ConfirmChangesOnMapDto;
+import pl.jkap.sozzt.terrainvision.dto.ProjectPurposesMapPreparationNeedDto;
 import pl.jkap.sozzt.terrainvision.dto.TerrainVisionDto;
 
 import java.util.UUID;
@@ -29,9 +29,16 @@ public class TerrainVisionController {
         terrainVisionFacade.confirmAllPhotosAreUploaded(idContract);
     }
 
-    @PostMapping("{idContract}/confirm-changes-on-map")
+    @PostMapping("{idContract}/project-purposes-map-preparation-need")
     @ResponseStatus(HttpStatus.OK)
-    public void confirmChangesOnMap(@PathVariable UUID idContract, @RequestBody ConfirmChangesOnMapDto confirmChangesOnMapDto) {
-        terrainVisionFacade.confirmChangesOnMap(idContract, confirmChangesOnMapDto.getMapChange());
+    public void setProjectPurposesMapPreparationNeed(@PathVariable UUID idContract, @RequestBody ProjectPurposesMapPreparationNeedDto projectPurposesMapPreparationNeedDto) {
+        terrainVisionFacade.setProjectPurposesMapPreparationNeed(idContract, projectPurposesMapPreparationNeedDto.getProjectPurposesMapPreparationNeed());
     }
+
+    @PostMapping("{idContract}/complete")
+    @ResponseStatus(HttpStatus.OK)
+    public void completeTerrainVision(@PathVariable UUID idContract) {
+        terrainVisionFacade.completeTerrainVision(idContract);
+    }
+
 }

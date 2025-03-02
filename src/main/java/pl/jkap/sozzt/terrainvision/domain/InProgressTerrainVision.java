@@ -1,15 +1,14 @@
 package pl.jkap.sozzt.terrainvision.domain;
 
-import pl.jkap.sozzt.terrainvision.dto.TerrainVisionDto;
 import pl.jkap.sozzt.terrainvision.exception.CompletionTerrainVisionException;
-import pl.jkap.sozzt.terrainvision.exception.InvalidMapChangeException;
+import pl.jkap.sozzt.terrainvision.exception.InvalidProjectPurposesMapPreparationNeedException;
 
 import java.time.Instant;
 import java.util.UUID;
 
 class InProgressTerrainVision extends TerrainVision {
-    InProgressTerrainVision(UUID terrainVisionId, Instant deadline, MapChange mapChange) {
-        super(terrainVisionId, false, deadline, TerrainVisionStatus.IN_PROGRESS, mapChange);
+    InProgressTerrainVision(UUID terrainVisionId, Instant deadline, ProjectPurposesMapPreparationNeed projectPurposesMapPreparationNeed) {
+        super(terrainVisionId, false, deadline, TerrainVisionStatus.IN_PROGRESS, projectPurposesMapPreparationNeed);
     }
 
     void confirmAllPhotosAreUploaded() {
@@ -17,21 +16,20 @@ class InProgressTerrainVision extends TerrainVision {
     }
 
 
-    void confirmChangesOnMap(TerrainVisionDto.MapChange mapChange) {
-        MapChange newMapChange = MapChange.valueOf(mapChange.name());
-        if(MapChange.NONE == newMapChange) {
-            throw new InvalidMapChangeException("Map change cannot be NONE");
+    void setProjectPurposesMapPreparationNeed(ProjectPurposesMapPreparationNeed newProjectPurposesMapPreparationNeed) {
+        if(ProjectPurposesMapPreparationNeed.NONE == newProjectPurposesMapPreparationNeed) {
+            throw new InvalidProjectPurposesMapPreparationNeedException("Project purposes map preparation need has to be set");
         }
-        this.mapChange = newMapChange;
+        this.projectPurposesMapPreparationNeed = newProjectPurposesMapPreparationNeed;
     }
 
     CompletedTerrainVision complete() {
         if(!allPhotosUploaded) {
             throw new CompletionTerrainVisionException("All photos must be uploaded");
         }
-        if(MapChange.NONE == mapChange) {
-            throw new CompletionTerrainVisionException("Map change cannot be NONE");
+        if(ProjectPurposesMapPreparationNeed.NONE == projectPurposesMapPreparationNeed) {
+            throw new InvalidProjectPurposesMapPreparationNeedException("Project purposes map preparation need has to be set");
         }
-        return new CompletedTerrainVision(terrainVisionId, deadline, mapChange);
+        return new CompletedTerrainVision(terrainVisionId, deadline, projectPurposesMapPreparationNeed);
     }
 }

@@ -5,17 +5,16 @@ import pl.jkap.sozzt.consents.dto.PublicPlotOwnerConsentDto
 import pl.jkap.sozzt.sample.SozztSpecification
 
 import static pl.jkap.sozzt.sample.ExpectedStageSample.BEGIN_CONSENTS_COLLECTION
-import static pl.jkap.sozzt.sample.ExpectedStageSample.BEGIN_DOCUMENTATION
 import static pl.jkap.sozzt.sample.ExpectedStageSample.COMPLETED_TERRAIN_VISION_WITHOUT_MAP_REQUIRED
 
 class CompleteConsentsStepSpec extends SozztSpecification {
 
-    def "should complete consents step and begin preparation of documentation step when route preparation is completed"() {
+    def "should complete consents step and begin preparation of documentation step when project purposes map preparation is completed"() {
         given: "there is $KRYNICA_CONSENTS stage"
             addKrynicaContractOnStage(BEGIN_CONSENTS_COLLECTION)
-        and: "$KRYNICA_ROUTE_PREPARATION is completed"
+        and: "$KRYNICA_PROJECT_PURPOSE_MAP_PREPARATION is completed"
             loginUser(WALDEK_SURVEYOR)
-            completeRoutePreparation(COMPLETED_KRYNICA_ROUTE_PREPARATION)
+            completeProjectPurposesMapPreparation(COMPLETED_KRYNICA_PROJECT_PURPOSE_MAP_PREPARATION)
         and: "$KASIA_CONSENT_CORDINATOR is logged in"
             loginUser(KASIA_CONSENT_CORDINATOR)
         and: "$KASIA_CONSENT_CORDINATOR adds new $KRYNICA_PUBLIC_OWNER_CONSENT"
@@ -32,7 +31,7 @@ class CompleteConsentsStepSpec extends SozztSpecification {
             contractFacade.getContract(KRYNICA_CONTRACT.contractId) == COMPLETED_CONSENTS_PREPARATION_KRYNICA_CONTRACT
     }
 
-    def "should complete consents step and begin preparation of documentation step when route preparation is not necessary"() {
+    def "should complete consents step and begin preparation of documentation step when project purposes map preparation is not necessary"() {
         given: "there is $KRYNICA_CONSENTS stage"
             addKrynicaContractOnStage(COMPLETED_TERRAIN_VISION_WITHOUT_MAP_REQUIRED)
         and: "$KASIA_CONSENT_CORDINATOR is logged in"
@@ -51,7 +50,7 @@ class CompleteConsentsStepSpec extends SozztSpecification {
             contractFacade.getContract(KRYNICA_CONTRACT.contractId) == COMPLETED_CONSENTS_PREPARATION_KRYNICA_CONTRACT_WITH_NOT_NECESSARY_ROUTE_PREPARATION_STEP
     }
 
-    def "should complete consents step and not begin preparation of documentation step when route preparation is not completed"() {
+    def "should complete consents step and not begin preparation of documentation step when project purposes map preparation is not completed"() {
         given: "there is $KRYNICA_CONSENTS stage"
             addKrynicaContractOnStage(BEGIN_CONSENTS_COLLECTION)
         and: "$KASIA_CONSENT_CORDINATOR is logged in"

@@ -5,7 +5,7 @@ import pl.jkap.sozzt.remark.dto.RemarkDto
 import pl.jkap.sozzt.remark.exception.RemarkNotFoundException
 import pl.jkap.sozzt.sample.SozztSpecification
 
-import static pl.jkap.sozzt.remark.domain.RemarkContractStep.*
+import static RemarkType.*
 import static pl.jkap.sozzt.sample.ExpectedStageSample.*
 
 class RemarkSpec extends SozztSpecification {

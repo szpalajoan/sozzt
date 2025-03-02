@@ -3,28 +3,25 @@ package pl.jkap.sozzt.contract.domain
 import pl.jkap.sozzt.sample.SozztSpecification
 
 import static pl.jkap.sozzt.contract.dto.ContractStepDto.ContractStepStatusDto.DONE
-import static pl.jkap.sozzt.contract.dto.ContractStepDto.ContractStepStatusDto.DONE
-import static pl.jkap.sozzt.contract.dto.ContractStepDto.ContractStepStatusDto.DONE
 import static pl.jkap.sozzt.contract.dto.ContractStepDto.ContractStepStatusDto.IN_PROGRESS
-import static pl.jkap.sozzt.contract.dto.ContractStepDto.ContractStepStatusDto.ON_HOLD
 import static pl.jkap.sozzt.sample.ExpectedStageSample.BEGIN_ROUTE_PREPARATION
 
-class CompleteRoutePreparationStepSpec extends SozztSpecification {
+class CompleteProjectPurposesMapPreparationStepSpec extends SozztSpecification {
 
-    def "Should complete a route preparation"() {
+    def "Should complete a project purposes map preparation"() {
         given: "there is $KRYNICA_TERRAIN_VISION stage"
             addKrynicaContractOnStage(BEGIN_ROUTE_PREPARATION)
         and: "$WALDEK_SURVEYOR is logged in"
             loginUser(WALDEK_SURVEYOR)
-        and: "$WALDEK_SURVEYOR added geodetic map to $KRYNICA_ROUTE_PREPARATION"
-            uploadGeodeticMap(KRYNICA_ROUTE_PREPARATION, KRYNICA_GEODETIC_MAP)
-        when: "$WALDEK_SURVEYOR completes the route preparation"
-            routePreparationFacade.completeRoutePreparation(KRYNICA_CONTRACT.contractId)
-        then: "Route preparation is completed"
+        and: "$WALDEK_SURVEYOR added geodetic map to $KRYNICA_PROJECT_PURPOSE_MAP_PREPARATION"
+            uploadGeodeticMap(KRYNICA_PROJECT_PURPOSE_MAP_PREPARATION, KRYNICA_GEODETIC_MAP)
+        when: "$WALDEK_SURVEYOR completes the project purposes map preparation"
+            projectPurposesMapPreparationFacade.completeProjectPurposesMapPreparation(KRYNICA_CONTRACT.contractId)
+        then: "project purposes map preparation is completed"
             contractFacade.getContract(KRYNICA_CONTRACT.contractId) == COMPLETED_ROUTE_PREPARATION_KRYNICA_CONTRACT
     }
 
-    def "Should complete a route preparation and begin the preparation of documentation step when consents collection is completed"() {
+    def "Should complete a project purposes map preparation and begin the preparation of documentation step when consents collection is completed"() {
         given: "there is $KRYNICA_TERRAIN_VISION stage"
             addKrynicaContractOnStage(BEGIN_ROUTE_PREPARATION)
         and: "$KASIA_CONSENT_CORDINATOR completes the consents collection"
@@ -32,11 +29,11 @@ class CompleteRoutePreparationStepSpec extends SozztSpecification {
             completeConsentsCollection(COMPLETED_KRYNICA_CONSENTS)
         and: "$WALDEK_SURVEYOR is logged in"
             loginUser(WALDEK_SURVEYOR)
-        and: "$WALDEK_SURVEYOR added geodetic map to $KRYNICA_ROUTE_PREPARATION"
-            uploadGeodeticMap(KRYNICA_ROUTE_PREPARATION, KRYNICA_GEODETIC_MAP)
-        when: "$WALDEK_SURVEYOR completes the route preparation"
-            routePreparationFacade.completeRoutePreparation(KRYNICA_CONTRACT.contractId)
-        then: "Route preparation is completed and preparation of documentation step is started"
+        and: "$WALDEK_SURVEYOR added geodetic map to $KRYNICA_PROJECT_PURPOSE_MAP_PREPARATION"
+            uploadGeodeticMap(KRYNICA_PROJECT_PURPOSE_MAP_PREPARATION, KRYNICA_GEODETIC_MAP)
+        when: "$WALDEK_SURVEYOR completes the project purposes map preparation"
+            projectPurposesMapPreparationFacade.completeProjectPurposesMapPreparation(KRYNICA_CONTRACT.contractId)
+        then: "project purposes map preparation is completed and preparation of documentation step is started"
             contractFacade.getContract(KRYNICA_CONTRACT.contractId) == with(COMPLETED_ROUTE_PREPARATION_KRYNICA_CONTRACT, [
                     contractSteps: [with(KRYNICA_CONTRACT_PRELIMINARY_PLAN_STEP, [contractStepStatus: DONE]),
                                     with(KRYNICA_CONTRACT_TERRAIN_VISION_STEP, [contractStepStatus: DONE]),

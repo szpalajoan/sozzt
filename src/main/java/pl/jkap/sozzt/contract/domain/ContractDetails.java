@@ -1,11 +1,13 @@
 package pl.jkap.sozzt.contract.domain;
 
 import jakarta.persistence.Embeddable;
+import lombok.ToString;
 import pl.jkap.sozzt.contract.dto.ContractDetailsDto;
 
 import java.time.Instant;
 
 @Embeddable
+@ToString
 final class ContractDetails {
     private final String contractNumber;
     private final String workNumber;
