@@ -10,16 +10,6 @@ class CompletePreparationDocumentationSpec extends SozztSpecification {
     def "should complete preparation documentation step"() {
         given: "there is $KRYNICA_DOCUMENTATION stage"
             addKrynicaContractOnStage(COMPLETED_CONSENTS_COLLECTION)
-        and: "$MARCIN_TERRAIN_VISIONER approves correctness of the map"
-            loginUser(MARCIN_TERRAIN_VISIONER)
-            documentationFacade.approveCorrectnessOfTheMap(KRYNICA_CONTRACT.contractId)
-        and: "$MARCIN_TERRAIN_VISIONER chooses person responsible for route drawing"
-            documentationFacade.choosePersonResponsibleForRouteDrawing(KRYNICA_CONTRACT.contractId, DANIEL_ROUTE_DRAWER.name)
-        and: "$DANIEL_ROUTE_DRAWER uploads a drawn route to documentation"
-            loginUser(DANIEL_ROUTE_DRAWER)
-            uploadRouteDrawing(KRYNICA_MAP_WITH_ROUTE, KRYNICA_CONTRACT.contractId)
-        and: "$DANIEL_ROUTE_DRAWER uploads a pdf with route and data to documentation"
-            uploadPdfWithRouteAndData(KRYNICA_PDF_WITH_ROUTE_AND_DATA, KRYNICA_CONTRACT.contractId)
         and: "$KASIA_CONSENT_CORDINATOR completes consents verification"
             loginUser(KASIA_CONSENT_CORDINATOR)
             documentationFacade.completeConsentsVerification(KRYNICA_CONTRACT.contractId)
@@ -45,16 +35,6 @@ class CompletePreparationDocumentationSpec extends SozztSpecification {
     def "should not complete preparation documentation when there are active remarks"() {
         given: "there is $KRYNICA_DOCUMENTATION stage"
             addKrynicaContractOnStage(COMPLETED_CONSENTS_COLLECTION)
-        and: "$MARCIN_TERRAIN_VISIONER approves correctness of the map"
-            loginUser(MARCIN_TERRAIN_VISIONER)
-            documentationFacade.approveCorrectnessOfTheMap(KRYNICA_CONTRACT.contractId)
-        and: "$MARCIN_TERRAIN_VISIONER chooses person responsible for route drawing"
-            documentationFacade.choosePersonResponsibleForRouteDrawing(KRYNICA_CONTRACT.contractId, DANIEL_ROUTE_DRAWER.name)
-        and: "$DANIEL_ROUTE_DRAWER uploads a drawn route to documentation"
-            loginUser(DANIEL_ROUTE_DRAWER)
-            uploadRouteDrawing(KRYNICA_MAP_WITH_ROUTE, KRYNICA_CONTRACT.contractId)
-        and: "$DANIEL_ROUTE_DRAWER uploads a pdf with route and data to documentation"
-            uploadPdfWithRouteAndData(KRYNICA_PDF_WITH_ROUTE_AND_DATA, KRYNICA_CONTRACT.contractId)
         and: "$KASIA_CONSENT_CORDINATOR completes consents verification"
             loginUser(KASIA_CONSENT_CORDINATOR)
             documentationFacade.completeConsentsVerification(KRYNICA_CONTRACT.contractId)

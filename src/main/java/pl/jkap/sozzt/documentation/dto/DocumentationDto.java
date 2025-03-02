@@ -1,6 +1,7 @@
 package pl.jkap.sozzt.documentation.dto;
 
 import lombok.*;
+import pl.jkap.sozzt.projectpurposesmappreparation.dto.RouteDrawingDto;
 
 import java.time.Instant;
 import java.util.UUID;

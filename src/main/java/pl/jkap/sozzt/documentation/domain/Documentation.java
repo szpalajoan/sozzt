@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import pl.jkap.sozzt.documentation.dto.DocumentationDto;
-import pl.jkap.sozzt.instant.InstantProvider;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -17,34 +16,10 @@ import java.util.UUID;
 class Documentation {
     private UUID documentationId;
     private Instant deadline;
-    private MapVerification mapVerification;
-    private RouteDrawing routeDrawing;
     private ConsentsVerification consentsVerification;
     private DocumentCompilation documentCompilation;
     private TauronCommunication tauronCommunication;
     private TermVerification termVerification;
-
-
-    void approveCorrectnessOfTheMap(InstantProvider instantProvider) {
-        mapVerification.approveCorrectnessOfTheMap(instantProvider);
-    }
-
-    void startRouteDrawing(String user) {
-        routeDrawing = new RouteDrawing(user);
-    }
-
-    void addDrawnRoute(UUID mapWithRouteFileId) {
-        routeDrawing = routeDrawing.withDrawnRoute(mapWithRouteFileId);
-    }
-
-    void addPdfWithRouteAndData(UUID pdfWithRouteAndDatafileId) {
-        routeDrawing = routeDrawing.withPdfWithRouteAndData(pdfWithRouteAndDatafileId);
-        startConsentsVerification();
-    }
-
-    private void startConsentsVerification() {
-        consentsVerification = new ConsentsVerification();
-    }
 
     void completeConsentsVerification() {
         consentsVerification = consentsVerification.completedConsentsVerification();
@@ -65,7 +40,7 @@ class Documentation {
     }
 
     void markPrintedDocumentationSentToTauronAsDone() {
-        tauronCommunication =tauronCommunication.markPrintedDocumentationSentToTauronAsDone();
+        tauronCommunication = tauronCommunication.markPrintedDocumentationSentToTauronAsDone();
     }
 
     void addTauronApprove() {
@@ -88,13 +63,10 @@ class Documentation {
         return DocumentationDto.builder()
                 .documentationId(documentationId)
                 .deadline(deadline)
-                .correctnessOfTheMap(mapVerification.isCorrectnessOfTheMap())
-                .routeDrawing(routeDrawing != null ? routeDrawing.dto() : null)
                 .consentsVerification(consentsVerification != null ? consentsVerification.dto() : null)
                 .documentCompilation(documentCompilation != null ? documentCompilation.dto() : null)
                 .tauronCommunication(tauronCommunication != null ? tauronCommunication.dto() : null)
                 .termVerification(termVerification != null ? termVerification.dto() : null)
                 .build();
     }
-
 }

@@ -1,25 +1,28 @@
-package pl.jkap.sozzt.documentation.domain;
+package pl.jkap.sozzt.projectpurposesmappreparation.domain;
 
 import lombok.Getter;
-import pl.jkap.sozzt.documentation.dto.RouteDrawingDto;
+import pl.jkap.sozzt.projectpurposesmappreparation.dto.RouteDrawingDto;
 
 import java.util.UUID;
 
-
 @Getter
 class RouteDrawing {
-    final private String drawingBy;
-    final private UUID mapWithRouteFileId;
-    final private UUID routeWithDataFileId;
-
-    RouteDrawing(String drawingBy) {
-        this(drawingBy, null, null);
-    }
+    private final String drawingBy;
+    private final UUID mapWithRouteFileId;
+    private final UUID routeWithDataFileId;
 
     private RouteDrawing(String drawingBy, UUID mapWithRouteFileId, UUID routeWithDataFileId) {
         this.drawingBy = drawingBy;
         this.mapWithRouteFileId = mapWithRouteFileId;
         this.routeWithDataFileId = routeWithDataFileId;
+    }
+
+    static RouteDrawing notStartedRouteDrawing() {
+        return new RouteDrawing(null, null, null);
+    }
+
+    RouteDrawing startRouteDrawing(String drawingBy) {
+        return new RouteDrawing(drawingBy, null, null);
     }
 
     RouteDrawing withDrawnRoute(UUID mapWithRouteFileId) {
@@ -30,6 +33,10 @@ class RouteDrawing {
         return new RouteDrawing(drawingBy, mapWithRouteFileId, pdfWithRouteAndDatafileId);
     }
 
+    boolean isCompleted() {
+        return mapWithRouteFileId != null && routeWithDataFileId != null;
+    }
+
     RouteDrawingDto dto() {
         return RouteDrawingDto.builder()
                 .drawingBy(drawingBy)
@@ -37,5 +44,4 @@ class RouteDrawing {
                 .routeWithDataFileId(routeWithDataFileId)
                 .build();
     }
-
-}
+} 

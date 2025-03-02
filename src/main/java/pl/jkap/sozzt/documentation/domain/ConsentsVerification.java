@@ -5,8 +5,8 @@ import pl.jkap.sozzt.documentation.dto.ConsentsVerificationDto;
 class ConsentsVerification {
     boolean consentsVerified;
 
-    ConsentsVerification() {
-        this.consentsVerified = false;
+    static ConsentsVerification notStartedConsentsVerification(){
+        return new ConsentsVerification(false);
     }
 
     private ConsentsVerification(boolean consentsVerified) {

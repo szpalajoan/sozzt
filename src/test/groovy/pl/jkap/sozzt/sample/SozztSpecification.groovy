@@ -46,9 +46,11 @@ import spock.lang.Specification
 import static pl.jkap.sozzt.sample.ExpectedStageSample.*
 import static pl.jkap.sozzt.terrainvision.domain.ProjectPurposesMapPreparationNeed.*
 
-class SozztSpecification extends Specification implements FileSample, RemarkSample, TermVerificationSample, RouteDrawingSample, DocumentationSample, ConsentsSample, PlotOwnerConsentSample, PreliminaryPlanSample, TerrainVisionSample, ProjectPurposesMapPreparationSample,
+class SozztSpecification extends Specification implements FileSample, RemarkSample, TermVerificationSample,
+        DocumentationSample, ConsentsSample, PlotOwnerConsentSample,
+        PreliminaryPlanSample, TerrainVisionSample, ProjectPurposesMapPreparationSample,
         ContractSample, LocationSample, ContractDetailsSample, ContractStepSample,
-        UserSample, InstantSamples {
+        RouteDrawingSample, UserSample, InstantSamples {
     Collection<UUID> addedFileIds = []
 
     InstantProvider instantProvider = new InstantProvider()
@@ -56,10 +58,10 @@ class SozztSpecification extends Specification implements FileSample, RemarkSamp
     ContractSecurityFacade contractSecurityFacade = new ContractSecurityConfiguration().contractSecurityFacade()
     PreliminaryPlanFacade preliminaryPlanFacade = new PreliminaryPlanConfiguration().preliminaryPlanFacade(new PreliminaryPlanEventPublisherStub(eventInvoker))
     TerrainVisionFacade terrainVisionFacade = new TerrainVisionConfiguration().terrainVisionFacade(instantProvider, new TerrainVisionEventPublisherStub(eventInvoker))
-    ProjectPurposesMapPreparationFacade projectPurposesMapPreparationFacade = new ProjectPurposesMapPreparationConfiguration().projectPurposesMapPreparationFacade(new ProjectPurposesMapPreparationEventPublisherStub(eventInvoker))
     FileStorageFacade fileStorageFacade = new FileStorageConfigurator().fileStorageFacade(contractSecurityFacade, new FileEventPublisherStub(eventInvoker))
+    ProjectPurposesMapPreparationFacade projectPurposesMapPreparationFacade = new ProjectPurposesMapPreparationConfiguration().projectPurposesMapPreparationFacade(new ProjectPurposesMapPreparationEventPublisherStub(eventInvoker), fileStorageFacade, instantProvider)
     ConsentsFacade consentsFacade = new ConsentsConfiguration().consentsFacade(fileStorageFacade, instantProvider, new ConsentsEventPublisherStub(eventInvoker))
-    DocumentationFacade documentationFacade = new DocumentationConfiguration().documentationFacade(new DocumentationEventPublisherStub(eventInvoker), fileStorageFacade, instantProvider)
+    DocumentationFacade documentationFacade = new DocumentationConfiguration().documentationFacade(new DocumentationEventPublisherStub(eventInvoker), fileStorageFacade)
     RemarkFacade remarkFacade = new RemarkConfiguration().remarkFacade(instantProvider)
     ContractFacade contractFacade = new ContractConfiguration().contractFacade(contractSecurityFacade, preliminaryPlanFacade, terrainVisionFacade,
             projectPurposesMapPreparationFacade, consentsFacade, documentationFacade, remarkFacade,
@@ -99,8 +101,8 @@ class SozztSpecification extends Specification implements FileSample, RemarkSamp
         return addedFile
     }
 
-    FileDto uploadGeodeticMap(ProjectPurposesMapPreparationDto routePreparationDto, PreparedFile preparedFile ) {
-        FileDto addedFile = fileStorageFacade.addGeodeticMap(toAddFileDto(preparedFile.metadata, preparedFile.fileAsMultipartFile, routePreparationDto.projectPurposesMapPreparationId))
+    FileDto uploadGeodeticMap(ProjectPurposesMapPreparationDto projectPurposesMapPreparationDto, PreparedFile preparedFile ) {
+        FileDto addedFile = projectPurposesMapPreparationFacade.addGeodeticMap(toAddFileDto(preparedFile.metadata, preparedFile.fileAsMultipartFile, projectPurposesMapPreparationDto.projectPurposesMapPreparationId))
         addedFileIds.add(addedFile.fileId)
         return addedFile
     }
@@ -119,13 +121,13 @@ class SozztSpecification extends Specification implements FileSample, RemarkSamp
     }
 
     FileDto uploadRouteDrawing(PreparedFile preparedFile, UUID documentationId) {
-        FileDto addedFile = documentationFacade.uploadDrawnRoute(documentationId, toAddFileDto(preparedFile.metadata, preparedFile.fileAsMultipartFile, documentationId))
+        FileDto addedFile = projectPurposesMapPreparationFacade.uploadDrawnRoute(documentationId, toAddFileDto(preparedFile.metadata, preparedFile.fileAsMultipartFile, documentationId))
         addedFileIds.add(addedFile.fileId)
         return addedFile
     }
 
     FileDto uploadPdfWithRouteAndData(PreparedFile preparedFile, UUID documentationId) {
-        FileDto addedFile = documentationFacade.uploadPdfWithRouteAndData(documentationId, toAddFileDto(preparedFile.metadata, preparedFile.fileAsMultipartFile, documentationId))
+        FileDto addedFile = projectPurposesMapPreparationFacade.uploadPdfWithRouteAndData(documentationId, toAddFileDto(preparedFile.metadata, preparedFile.fileAsMultipartFile, documentationId))
         addedFileIds.add(addedFile.fileId)
         return addedFile
     }
@@ -156,11 +158,11 @@ class SozztSpecification extends Specification implements FileSample, RemarkSamp
             loginUser(DAREK_PRELIMINARY_PLANER)
             completePreliminaryPlan(COMPLETED_KRYNICA_PRELIMINARY_PLAN)
         }
-        if(step >= COMPLETED_TERRAIN_VISION || step >= BEGIN_ROUTE_PREPARATION || step >= BEGIN_CONSENTS_COLLECTION) {
+        if(step >= COMPLETED_TERRAIN_VISION || step >= BEGIN_PROJECT_PURPOSES_MAP_PREPARATION || step >= BEGIN_CONSENTS_COLLECTION) {
             loginUser(MARCIN_TERRAIN_VISIONER)
             completeTerrainVision(COMPLETED_KRYNICA_TERRAIN_VISION, contractFixture.isMapRequired)
         }
-        if(step >= COMPLETED_ROUTE_PREPARATION) {
+        if(step >= COMPLETED_PROJECT_PURPOSES_MAP_PREPARATION) {
             loginUser(WALDEK_SURVEYOR)
             completeProjectPurposesMapPreparation(COMPLETED_KRYNICA_PROJECT_PURPOSE_MAP_PREPARATION)
         }
@@ -189,6 +191,11 @@ class SozztSpecification extends Specification implements FileSample, RemarkSamp
 
     void completeProjectPurposesMapPreparation(ProjectPurposesMapPreparationDto routePreparationDto) {
         uploadGeodeticMap(routePreparationDto, KRYNICA_GEODETIC_MAP)
+        projectPurposesMapPreparationFacade.approveCorrectnessOfTheMap(routePreparationDto.projectPurposesMapPreparationId)
+        projectPurposesMapPreparationFacade.choosePersonResponsibleForRouteDrawing(routePreparationDto.projectPurposesMapPreparationId, DANIEL_ROUTE_DRAWER.name)
+        loginUser(DANIEL_ROUTE_DRAWER)
+        uploadRouteDrawing(KRYNICA_MAP_WITH_ROUTE, routePreparationDto.projectPurposesMapPreparationId)
+        uploadPdfWithRouteAndData(KRYNICA_PDF_WITH_ROUTE_AND_DATA, routePreparationDto.projectPurposesMapPreparationId)
         projectPurposesMapPreparationFacade.completeProjectPurposesMapPreparation(routePreparationDto.projectPurposesMapPreparationId)
     }
 

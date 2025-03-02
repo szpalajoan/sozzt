@@ -1,10 +1,12 @@
 package pl.jkap.sozzt.documentation.domain
 
-import pl.jkap.sozzt.documentation.dto.RouteDrawingDto
+import pl.jkap.sozzt.projectpurposesmappreparation.dto.RouteDrawingDto
 import pl.jkap.sozzt.sample.SampleModifier
 import pl.jkap.sozzt.user.UserSample
 
 trait RouteDrawingSample implements UserSample {
+
+    RouteDrawingDto NOT_STARTED_ROUTE_DRAWING = RouteDrawingDto.builder().build()
 
     RouteDrawingDto KRYNICA_ROUTE_DRAWING = RouteDrawingDto.builder()
             .drawingBy(DANIEL_ROUTE_DRAWER.name)

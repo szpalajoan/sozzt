@@ -143,9 +143,6 @@ public class FileStorageFacade {
             case PRELIMINARY_MAP:
                 fileEventPublisher.preliminaryMapUploaded(new PreliminaryMapUploadedEvent(objectId));
                 break;
-            case GEODETIC_MAP:
-                fileEventPublisher.geodeticMapUploaded(new GeodeticMapUploadedEvent(objectId));
-                break;
         }
     }
 

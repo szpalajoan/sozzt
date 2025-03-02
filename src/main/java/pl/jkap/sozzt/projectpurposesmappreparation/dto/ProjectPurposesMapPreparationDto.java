@@ -15,4 +15,6 @@ public class ProjectPurposesMapPreparationDto {
     private UUID projectPurposesMapPreparationId;
     private Instant deadline;
     private boolean isGeodeticMapUploaded;
+    private boolean correctnessOfTheMap;
+    private RouteDrawingDto routeDrawing;
 }

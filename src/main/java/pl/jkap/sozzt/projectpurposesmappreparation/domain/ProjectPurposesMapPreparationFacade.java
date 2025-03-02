@@ -2,13 +2,16 @@ package pl.jkap.sozzt.projectpurposesmappreparation.domain;
 
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.event.EventListener;
-import pl.jkap.sozzt.filestorage.event.GeodeticMapUploadedEvent;
 import pl.jkap.sozzt.projectpurposesmappreparation.dto.AddProjectPurposesMapPreparationDto;
 import pl.jkap.sozzt.projectpurposesmappreparation.dto.ProjectPurposesMapPreparationDto;
 import pl.jkap.sozzt.projectpurposesmappreparation.event.ProjectPurposesMapPreparationCompletedEvent;
 import pl.jkap.sozzt.projectpurposesmappreparation.exception.CompleteProjectPurposesMapPreparationException;
 import pl.jkap.sozzt.projectpurposesmappreparation.exception.ProjectPurposesMapPreparationNotFoundException;
+import pl.jkap.sozzt.instant.InstantProvider;
+import pl.jkap.sozzt.filestorage.domain.FileStorageFacade;
+import pl.jkap.sozzt.filestorage.dto.AddFileDto;
+import pl.jkap.sozzt.filestorage.dto.FileDto;
+import pl.jkap.sozzt.projectpurposesmappreparation.exception.InvalidPersonResponsibleForRouteDrawingException;
 
 import java.util.UUID;
 
@@ -17,13 +20,17 @@ import java.util.UUID;
 public class ProjectPurposesMapPreparationFacade {
     ProjectPurposesMapPreparationRepository projectPurposesMapPreparationRepository;
     ProjectPurposesMapPreparationEventPublisher projectPurposesMapPreparationEventPublisher;
+    FileStorageFacade fileStorageFacade;
+    InstantProvider instantProvider;
+
 
     public void addProjectPurposesMapPreparation(AddProjectPurposesMapPreparationDto addProjectPurposesMapPreparationDto) {
         log.info("Adding project purposes map preparation with id {}", addProjectPurposesMapPreparationDto.getProjectPurposesMapPreparationId());
         projectPurposesMapPreparationRepository.save(ProjectPurposesMapPreparation.builder()
-                .projectPurposesMapPreparationId(addProjectPurposesMapPreparationDto.getProjectPurposesMapPreparationId())
-                .deadline(addProjectPurposesMapPreparationDto.getDeadline())
-                .build());
+                                                            .projectPurposesMapPreparationId(addProjectPurposesMapPreparationDto.getProjectPurposesMapPreparationId())
+                                                            .deadline(addProjectPurposesMapPreparationDto.getDeadline())
+                                                            .routeDrawing(RouteDrawing.notStartedRouteDrawing())
+                                                            .build());
     }
 
     public ProjectPurposesMapPreparationDto getProjectPurposesMapPreparation(UUID uuid) {
@@ -32,7 +39,7 @@ public class ProjectPurposesMapPreparationFacade {
                 .orElseThrow(() -> new ProjectPurposesMapPreparationNotFoundException(uuid));
     }
 
-    public void completeProjectPurposesMapPreparation(UUID projectPurposesMapPreparationId) {
+    public ProjectPurposesMapPreparationDto completeProjectPurposesMapPreparation(UUID projectPurposesMapPreparationId) {
         log.info("Completing project purposes map preparation with id {}", projectPurposesMapPreparationId);
         ProjectPurposesMapPreparation projectPurposesMapPreparation = projectPurposesMapPreparationRepository.findById(projectPurposesMapPreparationId)
                 .orElseThrow(() -> new ProjectPurposesMapPreparationNotFoundException(projectPurposesMapPreparationId));
@@ -40,17 +47,52 @@ public class ProjectPurposesMapPreparationFacade {
             throw new CompleteProjectPurposesMapPreparationException("ProjectPurposesMapPreparation is not completed: " + projectPurposesMapPreparationId);
         }
         projectPurposesMapPreparationEventPublisher.projectPurposesMapPreparationCompleted(new ProjectPurposesMapPreparationCompletedEvent(projectPurposesMapPreparationId));
+        return projectPurposesMapPreparation.dto();
     }
 
-    private void markGeodeticMapUploaded(UUID projectPurposesMapPreparationId) {
-        log.info("Marking geodetic map uploaded for project purposes map preparation with id {}", projectPurposesMapPreparationId);
-        projectPurposesMapPreparationRepository.findById(projectPurposesMapPreparationId)
+
+
+    public FileDto addGeodeticMap(AddFileDto addFileDto) {
+        log.info("Adding geodetic map for project purposes map preparation with id {}", addFileDto.getContractId());
+        FileDto fileDto = fileStorageFacade.addGeodeticMap(addFileDto);
+        projectPurposesMapPreparationRepository.findById(addFileDto.getContractId())
                 .ifPresent(ProjectPurposesMapPreparation::markGeodeticMapUploaded);
+        return fileDto;
     }
 
-    @EventListener
-    @SuppressWarnings("unused")
-    public void onGeodeticMapUploadedEvent(GeodeticMapUploadedEvent event) {
-        markGeodeticMapUploaded(event.getProjectPurposesMapPreparationId());
+
+    public void approveCorrectnessOfTheMap(UUID id) {
+        ProjectPurposesMapPreparation preparation = projectPurposesMapPreparationRepository.findById(id)
+                .orElseThrow(() -> new ProjectPurposesMapPreparationNotFoundException(id));
+        preparation.approveCorrectnessOfTheMap(instantProvider);
+        projectPurposesMapPreparationRepository.save(preparation);
+    }
+
+    public void choosePersonResponsibleForRouteDrawing(UUID id, String user) {
+        if (user == null) {
+            throw new InvalidPersonResponsibleForRouteDrawingException("Person responsible for route drawing cannot be null");
+        }
+        ProjectPurposesMapPreparation preparation = projectPurposesMapPreparationRepository.findById(id)
+                .orElseThrow(() -> new ProjectPurposesMapPreparationNotFoundException(id));
+        preparation.startRouteDrawing(user);
+        projectPurposesMapPreparationRepository.save(preparation);
+    }
+
+    public FileDto uploadDrawnRoute(UUID id, AddFileDto addFileDto) {
+        ProjectPurposesMapPreparation preparation = projectPurposesMapPreparationRepository.findById(id)
+                .orElseThrow(() -> new ProjectPurposesMapPreparationNotFoundException(id));
+        FileDto fileDto = fileStorageFacade.addMapWithRoute(addFileDto);
+        preparation.addDrawnRoute(fileDto.getFileId());
+        projectPurposesMapPreparationRepository.save(preparation);
+        return fileDto;
+    }
+
+    public FileDto uploadPdfWithRouteAndData(UUID id, AddFileDto addFileDto) {
+        ProjectPurposesMapPreparation preparation = projectPurposesMapPreparationRepository.findById(id)
+                .orElseThrow(() -> new ProjectPurposesMapPreparationNotFoundException(id));
+        FileDto fileDto = fileStorageFacade.addPdfWithRouteAndData(addFileDto);
+        preparation.addPdfWithRouteAndData(fileDto.getFileId());
+        projectPurposesMapPreparationRepository.save(preparation);
+        return fileDto;
     }
 }
