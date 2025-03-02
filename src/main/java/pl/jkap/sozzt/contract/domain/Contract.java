@@ -38,6 +38,7 @@ class Contract implements Serializable {
     @Embedded
     private ContractProgress contractProgress;
     private boolean isScanFromTauronUploaded;
+    private boolean zudConsentRequired;
 
     @OneToMany
     private Collection<ContractStep> contractSteps;
@@ -55,7 +56,7 @@ class Contract implements Serializable {
         contractSteps.add(contractStepCreator.createPreliminaryPlanStep(contractId, contractDetails.getOrderDate()));
         contractSteps.add(contractStepCreator.createTerrainVisionStep(contractId, contractDetails.getOrderDate()));
         contractSteps.add(contractStepCreator.createRoutePreparationStep(contractDetails.getOrderDate()));
-        contractSteps.add(contractStepCreator.createConsentsCollectionStep(contractId, contractDetails.getOrderDate()));
+        contractSteps.add(contractStepCreator.createConsentsCollectionStep(contractId, contractDetails.getOrderDate(), zudConsentRequired));
         contractSteps.add(contractStepCreator.createPreparationOfDocumentationStep(contractId, contractDetails.getOrderDate()));
     }
 
@@ -155,6 +156,7 @@ class Contract implements Serializable {
     void edit(EditContractDto editContractDto) {
         contractDetails = new ContractDetails(editContractDto.getContractDetails());
         location = new Location(editContractDto.getLocation());
+        zudConsentRequired = editContractDto.isZudConsentRequired();
     }
 
     ContractDto dto() {
@@ -166,6 +168,7 @@ class Contract implements Serializable {
                 .createdAt(auditInfo.getCreatedAt())
                 .isScanFromTauronUploaded(isScanFromTauronUploaded)
                 .contractSteps(contractSteps.stream().map(ContractStep::dto).toList())
+                .zudConsentRequired(zudConsentRequired)
                 .build();
     }
 

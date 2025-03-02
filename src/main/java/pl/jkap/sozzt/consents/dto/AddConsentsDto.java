@@ -15,6 +15,7 @@ import java.util.UUID;
 public class AddConsentsDto {
     private UUID contractId;
     private Instant deadline;
+    private boolean zudConsentRequired;
 
     public Optional<UUID> getContractId() {
         return Optional.ofNullable(contractId);

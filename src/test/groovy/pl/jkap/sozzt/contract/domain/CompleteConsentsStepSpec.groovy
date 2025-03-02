@@ -2,11 +2,11 @@ package pl.jkap.sozzt.contract.domain
 
 import pl.jkap.sozzt.consents.dto.PrivatePlotOwnerConsentDto
 import pl.jkap.sozzt.consents.dto.PublicPlotOwnerConsentDto
+import pl.jkap.sozzt.sample.ContractFixture
 import pl.jkap.sozzt.sample.SozztSpecification
 
 import static pl.jkap.sozzt.sample.ExpectedStageSample.BEGIN_CONSENTS_COLLECTION
-import static pl.jkap.sozzt.sample.ExpectedStageSample.BEGIN_DOCUMENTATION
-import static pl.jkap.sozzt.sample.ExpectedStageSample.COMPLETED_TERRAIN_VISION_WITHOUT_MAP_REQUIRED
+import static pl.jkap.sozzt.sample.ExpectedStageSample.COMPLETED_TERRAIN_VISION
 
 class CompleteConsentsStepSpec extends SozztSpecification {
 
@@ -26,6 +26,11 @@ class CompleteConsentsStepSpec extends SozztSpecification {
             addPublicOwnerConsentAgreement(KRYNICA_PUBLIC_OWNER_CONSENT_AGREEMENT_SCAN, KRYNICA_CONTRACT.contractId, publicOwnerConsentDto.publicPlotOwnerConsentId)
         and: "$KASIA_CONSENT_CORDINATOR added agreement for $KRYNICA_PRIVATE_PLOT_OWNER_CONSENT"
             addPrivatePlotOwnerConsentAgreement(KRYNICA_PRIVATE_PLOT_OWNER_CONSENT_AGREEMENT_SCAN, KRYNICA_CONTRACT.contractId, privatePlotOwnerConsentDto.privatePlotOwnerConsentId)
+        and:"$KASIA_CONSENT_CORDINATOR fill $KRYNICA_ZUD_CONSENT"
+            consentsFacade.updateZudConsent(KRYNICA_CONTRACT.contractId,
+                    toUpdateZudConsent(KRYNICA_ZUD_CONSENT))
+        and: "$IWONA_CONSENT_COLLECTOR adds agreement for $KRYNICA_ZUD_CONSENT"
+            addZudConsentAgreement(KRYNICA_ZUD_CONSENT_AGREEMENT_SCAN, KRYNICA_CONTRACT.contractId)
         when: "$KASIA_CONSENT_CORDINATOR completes consents collection"
             consentsFacade.completeConsentsCollection(KRYNICA_CONTRACT.contractId)
         then: "consents step is completed"
@@ -34,7 +39,7 @@ class CompleteConsentsStepSpec extends SozztSpecification {
 
     def "should complete consents step and begin preparation of documentation step when route preparation is not necessary"() {
         given: "there is $KRYNICA_CONSENTS stage"
-            addKrynicaContractOnStage(COMPLETED_TERRAIN_VISION_WITHOUT_MAP_REQUIRED)
+            addKrynicaContractOnStage(COMPLETED_TERRAIN_VISION, new ContractFixture().withMapRequired(false))
         and: "$KASIA_CONSENT_CORDINATOR is logged in"
             loginUser(KASIA_CONSENT_CORDINATOR)
         and: "$KASIA_CONSENT_CORDINATOR adds new $KRYNICA_PUBLIC_OWNER_CONSENT"
@@ -45,6 +50,11 @@ class CompleteConsentsStepSpec extends SozztSpecification {
             addPublicOwnerConsentAgreement(KRYNICA_PUBLIC_OWNER_CONSENT_AGREEMENT_SCAN, KRYNICA_CONTRACT.contractId, publicOwnerConsentDto.publicPlotOwnerConsentId)
         and: "$KASIA_CONSENT_CORDINATOR added agreement for $KRYNICA_PRIVATE_PLOT_OWNER_CONSENT"
             addPrivatePlotOwnerConsentAgreement(KRYNICA_PRIVATE_PLOT_OWNER_CONSENT_AGREEMENT_SCAN, KRYNICA_CONTRACT.contractId, privatePlotOwnerConsentDto.privatePlotOwnerConsentId)
+        and:"$KASIA_CONSENT_CORDINATOR fill $KRYNICA_ZUD_CONSENT"
+            consentsFacade.updateZudConsent(KRYNICA_CONTRACT.contractId,
+                    toUpdateZudConsent(KRYNICA_ZUD_CONSENT))
+        and: "$IWONA_CONSENT_COLLECTOR adds agreement for $KRYNICA_ZUD_CONSENT"
+            addZudConsentAgreement(KRYNICA_ZUD_CONSENT_AGREEMENT_SCAN, KRYNICA_CONTRACT.contractId)
         when: "$KASIA_CONSENT_CORDINATOR completes consents collection"
             consentsFacade.completeConsentsCollection(KRYNICA_CONTRACT.contractId)
         then: "consents step is completed"
@@ -64,6 +74,11 @@ class CompleteConsentsStepSpec extends SozztSpecification {
             addPublicOwnerConsentAgreement(KRYNICA_PUBLIC_OWNER_CONSENT_AGREEMENT_SCAN, KRYNICA_CONTRACT.contractId, publicOwnerConsentDto.publicPlotOwnerConsentId)
         and: "$KASIA_CONSENT_CORDINATOR added agreement for $KRYNICA_PRIVATE_PLOT_OWNER_CONSENT"
             addPrivatePlotOwnerConsentAgreement(KRYNICA_PRIVATE_PLOT_OWNER_CONSENT_AGREEMENT_SCAN, KRYNICA_CONTRACT.contractId, privatePlotOwnerConsentDto.privatePlotOwnerConsentId)
+        and:"$KASIA_CONSENT_CORDINATOR fill $KRYNICA_ZUD_CONSENT"
+            consentsFacade.updateZudConsent(KRYNICA_CONTRACT.contractId,
+                    toUpdateZudConsent(KRYNICA_ZUD_CONSENT))
+        and: "$IWONA_CONSENT_COLLECTOR adds agreement for $KRYNICA_ZUD_CONSENT"
+            addZudConsentAgreement(KRYNICA_ZUD_CONSENT_AGREEMENT_SCAN, KRYNICA_CONTRACT.contractId)
         when: "$KASIA_CONSENT_CORDINATOR completes consents collection"
             consentsFacade.completeConsentsCollection(KRYNICA_CONTRACT.contractId)
         then: "consents step is completed without beginning preparation of documentation step"

@@ -11,5 +11,6 @@ import lombok.*;
 public class EditContractDto {
     private ContractDetailsDto contractDetails;
     private LocationDto location;
+    private boolean zudConsentRequired;
 }
 

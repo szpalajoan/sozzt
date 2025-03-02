@@ -16,7 +16,6 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 class ZudConsent {
-    private final UUID zudConsentId;
     private String institutionName;
     private String plotNumber;
     private String comment;
@@ -58,9 +57,15 @@ class ZudConsent {
         return consentStatus == ConsentStatus.CONSENT_GIVEN;
     }
 
+    static ZudConsent requiredEmptyConsent(InstantProvider instantProvider) {
+        return ZudConsent.builder()
+                .consentCreateDate(instantProvider.now())
+                .consentStatus(ConsentStatus.REQUIRED)
+                .build();
+    }
+
     ZudConsentDto dto() {
         return ZudConsentDto.builder()
-                .zudConsentId(zudConsentId)
                 .institutionName(institutionName)
                 .plotNumber(plotNumber)
                 .comment(comment)

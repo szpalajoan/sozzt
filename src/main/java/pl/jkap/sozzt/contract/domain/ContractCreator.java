@@ -25,6 +25,7 @@ class ContractCreator {
                 .location(new Location(createContractDto.getLocation()))
                 .auditInfo(new AuditInfo(instantProvider.now(), userName))
                 .contractSteps(new ArrayList<>())
+                .zudConsentRequired(createContractDto.isZudConsentRequired())
                 .build();
     }
 

@@ -14,7 +14,6 @@ import java.util.UUID;
 @EqualsAndHashCode
 @ToString
 public class ZudConsentDto {
-    private UUID zudConsentId;
     private String institutionName;
     private String plotNumber;
     private String comment;

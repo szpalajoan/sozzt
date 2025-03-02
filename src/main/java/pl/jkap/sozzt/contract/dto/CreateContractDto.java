@@ -15,6 +15,7 @@ public class CreateContractDto {
     private String invoiceNumber;
     private LocationDto location;
     private ContractDetailsDto contractDetailsDto;
+    private boolean zudConsentRequired;
 
     public Optional<UUID> getContractId() {
         return Optional.ofNullable(contractId);

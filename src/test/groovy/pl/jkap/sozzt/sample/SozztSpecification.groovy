@@ -134,8 +134,8 @@ class SozztSpecification extends Specification implements FileSample, RemarkSamp
         return addedFile
     }
 
-    FileDto addZudConsentAgreement(PreparedFile preparedFile, UUID consentId, UUID zudConsentId) {
-        FileDto addedFile = consentsFacade.addZudConsentAgreement(consentId, zudConsentId, toAddFileDto(preparedFile.metadata, preparedFile.fileAsMultipartFile, consentId, zudConsentId))
+    FileDto addZudConsentAgreement(PreparedFile preparedFile, UUID consentId) {
+        FileDto addedFile = consentsFacade.addZudConsentAgreement(consentId, toAddFileDto(preparedFile.metadata, preparedFile.fileAsMultipartFile, consentId))
         addedFileIds.add(addedFile.fileId)
         return addedFile
     }
@@ -145,10 +145,10 @@ class SozztSpecification extends Specification implements FileSample, RemarkSamp
         addedFileIds.remove(fileId)
     }
 
-    void addKrynicaContractOnStage(ExpectedStageSample step) {
+    void addKrynicaContractOnStage(ExpectedStageSample step, ContractFixture contractFixture = new ContractFixture()) {
         if(step >= COMPLETED_INTRODUCTION || step >= BEGIN_PRELIMINARY_PLAN) {
             loginUser(MONIKA_CONTRACT_INTRODUCER)
-            completeIntroduceContract(KRYNICA_CONTRACT)
+            completeIntroduceContract(with(KRYNICA_CONTRACT, [zudConsentRequired : contractFixture.isZudRequired]))
         }
         if(step >= COMPLETED_PRELIMINARY_PLAN || step >= BEGIN_TERRAIN_VISION) {
             loginUser(DAREK_PRELIMINARY_PLANER)
@@ -156,12 +156,7 @@ class SozztSpecification extends Specification implements FileSample, RemarkSamp
         }
         if(step >= COMPLETED_TERRAIN_VISION || step >= BEGIN_ROUTE_PREPARATION || step >= BEGIN_CONSENTS_COLLECTION) {
             loginUser(MARCIN_TERRAIN_VISIONER)
-            if(step == COMPLETED_TERRAIN_VISION_WITHOUT_MAP_REQUIRED){
-                completeTerrainVision(COMPLETED_KRYNICA_TERRAIN_VISION)
-            } else {
-                completeTerrainVision(COMPLETED_KRYNICA_TERRAIN_VISION, true)
-            }
-
+            completeTerrainVision(COMPLETED_KRYNICA_TERRAIN_VISION, contractFixture.isMapRequired)
         }
         if(step >= COMPLETED_ROUTE_PREPARATION) {
             loginUser(WALDEK_SURVEYOR)
@@ -169,7 +164,7 @@ class SozztSpecification extends Specification implements FileSample, RemarkSamp
         }
         if(step >= COMPLETED_CONSENTS_COLLECTION || step >= BEGIN_DOCUMENTATION) {
             loginUser(KASIA_CONSENT_CORDINATOR)
-            completeConsentsCollection(COMPLETED_KRYNICA_CONSENTS)
+            completeConsentsCollection(COMPLETED_KRYNICA_CONSENTS, contractFixture.isZudRequired)
         }
     }
 
@@ -195,7 +190,12 @@ class SozztSpecification extends Specification implements FileSample, RemarkSamp
         routePreparationFacade.completeRoutePreparation(routePreparationDto.routePreparationId)
     }
 
-    void completeConsentsCollection(ConsentsDto consentsDto) {
+    void completeConsentsCollection(ConsentsDto consentsDto, boolean isZudRequired = true) {
+        if(isZudRequired) {
+            consentsFacade.updateZudConsent(KRYNICA_CONTRACT.contractId,
+                    toUpdateZudConsent(KRYNICA_ZUD_CONSENT))
+            addZudConsentAgreement(KRYNICA_ZUD_CONSENT_AGREEMENT_SCAN, KRYNICA_CONTRACT.contractId)
+        }
         consentsFacade.completeConsentsCollection(consentsDto.consentId)
     }
 }

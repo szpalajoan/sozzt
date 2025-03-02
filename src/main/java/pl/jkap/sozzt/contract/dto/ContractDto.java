@@ -20,6 +20,7 @@ public class ContractDto {
     private Instant createdAt;
     private boolean isScanFromTauronUploaded;
     private Collection<ContractStepDto> contractSteps;
+    private boolean zudConsentRequired;
 }
 
 

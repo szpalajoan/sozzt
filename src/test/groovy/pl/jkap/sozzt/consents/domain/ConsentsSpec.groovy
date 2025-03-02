@@ -2,8 +2,8 @@ package pl.jkap.sozzt.consents.domain
 
 import pl.jkap.sozzt.consents.dto.PrivatePlotOwnerConsentDto
 import pl.jkap.sozzt.consents.dto.PublicPlotOwnerConsentDto
-import pl.jkap.sozzt.consents.dto.ZudConsentDto
 import pl.jkap.sozzt.filestorage.dto.FileDto
+import pl.jkap.sozzt.sample.ContractFixture
 import pl.jkap.sozzt.sample.SozztSpecification
 
 import java.time.Instant
@@ -207,46 +207,31 @@ class ConsentsSpec extends SozztSpecification {
                                                                                                                                                          consentGivenDate: TOMORROW])]])
     }
 
-
-    def "should complete consents collection"() {
-        given: "there is $KRYNICA_CONSENTS stage"
+    def "should add new ZUD consent when is required"() {
+        given: "there is $KRYNICA_CONSENTS stage with required ZUD consent"
             addKrynicaContractOnStage(BEGIN_CONSENTS_COLLECTION)
-        and: "$KASIA_CONSENT_CORDINATOR is logged in"
-            loginUser(KASIA_CONSENT_CORDINATOR)
-        and: "$KASIA_CONSENT_CORDINATOR marked send request for plot extracts as done"
-            consentsFacade.requestForLandExtractsSent(KRYNICA_CONTRACT.contractId)
-        and: "$KASIA_CONSENT_CORDINATOR adds new $KRYNICA_PUBLIC_OWNER_CONSENT"
-            PublicPlotOwnerConsentDto publicOwnerConsentDto = consentsFacade.addPublicOwnerConsent(KRYNICA_CONTRACT.contractId, toAddPublicPlotOwnerConsent(KRYNICA_PUBLIC_OWNER_CONSENT))
-        and: "$KASIA_CONSENT_CORDINATOR adds new $KRYNICA_PRIVATE_PLOT_OWNER_CONSENT"
-            PrivatePlotOwnerConsentDto privatePlotOwnerConsentDto = consentsFacade.addPrivatePlotOwnerConsent(KRYNICA_CONTRACT.contractId, toAddPrivatePlotOwnerConsent(KRYNICA_PRIVATE_PLOT_OWNER_CONSENT))
-        and: "$KASIA_CONSENT_CORDINATOR added agreement for $KRYNICA_PUBLIC_OWNER_CONSENT"
-            addPublicOwnerConsentAgreement(KRYNICA_PUBLIC_OWNER_CONSENT_AGREEMENT_SCAN, KRYNICA_CONTRACT.contractId, publicOwnerConsentDto.publicPlotOwnerConsentId)
-        and: "$KASIA_CONSENT_CORDINATOR added agreement for $KRYNICA_PRIVATE_PLOT_OWNER_CONSENT"
-            addPrivatePlotOwnerConsentAgreement(KRYNICA_PRIVATE_PLOT_OWNER_CONSENT_AGREEMENT_SCAN, KRYNICA_CONTRACT.contractId, privatePlotOwnerConsentDto.privatePlotOwnerConsentId)
-        when: "$KASIA_CONSENT_CORDINATOR completes consents collection"
-            consentsFacade.completeConsentsCollection(KRYNICA_CONTRACT.contractId)
-        then: "Consents collection is marked as completed"
-            consentsFacade.getConsents(KRYNICA_CONTRACT.contractId) == COMPLETED_KRYNICA_CONSENTS
+        expect: "New consent $KRYNICA_ZUD_CONSENT is added"
+            consentsFacade.getConsents(KRYNICA_CONTRACT.contractId) == with(KRYNICA_CONSENTS, [zudConsent: REQUIRED_EMPTY_ZUD_CONSENT])
     }
 
-    def "should add new ZUD consent"() {
-        given: "there is $KRYNICA_CONSENTS stage"
+    def "should fill ZUD consent"() {
+        given: "there is $KRYNICA_CONSENTS stage with required ZUD consent"
             addKrynicaContractOnStage(BEGIN_CONSENTS_COLLECTION)
         and: "$KASIA_CONSENT_CORDINATOR is logged in"
             loginUser(KASIA_CONSENT_CORDINATOR)
-        when: "$KASIA_CONSENT_CORDINATOR adds new $KRYNICA_ZUD_CONSENT"
-            consentsFacade.addZudConsent(KRYNICA_CONTRACT.contractId, toAddZudConsent(KRYNICA_ZUD_CONSENT))
-        then: "New consent $KRYNICA_ZUD_CONSENT is added"
+        when: "$KASIA_CONSENT_CORDINATOR updates $KRYNICA_ZUD_CONSENT"
+            consentsFacade.updateZudConsent(KRYNICA_CONTRACT.contractId,
+                    toUpdateZudConsent(KRYNICA_ZUD_CONSENT))
+        then: "ZUD consent is updated"
             consentsFacade.getConsents(KRYNICA_CONTRACT.contractId) == with(KRYNICA_CONSENTS, [zudConsent: KRYNICA_ZUD_CONSENT])
     }
 
+
     def "should update ZUD consent"() {
-        given: "there is $KRYNICA_CONSENTS stage"
+        given: "there is $KRYNICA_CONSENTS stage with required ZUD consent"
             addKrynicaContractOnStage(BEGIN_CONSENTS_COLLECTION)
         and: "$KASIA_CONSENT_CORDINATOR is logged in"
             loginUser(KASIA_CONSENT_CORDINATOR)
-        and: "there is $KRYNICA_ZUD_CONSENT in $KRYNICA_CONSENTS"
-            consentsFacade.addZudConsent(KRYNICA_CONTRACT.contractId, toAddZudConsent(KRYNICA_ZUD_CONSENT))
         when: "$KASIA_CONSENT_CORDINATOR updates $KRYNICA_ZUD_CONSENT"
             consentsFacade.updateZudConsent(KRYNICA_CONTRACT.contractId,
                     toUpdateZudConsent(with(KRYNICA_ZUD_CONSENT, [(updateField): updateValue])))
@@ -263,38 +248,92 @@ class ConsentsSpec extends SozztSpecification {
     }
 
     def "should mark ZUD consent as sent by mail"() {
-        given: "there is $KRYNICA_CONSENTS stage"
+        given: "there is $KRYNICA_CONSENTS stage with required ZUD consent"
             addKrynicaContractOnStage(BEGIN_CONSENTS_COLLECTION)
         and: "$KASIA_CONSENT_CORDINATOR is logged in"
             loginUser(KASIA_CONSENT_CORDINATOR)
-        and: "there is $KRYNICA_ZUD_CONSENT in $KRYNICA_CONSENTS"
-            consentsFacade.addZudConsent(KRYNICA_CONTRACT.contractId, toAddZudConsent(KRYNICA_ZUD_CONSENT))
+        "$KASIA_CONSENT_CORDINATOR fill $KRYNICA_ZUD_CONSENT"
+            consentsFacade.updateZudConsent(KRYNICA_CONTRACT.contractId,
+                    toUpdateZudConsent(KRYNICA_ZUD_CONSENT))
         and: "it is $TOMORROW"
             instantProvider.useFixedClock(TOMORROW)
         when: "$KASIA_CONSENT_CORDINATOR marks $KRYNICA_ZUD_CONSENT as sent by mail"
             consentsFacade.markZudConsentAsSentByMail(KRYNICA_CONTRACT.contractId)
         then: "ZUD consent is marked as sent by mail"
             consentsFacade.getConsents(KRYNICA_CONTRACT.contractId) == with(KRYNICA_CONSENTS, [zudConsent: with(KRYNICA_ZUD_CONSENT, [consentStatus: SENT,
-                                                                                                                                    mailingDate  : TOMORROW,
-                                                                                                                                    deliveryType : DeliveryType.POST])])
+                                                                                                                                      mailingDate  : TOMORROW,
+                                                                                                                                      deliveryType : DeliveryType.POST])])
     }
 
     def "should add agreement for ZUD consent"() {
+        given: "there is $KRYNICA_CONSENTS stage with required ZUD consent"
+            addKrynicaContractOnStage(BEGIN_CONSENTS_COLLECTION)
+        and: "$IWONA_CONSENT_COLLECTOR is logged in $TOMORROW"
+            instantProvider.useFixedClock(TOMORROW)
+            loginUser(IWONA_CONSENT_COLLECTOR)
+        "$KASIA_CONSENT_CORDINATOR fill $KRYNICA_ZUD_CONSENT"
+            consentsFacade.updateZudConsent(KRYNICA_CONTRACT.contractId,
+                    toUpdateZudConsent(KRYNICA_ZUD_CONSENT))
+        when: "$IWONA_CONSENT_COLLECTOR adds agreement for $KRYNICA_ZUD_CONSENT"
+            FileDto zudConsentAgreement = addZudConsentAgreement(KRYNICA_ZUD_CONSENT_AGREEMENT_SCAN, KRYNICA_CONTRACT.contractId)
+        then: "$KRYNICA_ZUD_CONSENT_AGREEMENT_SCAN is added"
+            zudConsentAgreement == KRYNICA_ZUD_CONSENT_AGREEMENT_METADATA
+        and: "$KRYNICA_ZUD_CONSENT is accepted"
+            consentsFacade.getConsents(KRYNICA_CONTRACT.contractId) == with(KRYNICA_CONSENTS, [zudConsent: with(CONFIRMED_KRYNICA_ZUD_CONSENT, [consentGivenDate: TOMORROW])])
+    }
+
+    def "should not add ZUD consent when is not required"() {
+        given: "there is $KRYNICA_CONSENTS stage without required ZUD consent"
+            addKrynicaContractOnStage(BEGIN_CONSENTS_COLLECTION, new ContractFixture().withZudRequired(false))
+        expect: "New consent $KRYNICA_ZUD_CONSENT is not added"
+            consentsFacade.getConsents(KRYNICA_CONTRACT.contractId) == with(KRYNICA_CONSENTS, [zudConsent: null])
+    }
+
+
+    def "should complete consents collection"() {
         given: "there is $KRYNICA_CONSENTS stage"
             addKrynicaContractOnStage(BEGIN_CONSENTS_COLLECTION)
         and: "$KASIA_CONSENT_CORDINATOR is logged in"
             loginUser(KASIA_CONSENT_CORDINATOR)
-        and: "$KASIA_CONSENT_CORDINATOR adds new $KRYNICA_ZUD_CONSENT"
-            ZudConsentDto zudConsentDto = consentsFacade.addZudConsent(KRYNICA_CONTRACT.contractId, toAddZudConsent(KRYNICA_ZUD_CONSENT))
-        and: "$IWONA_CONSENT_COLLECTOR is logged in $TOMORROW"
-            instantProvider.useFixedClock(TOMORROW)
-            loginUser(IWONA_CONSENT_COLLECTOR)
-        when: "$IWONA_CONSENT_COLLECTOR adds agreement for $KRYNICA_ZUD_CONSENT"
-            FileDto zudConsentAgreement = addZudConsentAgreement(KRYNICA_ZUD_CONSENT_AGREEMENT_SCAN, KRYNICA_CONTRACT.contractId, zudConsentDto.zudConsentId)
-        then: "$KRYNICA_ZUD_CONSENT_AGREEMENT_SCAN is added"
-            zudConsentAgreement == KRYNICA_ZUD_CONSENT_AGREEMENT_METADATA
-        and: "$KRYNICA_ZUD_CONSENT is accepted"
-            consentsFacade.getConsents(KRYNICA_CONTRACT.contractId) == with(KRYNICA_CONSENTS, [zudConsent: with(KRYNICA_ZUD_CONSENT, [consentStatus: CONSENT_GIVEN, consentGivenDate: TOMORROW])])
+        and: "$KASIA_CONSENT_CORDINATOR marked send request for plot extracts as done"
+            consentsFacade.requestForLandExtractsSent(KRYNICA_CONTRACT.contractId)
+        and: "$KASIA_CONSENT_CORDINATOR adds new $KRYNICA_PUBLIC_OWNER_CONSENT"
+            PublicPlotOwnerConsentDto publicOwnerConsentDto = consentsFacade.addPublicOwnerConsent(KRYNICA_CONTRACT.contractId, toAddPublicPlotOwnerConsent(KRYNICA_PUBLIC_OWNER_CONSENT))
+        and: "$KASIA_CONSENT_CORDINATOR adds new $KRYNICA_PRIVATE_PLOT_OWNER_CONSENT"
+            PrivatePlotOwnerConsentDto privatePlotOwnerConsentDto = consentsFacade.addPrivatePlotOwnerConsent(KRYNICA_CONTRACT.contractId, toAddPrivatePlotOwnerConsent(KRYNICA_PRIVATE_PLOT_OWNER_CONSENT))
+        and: "$KASIA_CONSENT_CORDINATOR added agreement for $KRYNICA_PUBLIC_OWNER_CONSENT"
+            addPublicOwnerConsentAgreement(KRYNICA_PUBLIC_OWNER_CONSENT_AGREEMENT_SCAN, KRYNICA_CONTRACT.contractId, publicOwnerConsentDto.publicPlotOwnerConsentId)
+        and: "$KASIA_CONSENT_CORDINATOR added agreement for $KRYNICA_PRIVATE_PLOT_OWNER_CONSENT"
+            addPrivatePlotOwnerConsentAgreement(KRYNICA_PRIVATE_PLOT_OWNER_CONSENT_AGREEMENT_SCAN, KRYNICA_CONTRACT.contractId, privatePlotOwnerConsentDto.privatePlotOwnerConsentId)
+        and:"$KASIA_CONSENT_CORDINATOR fill $KRYNICA_ZUD_CONSENT"
+            consentsFacade.updateZudConsent(KRYNICA_CONTRACT.contractId,
+                    toUpdateZudConsent(KRYNICA_ZUD_CONSENT))
+        and: "$IWONA_CONSENT_COLLECTOR adds agreement for $KRYNICA_ZUD_CONSENT"
+            addZudConsentAgreement(KRYNICA_ZUD_CONSENT_AGREEMENT_SCAN, KRYNICA_CONTRACT.contractId)
+        when: "$KASIA_CONSENT_CORDINATOR completes consents collection"
+            consentsFacade.completeConsentsCollection(KRYNICA_CONTRACT.contractId)
+        then: "Consents collection is marked as completed"
+            consentsFacade.getConsents(KRYNICA_CONTRACT.contractId) == COMPLETED_KRYNICA_CONSENTS
     }
 
+    def "should complete consents collection with not required ZUD consent"() {
+        given: "there is $KRYNICA_CONSENTS stage"
+            addKrynicaContractOnStage(BEGIN_CONSENTS_COLLECTION, new ContractFixture().withZudRequired(false))
+        and: "$KASIA_CONSENT_CORDINATOR is logged in"
+            loginUser(KASIA_CONSENT_CORDINATOR)
+        and: "$KASIA_CONSENT_CORDINATOR marked send request for plot extracts as done"
+            consentsFacade.requestForLandExtractsSent(KRYNICA_CONTRACT.contractId)
+        and: "$KASIA_CONSENT_CORDINATOR adds new $KRYNICA_PUBLIC_OWNER_CONSENT"
+            PublicPlotOwnerConsentDto publicOwnerConsentDto = consentsFacade.addPublicOwnerConsent(KRYNICA_CONTRACT.contractId, toAddPublicPlotOwnerConsent(KRYNICA_PUBLIC_OWNER_CONSENT))
+        and: "$KASIA_CONSENT_CORDINATOR adds new $KRYNICA_PRIVATE_PLOT_OWNER_CONSENT"
+            PrivatePlotOwnerConsentDto privatePlotOwnerConsentDto = consentsFacade.addPrivatePlotOwnerConsent(KRYNICA_CONTRACT.contractId, toAddPrivatePlotOwnerConsent(KRYNICA_PRIVATE_PLOT_OWNER_CONSENT))
+        and: "$KASIA_CONSENT_CORDINATOR added agreement for $KRYNICA_PUBLIC_OWNER_CONSENT"
+            addPublicOwnerConsentAgreement(KRYNICA_PUBLIC_OWNER_CONSENT_AGREEMENT_SCAN, KRYNICA_CONTRACT.contractId, publicOwnerConsentDto.publicPlotOwnerConsentId)
+        and: "$KASIA_CONSENT_CORDINATOR added agreement for $KRYNICA_PRIVATE_PLOT_OWNER_CONSENT"
+            addPrivatePlotOwnerConsentAgreement(KRYNICA_PRIVATE_PLOT_OWNER_CONSENT_AGREEMENT_SCAN, KRYNICA_CONTRACT.contractId, privatePlotOwnerConsentDto.privatePlotOwnerConsentId)
+        when: "$KASIA_CONSENT_CORDINATOR completes consents collection"
+            consentsFacade.completeConsentsCollection(KRYNICA_CONTRACT.contractId)
+        then: "Consents collection is marked as completed"
+            consentsFacade.getConsents(KRYNICA_CONTRACT.contractId) == with(COMPLETED_KRYNICA_CONSENTS, [zudConsent: null])
+    }
 }

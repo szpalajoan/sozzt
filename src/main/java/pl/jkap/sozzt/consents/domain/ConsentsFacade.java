@@ -32,10 +32,11 @@ public class ConsentsFacade {
 
     public void addConsents(AddConsentsDto addConsentsDto) {
         Consents newConsent = Consents.builder()
-                .consentId(addConsentsDto.getContractId().orElse(UUID.randomUUID()))
+                .consentId(addConsentsDto.getContractId().orElseGet(UUID::randomUUID))
                 .deadline(addConsentsDto.getDeadline())
                 .privatePlotOwnerConsents(new ArrayList<>())
                 .publicOwnerConsents(new ArrayList<>())
+                .zudConsent(addConsentsDto.isZudConsentRequired() ? ZudConsent.requiredEmptyConsent(instantProvider) : null)
                 .build();
         consentsRepository.save(newConsent);
         log.info("Consents created: {}", newConsent);
@@ -142,15 +143,6 @@ public class ConsentsFacade {
         log.info("Consents completed: {}", consentsId);
     }
 
-    public ZudConsentDto addZudConsent(UUID consentsId, AddZudConsentDto addZudConsentDto) {
-        Consents consents = consentsRepository.findById(consentsId)
-                .orElseThrow(() -> new ConsentsNotFoundException("Consents not found: " + consentsId));
-        ZudConsent zudConsent = consents.addZudConsent(addZudConsentDto, instantProvider);
-        consentsRepository.save(consents);
-        log.info("ZUD consent added: {}", addZudConsentDto);
-        return zudConsent.dto();
-    }
-
     public void updateZudConsent(UUID consentsId, UpdateZudConsentDto updateZudConsentDto) {
         Consents consents = consentsRepository.findById(consentsId)
                 .orElseThrow(() -> new ConsentsNotFoundException("Consents not found for contractId: " + consentsId));
@@ -159,12 +151,12 @@ public class ConsentsFacade {
         log.info("ZUD consent updated: {}", updateZudConsentDto);
     }
 
-    public FileDto addZudConsentAgreement(UUID consentsId, UUID zudConsentId, AddFileDto addFileDto) {
+    public FileDto addZudConsentAgreement(UUID consentsId, AddFileDto addFileDto) {
         Consents consents = consentsRepository.findById(consentsId)
                 .orElseThrow(() -> new ConsentsNotFoundException("Consents not found: " + consentsId));
         consents.acceptZudConsent(instantProvider);
         FileDto addedAgreement = fileStorageFacade.addZudConsentAgreement(addFileDto);
-        log.info("ZUD consent accepted: {}", zudConsentId);
+        log.info("ZUD consent accepted for consentsId: {}", consentsId);
         return addedAgreement;
     }
 

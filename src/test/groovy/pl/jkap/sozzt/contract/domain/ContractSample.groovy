@@ -15,13 +15,16 @@ trait ContractSample implements UserSample, LocationSample, ContractDetailsSampl
 
     UUID FAKE_CONTRACT_ID = UUID.fromString("9ceccf5b-aaee-4d2c-86cb-d778624598fc")
 
-    ContractDto KRYNICA_CONTRACT = with(new ContractDto(), [contractId              : UUID.fromString("21c4aaa0-4a11-4f83-aa2e-504e23d14495"),
-                                                            contractDetails         : KRYNICA_CONTRACT_DETAILS,
-                                                            location                : KRYNICA_LOCATION,
-                                                            createdBy               : MONIKA_CONTRACT_INTRODUCER.name,
-                                                            createdAt               : NOW,
-                                                            isScanFromTauronUploaded: false,
-                                                            contractSteps           : []])
+    ContractDto KRYNICA_CONTRACT = with(new ContractDto(), [
+        contractId: UUID.fromString("21c4aaa0-4a11-4f83-aa2e-504e23d14495"),
+        contractDetails: KRYNICA_CONTRACT_DETAILS,
+        location: KRYNICA_LOCATION,
+        createdBy: MONIKA_CONTRACT_INTRODUCER.name,
+        createdAt: NOW,
+        isScanFromTauronUploaded: false,
+        contractSteps: [],
+        zudConsentRequired: true
+    ])
 
     ContractDto INTRODUCED_KRYNICA_CONTRACT = with(KRYNICA_CONTRACT, [isScanFromTauronUploaded: true,
                                                                       contractSteps           : [KRYNICA_CONTRACT_PRELIMINARY_PLAN_STEP,
@@ -95,6 +98,7 @@ trait ContractSample implements UserSample, LocationSample, ContractDetailsSampl
                 .contractId(contractDto.contractId)
                 .contractDetailsDto(contractDto.contractDetails)
                 .location(contractDto.location)
+                .zudConsentRequired(contractDto.isZudConsentRequired())
                 .build()
     }
 

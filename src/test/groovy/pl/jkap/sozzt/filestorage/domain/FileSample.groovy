@@ -89,7 +89,6 @@ trait FileSample implements ContractSample, PreliminaryPlanSample, RoutePreparat
             .fileId(UUID.fromString("f7890123-4567-89ab-cdef-0123456789ab"))
             .fileName(KRYNICA_ZUD_CONSENT_AGREEMENT_FILE.getOriginalFilename())
             .contractId(KRYNICA_CONTRACT.contractId)
-            .additionalObjectId(KRYNICA_ZUD_CONSENT.zudConsentId)
             .fileType(ZUD_CONSENT_AGREEMENT)
             .build()
 

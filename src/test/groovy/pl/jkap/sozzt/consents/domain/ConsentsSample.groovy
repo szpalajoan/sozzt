@@ -14,6 +14,7 @@ trait ConsentsSample implements PlotOwnerConsentSample, ContractSample {
             .deadline(NOW + Duration.ofDays(79))
             .privatePlotOwnerConsents([])
             .publicOwnerConsents([])
+            .zudConsent(REQUIRED_EMPTY_ZUD_CONSENT)
             .build()
 
     ConsentsDto COMPLETED_KRYNICA_CONSENTS = ConsentsDto.builder()

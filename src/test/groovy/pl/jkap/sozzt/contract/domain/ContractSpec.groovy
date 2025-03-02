@@ -90,12 +90,16 @@ class ContractSpec extends SozztSpecification {
             UUID krynicaContractId = contractFacade.addContract(toCreateContractDto(KRYNICA_CONTRACT)).contractId
 
         when:"$MONIKA_CONTRACT_INTRODUCER edits $KRYNICA_CONTRACT"
-            EditContractDto editContractDto = EditContractDto.builder().location(KRYNICA_LOCATION_EDITED).contractDetails(KRYNICA_CONTRACT_DETAILS_EDITED).build()
-            ContractDto contract = contractFacade.editContract(krynicaContractId, editContractDto)
+            ContractDto contract = contractFacade.editContract(krynicaContractId, EditContractDto.builder()
+                    .location(KRYNICA_LOCATION_EDITED)
+                    .contractDetails(KRYNICA_CONTRACT_DETAILS_EDITED)
+                    .zudConsentRequired(true)
+                    .build())
 
         then: "Contract is edited"
-            contract == with(KRYNICA_CONTRACT, [location       : KRYNICA_LOCATION_EDITED,
-                                                contractDetails: KRYNICA_CONTRACT_DETAILS_EDITED])
+            contract == with(KRYNICA_CONTRACT, [location          : KRYNICA_LOCATION_EDITED,
+                                                contractDetails   : KRYNICA_CONTRACT_DETAILS_EDITED,
+                                                zudConsentRequired: true])
     }
 
     def "Should not edit contract if does not have permission"() {
@@ -106,10 +110,12 @@ class ContractSpec extends SozztSpecification {
             loginUser(DAREK_PRELIMINARY_PLANER)
 
         when: "$DAREK_PRELIMINARY_PLANER edits $KRYNICA_CONTRACT"
-            EditContractDto editContractDto = EditContractDto.builder().location(KRYNICA_LOCATION_EDITED).contractDetails(KRYNICA_CONTRACT_DETAILS_EDITED).build()
-            contractFacade.editContract(krynicaContractId, editContractDto)
+            contractFacade.editContract(krynicaContractId, EditContractDto.builder()
+                    .location(KRYNICA_LOCATION_EDITED)
+                    .contractDetails(KRYNICA_CONTRACT_DETAILS_EDITED)
+                    .build())
 
-        then: "contract is not added"
+        then: "contract is not edited"
             thrown(UnauthorizedContractAdditionException)
     }
 }
