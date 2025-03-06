@@ -1,6 +1,6 @@
 package pl.jkap.sozzt.documentation.domain
 
-import pl.jkap.sozzt.projectpurposesmappreparation.dto.RouteDrawingDto
+import pl.jkap.sozzt.routedrawing.dto.RouteDrawingDto
 import pl.jkap.sozzt.sample.SampleModifier
 import pl.jkap.sozzt.user.UserSample
 

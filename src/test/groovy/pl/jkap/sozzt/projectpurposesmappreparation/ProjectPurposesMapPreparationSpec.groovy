@@ -1,7 +1,7 @@
 package pl.jkap.sozzt.projectpurposesmappreparation
 
 import pl.jkap.sozzt.projectpurposesmappreparation.exception.ProjectPurposesMapPreparationNotFoundException
-import pl.jkap.sozzt.projectpurposesmappreparation.exception.InvalidPersonResponsibleForRouteDrawingException
+import pl.jkap.sozzt.routedrawing.exception.InvalidPersonResponsibleForRouteDrawingException
 import pl.jkap.sozzt.sample.ContractFixture
 import pl.jkap.sozzt.sample.SozztSpecification
 import pl.jkap.sozzt.filestorage.dto.FileDto

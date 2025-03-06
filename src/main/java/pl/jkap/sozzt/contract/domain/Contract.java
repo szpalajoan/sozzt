@@ -56,6 +56,7 @@ class Contract implements Serializable {
         contractSteps.add(contractStepCreator.createPreliminaryPlanStep(contractId, contractDetails.getOrderDate()));
         contractSteps.add(contractStepCreator.createTerrainVisionStep(contractId, contractDetails.getOrderDate()));
         contractSteps.add(contractStepCreator.createProjectPurposesMapPreparationStep(contractDetails.getOrderDate()));
+        contractSteps.add(contractStepCreator.createRoutePreparationStep(contractDetails.getOrderDate()));
         contractSteps.add(contractStepCreator.createConsentsCollectionStep(contractId, contractDetails.getOrderDate(), zudConsentRequired));
         contractSteps.add(contractStepCreator.createPreparationOfDocumentationStep(contractId, contractDetails.getOrderDate()));
     }
@@ -85,7 +86,13 @@ class Contract implements Serializable {
 
     void completeProjectPurposesMapPreparation() {
         completeProjectPurposesMapPreparationStep();
-        beginPreparationDocumentationStep();
+        beginRoutePreparationStep();
+    }
+
+    void completeRoutePreparation() {
+        ContractStep routePreparationStep = getContractStep(ContractStepType.ROUTE_PREPARATION);
+        routePreparationStep.completeStep();
+        beginConsentsCollectionStep();
     }
 
     void completeConsentsCollection() {
@@ -114,6 +121,11 @@ class Contract implements Serializable {
                 .deadline(projectPurposesMapPreparationStep.getDeadline())
                 .build());
         projectPurposesMapPreparationStep.beginStep();
+    }
+
+    private void beginRoutePreparationStep() {
+        ContractStep routePreparationStep = getContractStep(ContractStepType.ROUTE_PREPARATION);
+        routePreparationStep.beginStep();
     }
 
     private void beginConsentsCollectionStep() {

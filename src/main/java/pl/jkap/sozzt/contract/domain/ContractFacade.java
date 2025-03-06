@@ -18,6 +18,7 @@ import pl.jkap.sozzt.preliminaryplanning.event.PreliminaryPlanCompletedEvent;
 import pl.jkap.sozzt.remark.domain.RemarkFacade;
 import pl.jkap.sozzt.projectpurposesmappreparation.domain.ProjectPurposesMapPreparationFacade;
 import pl.jkap.sozzt.projectpurposesmappreparation.event.ProjectPurposesMapPreparationCompletedEvent;
+import pl.jkap.sozzt.routedrawing.event.RoutePreparationCompletedEvent;
 import pl.jkap.sozzt.terrainvision.domain.TerrainVisionFacade;
 import pl.jkap.sozzt.terrainvision.event.TerrainVisionCompletedEvent;
 
@@ -108,6 +109,13 @@ public class ContractFacade {
         log.info("Project purposes map preparation finalized: {}", contract);
     }
 
+    private void completeRoutePreparation(UUID contractId) {
+        Contract contract = findContract(contractId);
+        contract.completeRoutePreparation();
+        contractRepository.save(contract);
+        log.info("Route preparation finalized: {}", contract);
+    }
+
     private void completeConsentsCollection(UUID contractId) {
         Contract contract = findContract(contractId);
         contract.completeConsentsCollection();
@@ -170,6 +178,12 @@ public class ContractFacade {
     @SuppressWarnings("unused")
     public void onProjectPurposesMapPreparationCompletedEvent(ProjectPurposesMapPreparationCompletedEvent event) {
         completeProjectPurposesMapPreparation(event.getContractId());
+    }
+
+    @EventListener
+    @SuppressWarnings("unused")
+    public void onRoutePreparationCompletedEvent(RoutePreparationCompletedEvent event) {
+        completeRoutePreparation(event.getContractId());
     }
 
     @EventListener
