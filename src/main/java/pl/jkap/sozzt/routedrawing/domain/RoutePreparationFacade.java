@@ -6,6 +6,7 @@ import pl.jkap.sozzt.filestorage.domain.FileStorageFacade;
 import pl.jkap.sozzt.filestorage.dto.AddFileDto;
 import pl.jkap.sozzt.filestorage.dto.FileDto;
 import pl.jkap.sozzt.instant.InstantProvider;
+import pl.jkap.sozzt.routedrawing.dto.AddRoutePreparationDto;
 import pl.jkap.sozzt.routedrawing.event.RoutePreparationCompletedEvent;
 import pl.jkap.sozzt.routedrawing.exception.CompleteRoutePreparationException;
 import pl.jkap.sozzt.routedrawing.exception.InvalidPersonResponsibleForRouteDrawingException;
@@ -24,6 +25,10 @@ public class RoutePreparationFacade {
     FileStorageFacade fileStorageFacade;
     InstantProvider instantProvider;
 
+    public void addRoutePreparation(AddRoutePreparationDto addRoutePreparationDto) {
+        log.info("Adding route preparation with id {}", addRoutePreparationDto.getRoutePreparationId());
+        routePreparationRepository.save(new RoutePreparation(addRoutePreparationDto));
+    }
 
     public RoutePreparationDto getRoutePreparation(UUID id) {
         return routePreparationRepository.findById(id)

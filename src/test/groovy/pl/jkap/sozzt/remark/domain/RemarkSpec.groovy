@@ -179,7 +179,7 @@ class RemarkSpec extends SozztSpecification {
             instantProvider.useFixedClock(YESTERDAY)
             loginUser(DANIEL_ROUTE_DRAWER)
             remarkFacade.addRemark(toAddRemarkDto(REMARK_FOR_KRYNICA_PRELIMINARY_PLAN_BY_DANIEL))
-        and: "$DANIEL_ROUTE_DRAWER added remark to $KRYNICA_CONTRACT_ROUTE_PREPARATION_STEP $YESTERDAY"
+        and: "$DANIEL_ROUTE_DRAWER added remark to $KRYNICA_PROJECT_PURPOSES_MAP_PREPARATION_STEP $YESTERDAY"
             remarkFacade.addRemark(toAddRemarkDto(REMARK_FOR_KRYNICA_ROUTE_PREPARATION_BY_DANIEL))
         when: "$MARCIN_TERRAIN_VISIONER gets remarks for $KRYNICA_CONTRACT contract and $PRELIMINARY_PLAN step"
             Collection<RemarkDto> remarks = remarkFacade.getRemarksForContract(KRYNICA_CONTRACT.contractId, PRELIMINARY_PLAN)
@@ -207,7 +207,7 @@ class RemarkSpec extends SozztSpecification {
             instantProvider.useFixedClock(YESTERDAY)
             loginUser(DANIEL_ROUTE_DRAWER)
             remarkFacade.addRemark(toAddRemarkDto(REMARK_FOR_KRYNICA_PRELIMINARY_PLAN_BY_DANIEL))
-        and: "$DANIEL_ROUTE_DRAWER added remark to $KRYNICA_CONTRACT_ROUTE_PREPARATION_STEP $NOW"
+        and: "$DANIEL_ROUTE_DRAWER added remark to $KRYNICA_PROJECT_PURPOSES_MAP_PREPARATION_STEP $NOW"
             instantProvider.useFixedClock(NOW)
             remarkFacade.addRemark(toAddRemarkDto(REMARK_FOR_KRYNICA_ROUTE_PREPARATION_BY_DANIEL))
         when: "$MARCIN_TERRAIN_VISIONER gets remarks for $KRYNICA_CONTRACT contract"

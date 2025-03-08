@@ -13,6 +13,8 @@ import pl.jkap.sozzt.contract.exception.ContractStepNotFoundException;
 import pl.jkap.sozzt.globalvalueobjects.AuditInfo;
 import pl.jkap.sozzt.projectpurposesmappreparation.domain.ProjectPurposesMapPreparationFacade;
 import pl.jkap.sozzt.projectpurposesmappreparation.dto.AddProjectPurposesMapPreparationDto;
+import pl.jkap.sozzt.routedrawing.domain.RoutePreparationFacade;
+import pl.jkap.sozzt.routedrawing.dto.AddRoutePreparationDto;
 import pl.jkap.sozzt.terrainvision.domain.TerrainVisionFacade;
 
 import java.io.Serializable;
@@ -76,17 +78,18 @@ class Contract implements Serializable {
         terrainVisionStep.beginStep();
     }
 
-    void completeTerrainVision(ProjectPurposesMapPreparationFacade projectPurposesMapPreparationFacade, boolean projectPurposesMapPreparationNeed) {
+    void completeTerrainVision(ProjectPurposesMapPreparationFacade projectPurposesMapPreparationFacade, RoutePreparationFacade routePreparationFacade, boolean projectPurposesMapPreparationNeed) {
         completeTerrainVisionStep();
-        if(projectPurposesMapPreparationNeed){
+        if (projectPurposesMapPreparationNeed) {
             beginProjectPurposesMapPreparationStep(projectPurposesMapPreparationFacade);
+        } else {
+            beginRoutePreparationStep(routePreparationFacade);
         }
-        beginConsentsCollectionStep();
     }
 
-    void completeProjectPurposesMapPreparation() {
+    void completeProjectPurposesMapPreparation(RoutePreparationFacade routePreparationFacade) {
         completeProjectPurposesMapPreparationStep();
-        beginRoutePreparationStep();
+        beginRoutePreparationStep(routePreparationFacade);
     }
 
     void completeRoutePreparation() {
@@ -123,8 +126,12 @@ class Contract implements Serializable {
         projectPurposesMapPreparationStep.beginStep();
     }
 
-    private void beginRoutePreparationStep() {
+    private void beginRoutePreparationStep(RoutePreparationFacade routePreparationFacade) {
         ContractStep routePreparationStep = getContractStep(ContractStepType.ROUTE_PREPARATION);
+        routePreparationFacade.addRoutePreparation(AddRoutePreparationDto.builder()
+                .routePreparationId(contractId)
+                .deadline(routePreparationStep.getDeadline())
+                .build());
         routePreparationStep.beginStep();
     }
 

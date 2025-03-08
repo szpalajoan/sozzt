@@ -14,7 +14,11 @@ import pl.jkap.sozzt.documentation.domain.DocumentationConfiguration
 import pl.jkap.sozzt.documentation.domain.DocumentationEventPublisherStub
 import pl.jkap.sozzt.documentation.domain.DocumentationFacade
 import pl.jkap.sozzt.documentation.domain.DocumentationSample
-import pl.jkap.sozzt.documentation.domain.RouteDrawingSample
+import pl.jkap.sozzt.routedrawing.domain.InMemoryRoutePreparationRepository
+import pl.jkap.sozzt.routedrawing.domain.RoutePreparationConfiguration
+import pl.jkap.sozzt.routedrawing.domain.RoutePreparationEventPublisherStub
+import pl.jkap.sozzt.routedrawing.domain.RoutePreparationFacade
+import pl.jkap.sozzt.routepreparation.RouteDrawingSample
 import pl.jkap.sozzt.documentation.domain.TermVerificationSample
 import pl.jkap.sozzt.filestorage.domain.*
 import pl.jkap.sozzt.filestorage.dto.FileDto
@@ -34,6 +38,8 @@ import pl.jkap.sozzt.projectpurposesmappreparation.domain.ProjectPurposesMapPrep
 import pl.jkap.sozzt.projectpurposesmappreparation.domain.ProjectPurposesMapPreparationEventPublisherStub
 import pl.jkap.sozzt.projectpurposesmappreparation.domain.ProjectPurposesMapPreparationFacade
 import pl.jkap.sozzt.projectpurposesmappreparation.dto.ProjectPurposesMapPreparationDto
+import pl.jkap.sozzt.routedrawing.dto.RoutePreparationDto
+import pl.jkap.sozzt.routepreparation.RoutePreparationSample
 import pl.jkap.sozzt.terrainvision.TerrainVisionSample
 import pl.jkap.sozzt.terrainvision.domain.ProjectPurposesMapPreparationNeed
 import pl.jkap.sozzt.terrainvision.domain.TerrainVisionConfiguration
@@ -48,7 +54,7 @@ import static pl.jkap.sozzt.terrainvision.domain.ProjectPurposesMapPreparationNe
 
 class SozztSpecification extends Specification implements FileSample, RemarkSample, TermVerificationSample,
         DocumentationSample, ConsentsSample, PlotOwnerConsentSample,
-        PreliminaryPlanSample, TerrainVisionSample, ProjectPurposesMapPreparationSample,
+        PreliminaryPlanSample, TerrainVisionSample, ProjectPurposesMapPreparationSample, RoutePreparationSample,
         ContractSample, LocationSample, ContractDetailsSample, ContractStepSample,
         RouteDrawingSample, UserSample, InstantSamples {
     Collection<UUID> addedFileIds = []
@@ -60,11 +66,12 @@ class SozztSpecification extends Specification implements FileSample, RemarkSamp
     TerrainVisionFacade terrainVisionFacade = new TerrainVisionConfiguration().terrainVisionFacade(instantProvider, new TerrainVisionEventPublisherStub(eventInvoker))
     FileStorageFacade fileStorageFacade = new FileStorageConfigurator().fileStorageFacade(contractSecurityFacade, new FileEventPublisherStub(eventInvoker))
     ProjectPurposesMapPreparationFacade projectPurposesMapPreparationFacade = new ProjectPurposesMapPreparationConfiguration().projectPurposesMapPreparationFacade(new ProjectPurposesMapPreparationEventPublisherStub(eventInvoker), fileStorageFacade, instantProvider)
+    RoutePreparationFacade routePreparationFacade = new RoutePreparationConfiguration().routePreparationFacade(new InMemoryRoutePreparationRepository(), new RoutePreparationEventPublisherStub(eventInvoker), fileStorageFacade, instantProvider)
     ConsentsFacade consentsFacade = new ConsentsConfiguration().consentsFacade(fileStorageFacade, instantProvider, new ConsentsEventPublisherStub(eventInvoker))
     DocumentationFacade documentationFacade = new DocumentationConfiguration().documentationFacade(new DocumentationEventPublisherStub(eventInvoker), fileStorageFacade)
     RemarkFacade remarkFacade = new RemarkConfiguration().remarkFacade(instantProvider)
     ContractFacade contractFacade = new ContractConfiguration().contractFacade(contractSecurityFacade, preliminaryPlanFacade, terrainVisionFacade,
-            projectPurposesMapPreparationFacade, consentsFacade, documentationFacade, remarkFacade,
+            projectPurposesMapPreparationFacade, routePreparationFacade, consentsFacade, documentationFacade, remarkFacade,
             instantProvider)
 
 
@@ -121,13 +128,13 @@ class SozztSpecification extends Specification implements FileSample, RemarkSamp
     }
 
     FileDto uploadRouteDrawing(PreparedFile preparedFile, UUID documentationId) {
-        FileDto addedFile = projectPurposesMapPreparationFacade.uploadDrawnRoute(documentationId, toAddFileDto(preparedFile.metadata, preparedFile.fileAsMultipartFile, documentationId))
+        FileDto addedFile = routePreparationFacade.uploadDrawnRoute(documentationId, toAddFileDto(preparedFile.metadata, preparedFile.fileAsMultipartFile, documentationId))
         addedFileIds.add(addedFile.fileId)
         return addedFile
     }
 
     FileDto uploadPdfWithRouteAndData(PreparedFile preparedFile, UUID documentationId) {
-        FileDto addedFile = projectPurposesMapPreparationFacade.uploadPdfWithRouteAndData(documentationId, toAddFileDto(preparedFile.metadata, preparedFile.fileAsMultipartFile, documentationId))
+        FileDto addedFile = routePreparationFacade.uploadPdfWithRouteAndData(documentationId, toAddFileDto(preparedFile.metadata, preparedFile.fileAsMultipartFile, documentationId))
         addedFileIds.add(addedFile.fileId)
         return addedFile
     }
@@ -164,7 +171,11 @@ class SozztSpecification extends Specification implements FileSample, RemarkSamp
         }
         if(step >= COMPLETED_PROJECT_PURPOSES_MAP_PREPARATION) {
             loginUser(WALDEK_SURVEYOR)
-            completeProjectPurposesMapPreparation(COMPLETED_KRYNICA_PROJECT_PURPOSE_MAP_PREPARATION)
+            completeProjectPurposesMapPreparation(COMPLETED_KRYNICA_PROJECT_PURPOSE_MAP_PREPARATION, contractFixture.isMapRequired)
+        }
+        if(step >= COMPLETED_ROUTE_PREPARATION) {
+            loginUser(DANIEL_ROUTE_DRAWER)
+            completeRoutePreparation(COMPLETED_KRYNICA_ROUTE_PREPARATION)
         }
         if(step >= COMPLETED_CONSENTS_COLLECTION || step >= BEGIN_DOCUMENTATION) {
             loginUser(KASIA_CONSENT_CORDINATOR)
@@ -189,14 +200,22 @@ class SozztSpecification extends Specification implements FileSample, RemarkSamp
         terrainVisionFacade.completeTerrainVision(terrainVisionDto.terrainVisionId)
     }
 
-    void completeProjectPurposesMapPreparation(ProjectPurposesMapPreparationDto routePreparationDto) {
-        uploadGeodeticMap(routePreparationDto, KRYNICA_GEODETIC_MAP)
-        projectPurposesMapPreparationFacade.approveCorrectnessOfTheMap(routePreparationDto.projectPurposesMapPreparationId)
-        projectPurposesMapPreparationFacade.choosePersonResponsibleForRouteDrawing(routePreparationDto.projectPurposesMapPreparationId, DANIEL_ROUTE_DRAWER.name)
+    void completeProjectPurposesMapPreparation(ProjectPurposesMapPreparationDto projectPurposesMapPreparation, boolean isMapRequired = true) {
+        if(!isMapRequired) {
+            return
+        }
+        uploadGeodeticMap(projectPurposesMapPreparation, KRYNICA_GEODETIC_MAP)
         loginUser(DANIEL_ROUTE_DRAWER)
-        uploadRouteDrawing(KRYNICA_MAP_WITH_ROUTE, routePreparationDto.projectPurposesMapPreparationId)
-        uploadPdfWithRouteAndData(KRYNICA_PDF_WITH_ROUTE_AND_DATA, routePreparationDto.projectPurposesMapPreparationId)
-        projectPurposesMapPreparationFacade.completeProjectPurposesMapPreparation(routePreparationDto.projectPurposesMapPreparationId)
+        projectPurposesMapPreparationFacade.completeProjectPurposesMapPreparation(projectPurposesMapPreparation.projectPurposesMapPreparationId)
+    }
+
+    void completeRoutePreparation(RoutePreparationDto routePreparationDto) {
+        loginUser(DANIEL_ROUTE_DRAWER)
+        routePreparationFacade.approveCorrectnessOfTheMap(routePreparationDto.routePreparationId)
+        routePreparationFacade.choosePersonResponsibleForRouteDrawing(routePreparationDto.routePreparationId, DANIEL_ROUTE_DRAWER.name)
+        uploadRouteDrawing(KRYNICA_MAP_WITH_ROUTE, routePreparationDto.routePreparationId)
+        uploadPdfWithRouteAndData(KRYNICA_PDF_WITH_ROUTE_AND_DATA, routePreparationDto.routePreparationId)
+        routePreparationFacade.completeRoutePreparation(routePreparationDto.routePreparationId)
     }
 
     void completeConsentsCollection(ConsentsDto consentsDto, boolean isZudRequired = true) {

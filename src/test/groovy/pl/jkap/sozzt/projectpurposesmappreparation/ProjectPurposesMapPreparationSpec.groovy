@@ -58,109 +58,6 @@ class ProjectPurposesMapPreparationSpec extends SozztSpecification {
             projectPurposesMapPreparationFacade.getProjectPurposesMapPreparation(KRYNICA_CONTRACT.contractId) == with(KRYNICA_PROJECT_PURPOSE_MAP_PREPARATION, [isGeodeticMapUploaded: true])
     }
 
-    def "should approve correctness of the map"() {
-        given: "there is $KRYNICA_TERRAIN_VISION stage"
-            addKrynicaContractOnStage(BEGIN_PROJECT_PURPOSES_MAP_PREPARATION)
-        and: "$WALDEK_SURVEYOR is logged in"
-            loginUser(WALDEK_SURVEYOR)
-        and: "$WALDEK_SURVEYOR added geodetic map to $KRYNICA_PROJECT_PURPOSE_MAP_PREPARATION"
-            uploadGeodeticMap(KRYNICA_PROJECT_PURPOSE_MAP_PREPARATION, KRYNICA_GEODETIC_MAP)
-        when: "$WALDEK_SURVEYOR approves correctness of the map"
-            projectPurposesMapPreparationFacade.approveCorrectnessOfTheMap(KRYNICA_CONTRACT.contractId)
-        then: "Correctness of the map is approved"
-            projectPurposesMapPreparationFacade.getProjectPurposesMapPreparation(KRYNICA_CONTRACT.contractId) == 
-                with(KRYNICA_PROJECT_PURPOSE_MAP_PREPARATION, [correctnessOfTheMap: true,
-                                                               isGeodeticMapUploaded: true])
-    }
-
-    def "should choose person responsible for route drawing"() {
-        given: "there is $KRYNICA_TERRAIN_VISION stage"
-            addKrynicaContractOnStage(BEGIN_PROJECT_PURPOSES_MAP_PREPARATION)
-        and: "$WALDEK_SURVEYOR is logged in"
-            loginUser(WALDEK_SURVEYOR)
-        and: "$WALDEK_SURVEYOR added geodetic map to $KRYNICA_PROJECT_PURPOSE_MAP_PREPARATION"
-            uploadGeodeticMap(KRYNICA_PROJECT_PURPOSE_MAP_PREPARATION, KRYNICA_GEODETIC_MAP)
-        and: "$WALDEK_SURVEYOR approves correctness of the map"
-            projectPurposesMapPreparationFacade.approveCorrectnessOfTheMap(KRYNICA_CONTRACT.contractId)
-        when: "$WALDEK_SURVEYOR chooses person responsible for route drawing"
-            projectPurposesMapPreparationFacade.choosePersonResponsibleForRouteDrawing(KRYNICA_CONTRACT.contractId, DANIEL_ROUTE_DRAWER.name)
-        then: "Person responsible for route drawing is chosen"
-            projectPurposesMapPreparationFacade.getProjectPurposesMapPreparation(KRYNICA_CONTRACT.contractId) == 
-                with(KRYNICA_PROJECT_PURPOSE_MAP_PREPARATION, [
-                    correctnessOfTheMap: true,
-                    isGeodeticMapUploaded: true,
-                    routeDrawing: KRYNICA_ROUTE_DRAWING
-                ])
-    }
-
-    def "should not choose person responsible for route drawing as none"() {
-        given: "there is $KRYNICA_TERRAIN_VISION stage"
-            addKrynicaContractOnStage(BEGIN_PROJECT_PURPOSES_MAP_PREPARATION)
-        and: "$WALDEK_SURVEYOR is logged in"
-            loginUser(WALDEK_SURVEYOR)
-        and: "$WALDEK_SURVEYOR added geodetic map to $KRYNICA_PROJECT_PURPOSE_MAP_PREPARATION"
-            uploadGeodeticMap(KRYNICA_PROJECT_PURPOSE_MAP_PREPARATION, KRYNICA_GEODETIC_MAP)
-        and: "$WALDEK_SURVEYOR approves correctness of the map"
-            projectPurposesMapPreparationFacade.approveCorrectnessOfTheMap(KRYNICA_CONTRACT.contractId)
-        when: "$WALDEK_SURVEYOR tries to choose person responsible for route drawing as none"
-            projectPurposesMapPreparationFacade.choosePersonResponsibleForRouteDrawing(KRYNICA_CONTRACT.contractId, null)
-        then: "Exception is thrown"
-            thrown(InvalidPersonResponsibleForRouteDrawingException)
-    }
-
-    def "should upload a drawn route"() {
-        given: "there is $KRYNICA_TERRAIN_VISION stage"
-            addKrynicaContractOnStage(BEGIN_PROJECT_PURPOSES_MAP_PREPARATION)
-        and: "$WALDEK_SURVEYOR is logged in"
-            loginUser(WALDEK_SURVEYOR)
-        and: "$WALDEK_SURVEYOR added geodetic map to $KRYNICA_PROJECT_PURPOSE_MAP_PREPARATION"
-            uploadGeodeticMap(KRYNICA_PROJECT_PURPOSE_MAP_PREPARATION, KRYNICA_GEODETIC_MAP)
-        and: "$WALDEK_SURVEYOR approves correctness of the map"
-            projectPurposesMapPreparationFacade.approveCorrectnessOfTheMap(KRYNICA_CONTRACT.contractId)
-        and: "$WALDEK_SURVEYOR chooses person responsible for route drawing"
-            projectPurposesMapPreparationFacade.choosePersonResponsibleForRouteDrawing(KRYNICA_CONTRACT.contractId, DANIEL_ROUTE_DRAWER.name)
-        and: "$DANIEL_ROUTE_DRAWER is logged in"
-            loginUser(DANIEL_ROUTE_DRAWER)
-        when: "$DANIEL_ROUTE_DRAWER uploads a drawn route"
-            FileDto fileDto = uploadRouteDrawing(KRYNICA_MAP_WITH_ROUTE, KRYNICA_CONTRACT.contractId)
-        then: "Route drawing is uploaded"
-            projectPurposesMapPreparationFacade.getProjectPurposesMapPreparation(KRYNICA_CONTRACT.contractId) == 
-                with(KRYNICA_PROJECT_PURPOSE_MAP_PREPARATION, [
-                    correctnessOfTheMap: true,
-                    isGeodeticMapUploaded: true,
-                    routeDrawing: with(KRYNICA_ROUTE_DRAWING, [mapWithRouteFileId: KRYNICA_MAP_WITH_ROUTE_METADATA.fileId])
-                ])
-            fileDto == KRYNICA_MAP_WITH_ROUTE_METADATA
-    }
-
-    def "should upload a pdf with route and data"() {
-        given: "there is $KRYNICA_TERRAIN_VISION stage"
-            addKrynicaContractOnStage(BEGIN_PROJECT_PURPOSES_MAP_PREPARATION)
-        and: "$WALDEK_SURVEYOR is logged in"
-            loginUser(WALDEK_SURVEYOR)
-        and: "$WALDEK_SURVEYOR added geodetic map to $KRYNICA_PROJECT_PURPOSE_MAP_PREPARATION"
-            uploadGeodeticMap(KRYNICA_PROJECT_PURPOSE_MAP_PREPARATION, KRYNICA_GEODETIC_MAP)
-        and: "$WALDEK_SURVEYOR approves correctness of the map"
-            projectPurposesMapPreparationFacade.approveCorrectnessOfTheMap(KRYNICA_CONTRACT.contractId)
-        and: "$WALDEK_SURVEYOR chooses person responsible for route drawing"
-            projectPurposesMapPreparationFacade.choosePersonResponsibleForRouteDrawing(KRYNICA_CONTRACT.contractId, DANIEL_ROUTE_DRAWER.name)
-        and: "$DANIEL_ROUTE_DRAWER uploads a drawn route"
-            loginUser(DANIEL_ROUTE_DRAWER)
-            uploadRouteDrawing(KRYNICA_MAP_WITH_ROUTE, KRYNICA_CONTRACT.contractId)
-        when: "$DANIEL_ROUTE_DRAWER uploads a pdf with route and data"
-            FileDto fileDto = uploadPdfWithRouteAndData(KRYNICA_PDF_WITH_ROUTE_AND_DATA, KRYNICA_CONTRACT.contractId)
-        then: "Pdf with route and data is uploaded"
-            projectPurposesMapPreparationFacade.getProjectPurposesMapPreparation(KRYNICA_CONTRACT.contractId) == 
-                with(KRYNICA_PROJECT_PURPOSE_MAP_PREPARATION, [
-                    correctnessOfTheMap: true,
-                    isGeodeticMapUploaded: true,
-                    routeDrawing: with(KRYNICA_ROUTE_DRAWING, [
-                        mapWithRouteFileId: KRYNICA_MAP_WITH_ROUTE_METADATA.fileId,
-                        routeWithDataFileId: KRYNICA_PDF_WITH_ROUTE_AND_DATA_METADATA.fileId
-                    ])
-                ])
-            fileDto == KRYNICA_PDF_WITH_ROUTE_AND_DATA_METADATA
-    }
 
     def "should complete project purposes map preparation"() {
         given: "there is $KRYNICA_TERRAIN_VISION stage"
@@ -169,22 +66,10 @@ class ProjectPurposesMapPreparationSpec extends SozztSpecification {
             loginUser(WALDEK_SURVEYOR)
         and: "$WALDEK_SURVEYOR added geodetic map to $KRYNICA_PROJECT_PURPOSE_MAP_PREPARATION"
             uploadGeodeticMap(KRYNICA_PROJECT_PURPOSE_MAP_PREPARATION, KRYNICA_GEODETIC_MAP)
-        and: "$WALDEK_SURVEYOR approves correctness of the map"
-            projectPurposesMapPreparationFacade.approveCorrectnessOfTheMap(KRYNICA_CONTRACT.contractId)
-        and: "$WALDEK_SURVEYOR chooses person responsible for route drawing"
-            projectPurposesMapPreparationFacade.choosePersonResponsibleForRouteDrawing(KRYNICA_CONTRACT.contractId, DANIEL_ROUTE_DRAWER.name)
-        and: "$DANIEL_ROUTE_DRAWER uploads a drawn route"
-            loginUser(DANIEL_ROUTE_DRAWER)
-            uploadRouteDrawing(KRYNICA_MAP_WITH_ROUTE, KRYNICA_CONTRACT.contractId)
-        and: "$DANIEL_ROUTE_DRAWER uploads a pdf with route and data"
-            uploadPdfWithRouteAndData(KRYNICA_PDF_WITH_ROUTE_AND_DATA, KRYNICA_CONTRACT.contractId)
-        when: "$DANIEL_ROUTE_DRAWER completes project purposes map preparation"
+        when: "$WALDEK_SURVEYOR completes project purposes map preparation"
             projectPurposesMapPreparationFacade.completeProjectPurposesMapPreparation(KRYNICA_CONTRACT.contractId)
         then: "Project purposes map preparation is completed"
             projectPurposesMapPreparationFacade.getProjectPurposesMapPreparation(KRYNICA_CONTRACT.contractId) ==
-                    with(COMPLETED_KRYNICA_PROJECT_PURPOSE_MAP_PREPARATION, [routeDrawing: with(KRYNICA_ROUTE_DRAWING, [
-                            mapWithRouteFileId: KRYNICA_MAP_WITH_ROUTE_METADATA.fileId,
-                            routeWithDataFileId: KRYNICA_PDF_WITH_ROUTE_AND_DATA_METADATA.fileId
-                    ])])
+                    COMPLETED_KRYNICA_PROJECT_PURPOSE_MAP_PREPARATION
     }
 }

@@ -1,4 +1,4 @@
-package pl.jkap.sozzt.documentation.domain
+package pl.jkap.sozzt.routepreparation
 
 import pl.jkap.sozzt.routedrawing.dto.RouteDrawingDto
 import pl.jkap.sozzt.sample.SampleModifier
