@@ -9,7 +9,7 @@ import pl.jkap.sozzt.instant.InstantProvider;
 public class RoutePreparationConfiguration {
 
     @Bean
-    public RoutePreparationFacade routePreparationFacade(RoutePreparationRepository routePreparationRepository, RoutePreparationEventPublisher routePreparationEventPublisher,
+    public RoutePreparationFacade routePreparationFacade(RoutePreparationEventPublisher routePreparationEventPublisher,
                                                          FileStorageFacade fileStorageFacade, InstantProvider instantProvider) {
         return new RoutePreparationFacade(new InMemoryRoutePreparationRepository(), routePreparationEventPublisher,
                 fileStorageFacade,

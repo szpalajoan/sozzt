@@ -49,7 +49,6 @@ public class ProjectPurposesMapPreparationFacade {
     }
 
 
-
     public FileDto addGeodeticMap(AddFileDto addFileDto) {
         log.info("Adding geodetic map for project purposes map preparation with id {}", addFileDto.getContractId());
         FileDto fileDto = fileStorageFacade.addGeodeticMap(addFileDto);

@@ -24,7 +24,6 @@ public class ConsentsFacade {
     private final InstantProvider instantProvider;
 
 
-
     public ConsentsDto getConsents(UUID uuid) {
         return consentsRepository.findById(uuid)
                 .orElseThrow(() -> new ConsentsNotFoundException("Consents not found: " + uuid))
