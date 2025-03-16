@@ -19,6 +19,7 @@ public class ContactController {
 
     private final ContractFacade contractFacade;
 
+
     @GetMapping("{idContract}")
     @ResponseStatus(HttpStatus.OK)
     public ContractDto getContract(@PathVariable UUID idContract) {

@@ -1,8 +1,10 @@
 package pl.jkap.sozzt.contract.domain;
 
+import io.swagger.v3.oas.annotations.Webhook;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
+import pl.jkap.sozzt.consents.event.BeginConsentsCollectionEvent;
 import pl.jkap.sozzt.consents.event.ConsentsCollectionCompletedEvent;
 import pl.jkap.sozzt.contract.dto.ContractDto;
 import pl.jkap.sozzt.contract.dto.CreateContractDto;
@@ -118,6 +120,13 @@ public class ContractFacade {
         log.info("Route preparation finalized: {}", contract);
     }
 
+    private void beginConsentsCollection(UUID contractId) {
+        Contract contract = findContract(contractId);
+        contract.beginConsentsCollectionStep();
+        contractRepository.save(contract);
+        log.info("Consents collection started: {}", contract);
+    }
+
     private void completeConsentsCollection(UUID contractId) {
         Contract contract = findContract(contractId);
         contract.completeConsentsCollection();
@@ -186,6 +195,12 @@ public class ContractFacade {
     @SuppressWarnings("unused")
     public void onRoutePreparationCompletedEvent(RoutePreparationCompletedEvent event) {
         completeRoutePreparation(event.getContractId());
+    }
+
+    @EventListener //BeginConsentsCollectionEvent
+    @SuppressWarnings("unused")
+    public void onBeginConsentsCollectionEvent(BeginConsentsCollectionEvent event) {
+        beginConsentsCollection(event.getContractId());
     }
 
     @EventListener

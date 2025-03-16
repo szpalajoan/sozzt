@@ -135,7 +135,7 @@ class Contract implements Serializable {
         routePreparationStep.beginStep();
     }
 
-    private void beginConsentsCollectionStep() {
+    void beginConsentsCollectionStep() {
         ContractStep consentsCollectionStep = getContractStep(ContractStepType.CONSENTS_COLLECTION);
         consentsCollectionStep.beginStep();
     }

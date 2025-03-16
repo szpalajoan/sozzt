@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
 import pl.jkap.sozzt.consents.dto.*;
 import pl.jkap.sozzt.consents.event.ConsentsCollectionCompletedEvent;
+import pl.jkap.sozzt.consents.event.BeginConsentsCollectionEvent;
 import pl.jkap.sozzt.consents.exception.ConsentsNotFoundException;
 import pl.jkap.sozzt.filestorage.domain.FileStorageFacade;
 import pl.jkap.sozzt.filestorage.dto.AddFileDto;
@@ -23,6 +24,9 @@ public class ConsentsFacade {
     private final ConsentsEventPublisher consentsEventPublisher;
     private final InstantProvider instantProvider;
 
+    public void beginConsentsCollection(UUID idContract) {
+        consentsEventPublisher.beginConsentsCollection(new BeginConsentsCollectionEvent(idContract));
+    }
 
     public ConsentsDto getConsents(UUID uuid) {
         return consentsRepository.findById(uuid)
