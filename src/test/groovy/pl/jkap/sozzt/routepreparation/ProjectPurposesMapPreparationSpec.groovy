@@ -1,11 +1,9 @@
 package pl.jkap.sozzt.routepreparation
 
 import pl.jkap.sozzt.filestorage.dto.FileDto
-import pl.jkap.sozzt.projectpurposesmappreparation.exception.ProjectPurposesMapPreparationNotFoundException
-import pl.jkap.sozzt.routedrawing.dto.MapVerificationDto
-import pl.jkap.sozzt.routedrawing.exception.InvalidPersonResponsibleForRouteDrawingException
-import pl.jkap.sozzt.routedrawing.exception.RoutePreparationNotFoundException
-import pl.jkap.sozzt.sample.ContractFixture
+import pl.jkap.sozzt.routepreparation.dto.MapVerificationDto
+import pl.jkap.sozzt.routepreparation.exception.InvalidPersonResponsibleForRouteDrawingException
+import pl.jkap.sozzt.routepreparation.exception.RoutePreparationNotFoundException
 import pl.jkap.sozzt.sample.SozztSpecification
 
 import static pl.jkap.sozzt.sample.ExpectedStageSample.*

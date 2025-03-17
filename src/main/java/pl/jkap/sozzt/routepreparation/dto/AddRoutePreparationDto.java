@@ -1,4 +1,4 @@
-package pl.jkap.sozzt.routedrawing.dto;
+package pl.jkap.sozzt.routepreparation.dto;
 
 import lombok.*;
 

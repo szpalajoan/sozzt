@@ -1,10 +1,9 @@
-package pl.jkap.sozzt.routedrawing.domain;
+package pl.jkap.sozzt.routepreparation.domain;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
-import pl.jkap.sozzt.projectpurposesmappreparation.event.ProjectPurposesMapPreparationCompletedEvent;
-import pl.jkap.sozzt.routedrawing.event.RoutePreparationCompletedEvent;
+import pl.jkap.sozzt.routepreparation.event.RoutePreparationCompletedEvent;
 
 @Component
 public class RoutePreparationEventPublisher {

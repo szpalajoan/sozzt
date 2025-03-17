@@ -1,7 +1,7 @@
-package pl.jkap.sozzt.routedrawing.domain;
+package pl.jkap.sozzt.routepreparation.domain;
 
 import lombok.Getter;
-import pl.jkap.sozzt.routedrawing.dto.RouteDrawingDto;
+import pl.jkap.sozzt.routepreparation.dto.RouteDrawingDto;
 
 import java.util.UUID;
 

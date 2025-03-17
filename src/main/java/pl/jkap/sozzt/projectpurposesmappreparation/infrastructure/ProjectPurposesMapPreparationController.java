@@ -8,7 +8,6 @@ import org.springframework.web.multipart.MultipartFile;
 import pl.jkap.sozzt.filestorage.dto.FileDto;
 import pl.jkap.sozzt.projectpurposesmappreparation.domain.ProjectPurposesMapPreparationFacade;
 import pl.jkap.sozzt.projectpurposesmappreparation.dto.ProjectPurposesMapPreparationDto;
-import pl.jkap.sozzt.routedrawing.dto.PersonResponsibleForRouteDrawingDto;
 import pl.jkap.sozzt.filestorage.dto.AddFileDto;
 
 import java.util.UUID;

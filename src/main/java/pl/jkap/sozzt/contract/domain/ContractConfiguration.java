@@ -9,7 +9,7 @@ import pl.jkap.sozzt.instant.InstantProvider;
 import pl.jkap.sozzt.preliminaryplanning.domain.PreliminaryPlanFacade;
 import pl.jkap.sozzt.remark.domain.RemarkFacade;
 import pl.jkap.sozzt.projectpurposesmappreparation.domain.ProjectPurposesMapPreparationFacade;
-import pl.jkap.sozzt.routedrawing.domain.RoutePreparationFacade;
+import pl.jkap.sozzt.routepreparation.domain.RoutePreparationFacade;
 import pl.jkap.sozzt.terrainvision.domain.TerrainVisionFacade;
 
 @Configuration
