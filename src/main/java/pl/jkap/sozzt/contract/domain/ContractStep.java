@@ -38,6 +38,10 @@ class ContractStep implements Serializable {
         return contractStepStatus == ContractStepStatus.NOT_ACTIVE || contractStepStatus == ContractStepStatus.DONE;
     }
 
+    boolean isStarted() {
+        return contractStepStatus == ContractStepStatus.IN_PROGRESS || contractStepStatus == ContractStepStatus.DONE;
+    }
+
     ContractStepDto dto() {
         return ContractStepDto.builder()
                 .contractStepType(ContractStepDto.ContractStepTypeDto.valueOf(contractStepType.name()))

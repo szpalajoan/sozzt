@@ -142,7 +142,7 @@ class Contract implements Serializable {
 
     private void beginConsentsCollectionStep() {
         ContractStep consentsCollectionStep = getContractStep(ContractStepType.CONSENTS_COLLECTION);
-        if(!consentsCollectionStep.isCompleted()) {
+        if(!consentsCollectionStep.isStarted()) {
             consentsCollectionStep.beginStep();
         }
     }
