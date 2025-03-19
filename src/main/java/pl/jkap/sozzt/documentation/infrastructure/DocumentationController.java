@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.jkap.sozzt.documentation.domain.DocumentationFacade;
 import pl.jkap.sozzt.documentation.dto.DocumentationDto;
-import pl.jkap.sozzt.projectpurposesmappreparation.dto.PersonResponsibleForTermVerificationDto;
+import pl.jkap.sozzt.documentation.dto.PersonResponsibleForTermVerificationDto;
 import pl.jkap.sozzt.filestorage.dto.AddFileDto;
 
 import java.util.UUID;

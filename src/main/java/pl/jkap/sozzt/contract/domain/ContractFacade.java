@@ -18,6 +18,8 @@ import pl.jkap.sozzt.preliminaryplanning.event.PreliminaryPlanCompletedEvent;
 import pl.jkap.sozzt.remark.domain.RemarkFacade;
 import pl.jkap.sozzt.projectpurposesmappreparation.domain.ProjectPurposesMapPreparationFacade;
 import pl.jkap.sozzt.projectpurposesmappreparation.event.ProjectPurposesMapPreparationCompletedEvent;
+import pl.jkap.sozzt.routepreparation.domain.RoutePreparationFacade;
+import pl.jkap.sozzt.routepreparation.event.RoutePreparationCompletedEvent;
 import pl.jkap.sozzt.terrainvision.domain.TerrainVisionFacade;
 import pl.jkap.sozzt.terrainvision.event.TerrainVisionCompletedEvent;
 
@@ -37,6 +39,7 @@ public class ContractFacade {
     private final ContractStepCreator contractStepCreator;
     private final TerrainVisionFacade terrainVisionFacade;
     private final ProjectPurposesMapPreparationFacade projectPurposesMapPreparationFacade;
+    private final RoutePreparationFacade routePreparationFacade;
     private final RemarkFacade remarkFacade;
 
     public ContractDto addContract(CreateContractDto createContractDto) {
@@ -96,16 +99,23 @@ public class ContractFacade {
 
     private void completeTerrainVision(UUID contractId, boolean projectPurposesMapPreparationNeed) {
         Contract contract = findContract(contractId);
-        contract.completeTerrainVision(projectPurposesMapPreparationFacade, projectPurposesMapPreparationNeed);
+        contract.completeTerrainVision(projectPurposesMapPreparationFacade, routePreparationFacade, projectPurposesMapPreparationNeed);
         contractRepository.save(contract);
         log.info("Terrain vision finalized: {}", contract);
     }
 
     private void completeProjectPurposesMapPreparation(UUID contractId) {
         Contract contract = findContract(contractId);
-        contract.completeProjectPurposesMapPreparation();
+        contract.completeProjectPurposesMapPreparation(routePreparationFacade);
         contractRepository.save(contract);
         log.info("Project purposes map preparation finalized: {}", contract);
+    }
+
+    private void completeRoutePreparation(UUID contractId) {
+        Contract contract = findContract(contractId);
+        contract.completeRoutePreparation();
+        contractRepository.save(contract);
+        log.info("Route preparation finalized: {}", contract);
     }
 
     private void completeConsentsCollection(UUID contractId) {
@@ -170,6 +180,12 @@ public class ContractFacade {
     @SuppressWarnings("unused")
     public void onProjectPurposesMapPreparationCompletedEvent(ProjectPurposesMapPreparationCompletedEvent event) {
         completeProjectPurposesMapPreparation(event.getContractId());
+    }
+
+    @EventListener
+    @SuppressWarnings("unused")
+    public void onRoutePreparationCompletedEvent(RoutePreparationCompletedEvent event) {
+        completeRoutePreparation(event.getContractId());
     }
 
     @EventListener

@@ -1,9 +1,10 @@
-package pl.jkap.sozzt.projectpurposesmappreparation.domain;
+package pl.jkap.sozzt.routepreparation.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import pl.jkap.sozzt.instant.InstantProvider;
+import pl.jkap.sozzt.routepreparation.dto.MapVerificationDto;
 
 import java.time.Instant;
 
@@ -22,4 +23,11 @@ class MapVerification {
     boolean isCompleted() {
         return correctnessOfTheMap;
     }
-} 
+
+    public MapVerificationDto dto() {
+        return MapVerificationDto.builder()
+                .correctnessOfTheMap(correctnessOfTheMap)
+                .verificationDate(verificationDate)
+                .build();
+    }
+}

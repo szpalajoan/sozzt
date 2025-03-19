@@ -20,10 +20,16 @@ trait ContractStepSample implements InstantSamples{
              deadline          : (NOW + Duration.ofDays(21))
             ])
 
-    ContractStepDto KRYNICA_CONTRACT_ROUTE_PREPARATION_STEP = with(ContractStepDto.builder().build(),
+    ContractStepDto KRYNICA_PROJECT_PURPOSES_MAP_PREPARATION_STEP = with(ContractStepDto.builder().build(),
             [contractStepType  : ContractStepDto.ContractStepTypeDto.PROJECT_PURPOSES_MAP_PREPARATION,
              contractStepStatus: ContractStepDto.ContractStepStatusDto.NOT_ACTIVE,
              deadline          : (NOW + Duration.ofDays(65))
+            ])
+
+    ContractStepDto KRYNICA_ROUTE_PREPARATION_STEP = with(ContractStepDto.builder().build(),
+            [contractStepType  : ContractStepDto.ContractStepTypeDto.ROUTE_PREPARATION,
+             contractStepStatus: ContractStepDto.ContractStepStatusDto.ON_HOLD,
+             deadline          : (NOW + Duration.ofDays(70))
             ])
 
     ContractStepDto KRYNICA_CONSENTS_COLLECTION_STEP = with(ContractStepDto.builder().build(),

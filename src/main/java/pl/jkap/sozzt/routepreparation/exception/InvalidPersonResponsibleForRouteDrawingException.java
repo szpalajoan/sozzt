@@ -1,6 +1,7 @@
-package pl.jkap.sozzt.projectpurposesmappreparation.exception;
+package pl.jkap.sozzt.routepreparation.exception;
 
 import org.springframework.http.HttpStatus;
+import pl.jkap.sozzt.projectpurposesmappreparation.exception.ProjectPurposesMapPreparationException;
 
 public class InvalidPersonResponsibleForRouteDrawingException extends ProjectPurposesMapPreparationException {
     public InvalidPersonResponsibleForRouteDrawingException(String message) {

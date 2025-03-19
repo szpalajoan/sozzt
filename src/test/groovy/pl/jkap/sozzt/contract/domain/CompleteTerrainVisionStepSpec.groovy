@@ -8,7 +8,7 @@ import static pl.jkap.sozzt.terrainvision.domain.ProjectPurposesMapPreparationNe
 
 class CompleteTerrainVisionStepSpec extends SozztSpecification {
 
-    def "Should complete a terrain vision and begin the preparation of project purposes map and consents collection"() {
+    def "Should complete a terrain vision and begin the preparation of project purposes map"() { //todo and begin wypisy
         given: "there is $KRYNICA_TERRAIN_VISION stage"
             addKrynicaContractOnStage(BEGIN_TERRAIN_VISION)
         and: "$MARCIN_TERRAIN_VISIONER is logged in"
@@ -19,11 +19,12 @@ class CompleteTerrainVisionStepSpec extends SozztSpecification {
             terrainVisionFacade.setProjectPurposesMapPreparationNeed(KRYNICA_CONTRACT.contractId, NECESSARY)
         when: "$MARCIN_TERRAIN_VISIONER completes the terrain vision"
             terrainVisionFacade.completeTerrainVision(KRYNICA_CONTRACT.contractId)
-        then: "Terrain vision is completed"
+        then: "Terrain vision is completed and project purposes map preparation is started"
             contractFacade.getContract(KRYNICA_CONTRACT.contractId) == COMPLETED_TERRAIN_VISION_KRYNICA_CONTRACT
+
     }
 
-    def "Should complete a terrain vision and begin only consents collection"() {
+    def "Should complete a terrain vision and begin route preparation when project purposes map preparation is not necessary "() { //todo and begin wypisy
         given: "there is $KRYNICA_TERRAIN_VISION stage"
             addKrynicaContractOnStage(BEGIN_TERRAIN_VISION)
         and: "$MARCIN_TERRAIN_VISIONER is logged in"

@@ -1,4 +1,4 @@
-package pl.jkap.sozzt.projectpurposesmappreparation.dto;
+package pl.jkap.sozzt.documentation.dto;
 
 import lombok.*;
 
@@ -8,6 +8,6 @@ import lombok.*;
 @AllArgsConstructor
 @EqualsAndHashCode
 @ToString
-public class PersonResponsibleForRouteDrawingDto {
+public class PersonResponsibleForTermVerificationDto {
     String user;
 }
