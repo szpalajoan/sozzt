@@ -1,14 +1,13 @@
-package pl.jkap.sozzt.routedrawing.infrastructure;
+package pl.jkap.sozzt.routepreparation.infrastructure;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.jkap.sozzt.filestorage.dto.AddFileDto;
-import pl.jkap.sozzt.projectpurposesmappreparation.dto.ProjectPurposesMapPreparationDto;
-import pl.jkap.sozzt.routedrawing.domain.RoutePreparationFacade;
-import pl.jkap.sozzt.routedrawing.dto.PersonResponsibleForRouteDrawingDto;
-import pl.jkap.sozzt.routedrawing.dto.RoutePreparationDto;
+import pl.jkap.sozzt.routepreparation.domain.RoutePreparationFacade;
+import pl.jkap.sozzt.routepreparation.dto.PersonResponsibleForRouteDrawingDto;
+import pl.jkap.sozzt.routepreparation.dto.RoutePreparationDto;
 
 import java.util.UUID;
 

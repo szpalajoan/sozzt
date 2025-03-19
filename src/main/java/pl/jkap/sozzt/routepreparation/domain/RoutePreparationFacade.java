@@ -1,4 +1,4 @@
-package pl.jkap.sozzt.routedrawing.domain;
+package pl.jkap.sozzt.routepreparation.domain;
 
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
@@ -6,12 +6,12 @@ import pl.jkap.sozzt.filestorage.domain.FileStorageFacade;
 import pl.jkap.sozzt.filestorage.dto.AddFileDto;
 import pl.jkap.sozzt.filestorage.dto.FileDto;
 import pl.jkap.sozzt.instant.InstantProvider;
-import pl.jkap.sozzt.routedrawing.dto.AddRoutePreparationDto;
-import pl.jkap.sozzt.routedrawing.event.RoutePreparationCompletedEvent;
-import pl.jkap.sozzt.routedrawing.exception.CompleteRoutePreparationException;
-import pl.jkap.sozzt.routedrawing.exception.InvalidPersonResponsibleForRouteDrawingException;
-import pl.jkap.sozzt.routedrawing.dto.RoutePreparationDto;
-import pl.jkap.sozzt.routedrawing.exception.RoutePreparationNotFoundException;
+import pl.jkap.sozzt.routepreparation.dto.AddRoutePreparationDto;
+import pl.jkap.sozzt.routepreparation.event.RoutePreparationCompletedEvent;
+import pl.jkap.sozzt.routepreparation.exception.CompleteRoutePreparationException;
+import pl.jkap.sozzt.routepreparation.exception.InvalidPersonResponsibleForRouteDrawingException;
+import pl.jkap.sozzt.routepreparation.dto.RoutePreparationDto;
+import pl.jkap.sozzt.routepreparation.exception.RoutePreparationNotFoundException;
 
 import java.util.UUID;
 

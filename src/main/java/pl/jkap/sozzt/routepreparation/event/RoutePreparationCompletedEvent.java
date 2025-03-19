@@ -1,4 +1,4 @@
-package pl.jkap.sozzt.routedrawing.event;
+package pl.jkap.sozzt.routepreparation.event;
 
 import lombok.Getter;
 

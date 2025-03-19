@@ -1,4 +1,4 @@
-package pl.jkap.sozzt.routedrawing.exception;
+package pl.jkap.sozzt.routepreparation.exception;
 
 import java.util.UUID;
 

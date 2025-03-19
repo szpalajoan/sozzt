@@ -13,8 +13,8 @@ import pl.jkap.sozzt.contract.exception.ContractStepNotFoundException;
 import pl.jkap.sozzt.globalvalueobjects.AuditInfo;
 import pl.jkap.sozzt.projectpurposesmappreparation.domain.ProjectPurposesMapPreparationFacade;
 import pl.jkap.sozzt.projectpurposesmappreparation.dto.AddProjectPurposesMapPreparationDto;
-import pl.jkap.sozzt.routedrawing.domain.RoutePreparationFacade;
-import pl.jkap.sozzt.routedrawing.dto.AddRoutePreparationDto;
+import pl.jkap.sozzt.routepreparation.domain.RoutePreparationFacade;
+import pl.jkap.sozzt.routepreparation.dto.AddRoutePreparationDto;
 import pl.jkap.sozzt.terrainvision.domain.TerrainVisionFacade;
 
 import java.io.Serializable;
@@ -85,6 +85,7 @@ class Contract implements Serializable {
         } else {
             beginRoutePreparationStep(routePreparationFacade);
         }
+        //todo Start wypisów
     }
 
     void completeProjectPurposesMapPreparation(RoutePreparationFacade routePreparationFacade) {
@@ -95,7 +96,11 @@ class Contract implements Serializable {
     void completeRoutePreparation() {
         ContractStep routePreparationStep = getContractStep(ContractStepType.ROUTE_PREPARATION);
         routePreparationStep.completeStep();
-        beginConsentsCollectionStep();
+        if (getContractStep(ContractStepType.CONSENTS_COLLECTION).isCompleted()) {
+            beginPreparationDocumentationStep();
+        } else {
+            beginConsentsCollectionStep();
+        }
     }
 
     void completeConsentsCollection() {
@@ -137,7 +142,9 @@ class Contract implements Serializable {
 
     private void beginConsentsCollectionStep() {
         ContractStep consentsCollectionStep = getContractStep(ContractStepType.CONSENTS_COLLECTION);
-        consentsCollectionStep.beginStep();
+        if(!consentsCollectionStep.isCompleted()) {
+            consentsCollectionStep.beginStep();
+        }
     }
 
     private void completeConsentsCollectionStep() {
@@ -147,8 +154,8 @@ class Contract implements Serializable {
 
     private void beginPreparationDocumentationStep() {
         ContractStep consentsCollectionStep = getContractStep(ContractStepType.CONSENTS_COLLECTION);
-        ContractStep projectPurposesMapPreparationStep = getContractStep(ContractStepType.PROJECT_PURPOSES_MAP_PREPARATION);
-        if(consentsCollectionStep.isCompleted() && projectPurposesMapPreparationStep.isCompleted()) {
+        ContractStep routePreparationStep = getContractStep(ContractStepType.ROUTE_PREPARATION);
+        if(consentsCollectionStep.isCompleted() && routePreparationStep.isCompleted()) {
             ContractStep preparationDocumentationStep = getContractStep(ContractStepType.PREPARATION_OF_DOCUMENTATION);
             preparationDocumentationStep.beginStep();
         }

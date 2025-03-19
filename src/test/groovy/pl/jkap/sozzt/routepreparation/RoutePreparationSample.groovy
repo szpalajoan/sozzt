@@ -1,8 +1,8 @@
 package pl.jkap.sozzt.routepreparation
 
 import pl.jkap.sozzt.contract.domain.ContractSample
-import pl.jkap.sozzt.routedrawing.dto.MapVerificationDto
-import pl.jkap.sozzt.routedrawing.dto.RoutePreparationDto
+import pl.jkap.sozzt.routepreparation.dto.MapVerificationDto
+import pl.jkap.sozzt.routepreparation.dto.RoutePreparationDto
 import pl.jkap.sozzt.sample.SampleModifier
 
 import java.time.Duration

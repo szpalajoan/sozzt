@@ -1,10 +1,10 @@
-package pl.jkap.sozzt.routedrawing.domain;
+package pl.jkap.sozzt.routepreparation.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import pl.jkap.sozzt.instant.InstantProvider;
-import pl.jkap.sozzt.routedrawing.dto.MapVerificationDto;
+import pl.jkap.sozzt.routepreparation.dto.MapVerificationDto;
 
 import java.time.Instant;
 

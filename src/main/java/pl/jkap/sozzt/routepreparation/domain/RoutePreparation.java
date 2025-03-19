@@ -1,4 +1,4 @@
-package pl.jkap.sozzt.routedrawing.domain;
+package pl.jkap.sozzt.routepreparation.domain;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -7,8 +7,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 import pl.jkap.sozzt.instant.InstantProvider;
-import pl.jkap.sozzt.routedrawing.dto.AddRoutePreparationDto;
-import pl.jkap.sozzt.routedrawing.dto.RoutePreparationDto;
+import pl.jkap.sozzt.routepreparation.dto.AddRoutePreparationDto;
+import pl.jkap.sozzt.routepreparation.dto.RoutePreparationDto;
 
 import java.time.Instant;
 import java.util.UUID;

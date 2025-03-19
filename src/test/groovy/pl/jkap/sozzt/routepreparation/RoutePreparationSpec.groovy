@@ -1,16 +1,14 @@
 package pl.jkap.sozzt.routepreparation
 
 import pl.jkap.sozzt.filestorage.dto.FileDto
-import pl.jkap.sozzt.projectpurposesmappreparation.exception.ProjectPurposesMapPreparationNotFoundException
-import pl.jkap.sozzt.routedrawing.dto.MapVerificationDto
-import pl.jkap.sozzt.routedrawing.exception.InvalidPersonResponsibleForRouteDrawingException
-import pl.jkap.sozzt.routedrawing.exception.RoutePreparationNotFoundException
-import pl.jkap.sozzt.sample.ContractFixture
+import pl.jkap.sozzt.routepreparation.dto.MapVerificationDto
+import pl.jkap.sozzt.routepreparation.exception.InvalidPersonResponsibleForRouteDrawingException
+import pl.jkap.sozzt.routepreparation.exception.RoutePreparationNotFoundException
 import pl.jkap.sozzt.sample.SozztSpecification
 
 import static pl.jkap.sozzt.sample.ExpectedStageSample.*
 
-class ProjectPurposesMapPreparationSpec extends SozztSpecification {
+class RoutePreparationSpec extends SozztSpecification {
 
     def "should add route preparation when project purposes map preparation is completed"() {
         when: "terrain vision is completed"
@@ -26,7 +24,7 @@ class ProjectPurposesMapPreparationSpec extends SozztSpecification {
         and: "$WALDEK_SURVEYOR is logged in"
             loginUser(WALDEK_SURVEYOR)
         when: "$WALDEK_SURVEYOR trys to get $KRYNICA_ROUTE_PREPARATION"
-        routePreparationFacade.getRoutePreparation(KRYNICA_CONTRACT.contractId)
+            routePreparationFacade.getRoutePreparation(KRYNICA_CONTRACT.contractId)
         then: "$KRYNICA_ROUTE_PREPARATION not exists"
             thrown(RoutePreparationNotFoundException)
     }
@@ -53,9 +51,9 @@ class ProjectPurposesMapPreparationSpec extends SozztSpecification {
         and: "$DANIEL_ROUTE_DRAWER approves correctness of the map"
             routePreparationFacade.approveCorrectnessOfTheMap(KRYNICA_CONTRACT.contractId)
         when: "$DANIEL_ROUTE_DRAWER chooses person responsible for route drawing"
-        routePreparationFacade.choosePersonResponsibleForRouteDrawing(KRYNICA_CONTRACT.contractId, DANIEL_ROUTE_DRAWER.name)
+            routePreparationFacade.choosePersonResponsibleForRouteDrawing(KRYNICA_CONTRACT.contractId, DANIEL_ROUTE_DRAWER.name)
         then: "Person responsible for route drawing is chosen"
-        routePreparationFacade.getRoutePreparation(KRYNICA_CONTRACT.contractId) ==
+            routePreparationFacade.getRoutePreparation(KRYNICA_CONTRACT.contractId) ==
                 with(KRYNICA_ROUTE_PREPARATION, [mapVerification: MapVerificationDto.builder().verificationDate(NOW).correctnessOfTheMap(true).build(),
                                                  routeDrawing   : KRYNICA_ROUTE_DRAWING])
     }

@@ -1,4 +1,4 @@
-package pl.jkap.sozzt.routedrawing.domain;
+package pl.jkap.sozzt.routepreparation.domain;
 
 import org.springframework.data.repository.CrudRepository;
 

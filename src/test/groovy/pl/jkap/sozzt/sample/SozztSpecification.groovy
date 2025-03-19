@@ -14,10 +14,10 @@ import pl.jkap.sozzt.documentation.domain.DocumentationConfiguration
 import pl.jkap.sozzt.documentation.domain.DocumentationEventPublisherStub
 import pl.jkap.sozzt.documentation.domain.DocumentationFacade
 import pl.jkap.sozzt.documentation.domain.DocumentationSample
-import pl.jkap.sozzt.routedrawing.domain.InMemoryRoutePreparationRepository
-import pl.jkap.sozzt.routedrawing.domain.RoutePreparationConfiguration
-import pl.jkap.sozzt.routedrawing.domain.RoutePreparationEventPublisherStub
-import pl.jkap.sozzt.routedrawing.domain.RoutePreparationFacade
+import pl.jkap.sozzt.routepreparation.domain.InMemoryRoutePreparationRepository
+import pl.jkap.sozzt.routepreparation.domain.RoutePreparationConfiguration
+import pl.jkap.sozzt.routepreparation.domain.RoutePreparationEventPublisherStub
+import pl.jkap.sozzt.routepreparation.domain.RoutePreparationFacade
 import pl.jkap.sozzt.routepreparation.RouteDrawingSample
 import pl.jkap.sozzt.documentation.domain.TermVerificationSample
 import pl.jkap.sozzt.filestorage.domain.*
@@ -38,7 +38,7 @@ import pl.jkap.sozzt.projectpurposesmappreparation.domain.ProjectPurposesMapPrep
 import pl.jkap.sozzt.projectpurposesmappreparation.domain.ProjectPurposesMapPreparationEventPublisherStub
 import pl.jkap.sozzt.projectpurposesmappreparation.domain.ProjectPurposesMapPreparationFacade
 import pl.jkap.sozzt.projectpurposesmappreparation.dto.ProjectPurposesMapPreparationDto
-import pl.jkap.sozzt.routedrawing.dto.RoutePreparationDto
+import pl.jkap.sozzt.routepreparation.dto.RoutePreparationDto
 import pl.jkap.sozzt.routepreparation.RoutePreparationSample
 import pl.jkap.sozzt.terrainvision.TerrainVisionSample
 import pl.jkap.sozzt.terrainvision.domain.ProjectPurposesMapPreparationNeed
@@ -66,7 +66,7 @@ class SozztSpecification extends Specification implements FileSample, RemarkSamp
     TerrainVisionFacade terrainVisionFacade = new TerrainVisionConfiguration().terrainVisionFacade(instantProvider, new TerrainVisionEventPublisherStub(eventInvoker))
     FileStorageFacade fileStorageFacade = new FileStorageConfigurator().fileStorageFacade(contractSecurityFacade, new FileEventPublisherStub(eventInvoker))
     ProjectPurposesMapPreparationFacade projectPurposesMapPreparationFacade = new ProjectPurposesMapPreparationConfiguration().projectPurposesMapPreparationFacade(new ProjectPurposesMapPreparationEventPublisherStub(eventInvoker), fileStorageFacade, instantProvider)
-    RoutePreparationFacade routePreparationFacade = new RoutePreparationConfiguration().routePreparationFacade(new InMemoryRoutePreparationRepository(), new RoutePreparationEventPublisherStub(eventInvoker), fileStorageFacade, instantProvider)
+    RoutePreparationFacade routePreparationFacade = new RoutePreparationConfiguration().routePreparationFacade(new RoutePreparationEventPublisherStub(eventInvoker), fileStorageFacade, instantProvider)
     ConsentsFacade consentsFacade = new ConsentsConfiguration().consentsFacade(fileStorageFacade, instantProvider, new ConsentsEventPublisherStub(eventInvoker))
     DocumentationFacade documentationFacade = new DocumentationConfiguration().documentationFacade(new DocumentationEventPublisherStub(eventInvoker), fileStorageFacade)
     RemarkFacade remarkFacade = new RemarkConfiguration().remarkFacade(instantProvider)

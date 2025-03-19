@@ -8,7 +8,7 @@ import static pl.jkap.sozzt.sample.ExpectedStageSample.BEGIN_PROJECT_PURPOSES_MA
 
 class CompleteProjectPurposesMapPreparationStepSpec extends SozztSpecification {
 
-    def "Should complete a project purposes map preparation"() {
+    def "Should complete a project purposes map preparation and begin route preparation"() {
         given: "there is $KRYNICA_TERRAIN_VISION stage"
             addKrynicaContractOnStage(BEGIN_PROJECT_PURPOSES_MAP_PREPARATION)
         and: "$WALDEK_SURVEYOR is logged in"

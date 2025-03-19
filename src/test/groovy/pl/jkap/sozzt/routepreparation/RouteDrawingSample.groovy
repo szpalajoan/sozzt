@@ -1,6 +1,6 @@
 package pl.jkap.sozzt.routepreparation
 
-import pl.jkap.sozzt.routedrawing.dto.RouteDrawingDto
+import pl.jkap.sozzt.routepreparation.dto.RouteDrawingDto
 import pl.jkap.sozzt.sample.SampleModifier
 import pl.jkap.sozzt.user.UserSample
 

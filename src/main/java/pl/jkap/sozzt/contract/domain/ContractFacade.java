@@ -18,8 +18,8 @@ import pl.jkap.sozzt.preliminaryplanning.event.PreliminaryPlanCompletedEvent;
 import pl.jkap.sozzt.remark.domain.RemarkFacade;
 import pl.jkap.sozzt.projectpurposesmappreparation.domain.ProjectPurposesMapPreparationFacade;
 import pl.jkap.sozzt.projectpurposesmappreparation.event.ProjectPurposesMapPreparationCompletedEvent;
-import pl.jkap.sozzt.routedrawing.domain.RoutePreparationFacade;
-import pl.jkap.sozzt.routedrawing.event.RoutePreparationCompletedEvent;
+import pl.jkap.sozzt.routepreparation.domain.RoutePreparationFacade;
+import pl.jkap.sozzt.routepreparation.event.RoutePreparationCompletedEvent;
 import pl.jkap.sozzt.terrainvision.domain.TerrainVisionFacade;
 import pl.jkap.sozzt.terrainvision.event.TerrainVisionCompletedEvent;
 

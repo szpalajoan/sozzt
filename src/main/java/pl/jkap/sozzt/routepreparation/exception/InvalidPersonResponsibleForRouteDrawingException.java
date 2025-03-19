@@ -1,4 +1,4 @@
-package pl.jkap.sozzt.routedrawing.exception;
+package pl.jkap.sozzt.routepreparation.exception;
 
 import org.springframework.http.HttpStatus;
 import pl.jkap.sozzt.projectpurposesmappreparation.exception.ProjectPurposesMapPreparationException;
