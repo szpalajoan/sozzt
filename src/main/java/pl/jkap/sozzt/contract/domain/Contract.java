@@ -85,6 +85,7 @@ class Contract implements Serializable {
         } else {
             beginRoutePreparationStep(routePreparationFacade);
         }
+        //todo Start wypisów
     }
 
     void completeProjectPurposesMapPreparation(RoutePreparationFacade routePreparationFacade) {
@@ -95,7 +96,11 @@ class Contract implements Serializable {
     void completeRoutePreparation() {
         ContractStep routePreparationStep = getContractStep(ContractStepType.ROUTE_PREPARATION);
         routePreparationStep.completeStep();
-        beginConsentsCollectionStep();
+        if (getContractStep(ContractStepType.CONSENTS_COLLECTION).isCompleted()) {
+            beginPreparationDocumentationStep();
+        } else {
+            beginConsentsCollectionStep();
+        }
     }
 
     void completeConsentsCollection() {
@@ -135,9 +140,11 @@ class Contract implements Serializable {
         routePreparationStep.beginStep();
     }
 
-    void beginConsentsCollectionStep() {
+    private void beginConsentsCollectionStep() {
         ContractStep consentsCollectionStep = getContractStep(ContractStepType.CONSENTS_COLLECTION);
-        consentsCollectionStep.beginStep();
+        if(consentsCollectionStep.getContractStepStatus().equals(ContractStepStatus.ON_HOLD)) {
+            consentsCollectionStep.beginStep();
+        }
     }
 
     private void completeConsentsCollectionStep() {
@@ -147,8 +154,8 @@ class Contract implements Serializable {
 
     private void beginPreparationDocumentationStep() {
         ContractStep consentsCollectionStep = getContractStep(ContractStepType.CONSENTS_COLLECTION);
-        ContractStep projectPurposesMapPreparationStep = getContractStep(ContractStepType.PROJECT_PURPOSES_MAP_PREPARATION);
-        if(consentsCollectionStep.isCompleted() && projectPurposesMapPreparationStep.isCompleted()) {
+        ContractStep routePreparationStep = getContractStep(ContractStepType.ROUTE_PREPARATION);
+        if(consentsCollectionStep.isCompleted() && routePreparationStep.isCompleted()) {
             ContractStep preparationDocumentationStep = getContractStep(ContractStepType.PREPARATION_OF_DOCUMENTATION);
             preparationDocumentationStep.beginStep();
         }

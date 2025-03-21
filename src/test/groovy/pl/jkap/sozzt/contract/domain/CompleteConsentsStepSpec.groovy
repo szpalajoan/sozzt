@@ -34,6 +34,7 @@ class CompleteConsentsStepSpec extends SozztSpecification {
             contractFacade.getContract(KRYNICA_CONTRACT.contractId) == COMPLETED_CONSENTS_PREPARATION_KRYNICA_CONTRACT
     }
 
+    //todo po dodaniu ręcznego uruchamiania consentów dodać test - should complete consents step and not begin preparation of documentation step when route preparation is not completed
     def "should complete consents step and begin preparation of documentation step when project purposes map preparation is not necessary"() {
         given: "there is $KRYNICA_CONSENTS stage"
             addKrynicaContractOnStage(BEGIN_CONSENTS_COLLECTION, new ContractFixture().withMapRequired(false))

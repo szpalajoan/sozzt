@@ -66,7 +66,7 @@ class SozztSpecification extends Specification implements FileSample, RemarkSamp
     TerrainVisionFacade terrainVisionFacade = new TerrainVisionConfiguration().terrainVisionFacade(instantProvider, new TerrainVisionEventPublisherStub(eventInvoker))
     FileStorageFacade fileStorageFacade = new FileStorageConfigurator().fileStorageFacade(contractSecurityFacade, new FileEventPublisherStub(eventInvoker))
     ProjectPurposesMapPreparationFacade projectPurposesMapPreparationFacade = new ProjectPurposesMapPreparationConfiguration().projectPurposesMapPreparationFacade(new ProjectPurposesMapPreparationEventPublisherStub(eventInvoker), fileStorageFacade, instantProvider)
-    RoutePreparationFacade routePreparationFacade = new RoutePreparationConfiguration().routePreparationFacade(new InMemoryRoutePreparationRepository(), new RoutePreparationEventPublisherStub(eventInvoker), fileStorageFacade, instantProvider)
+    RoutePreparationFacade routePreparationFacade = new RoutePreparationConfiguration().routePreparationFacade(new RoutePreparationEventPublisherStub(eventInvoker), fileStorageFacade, instantProvider)
     ConsentsFacade consentsFacade = new ConsentsConfiguration().consentsFacade(fileStorageFacade, instantProvider, new ConsentsEventPublisherStub(eventInvoker))
     DocumentationFacade documentationFacade = new DocumentationConfiguration().documentationFacade(new DocumentationEventPublisherStub(eventInvoker), fileStorageFacade)
     RemarkFacade remarkFacade = new RemarkConfiguration().remarkFacade(instantProvider)

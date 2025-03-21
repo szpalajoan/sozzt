@@ -75,6 +75,14 @@ trait ContractSample implements UserSample, LocationSample, ContractDetailsSampl
                             with(KRYNICA_CONSENTS_COLLECTION_STEP, [contractStepStatus: IN_PROGRESS]),
                             with(KRYNICA_PREPARATION_OF_DOCUMENTATION_STEP, [contractStepStatus: ON_HOLD])]])
 
+    ContractDto COMPLETED_ROUTE_PREPARATION_KRYNICA_CONTRACT_WITH_COMPLETED_CONSENTS = with(COMPLETED_TERRAIN_VISION_KRYNICA_CONTRACT, [
+            contractSteps: [with(KRYNICA_CONTRACT_PRELIMINARY_PLAN_STEP, [contractStepStatus: DONE]),
+                            with(KRYNICA_CONTRACT_TERRAIN_VISION_STEP, [contractStepStatus: DONE]),
+                            with(KRYNICA_PROJECT_PURPOSES_MAP_PREPARATION_STEP, [contractStepStatus: DONE]),
+                            with(KRYNICA_ROUTE_PREPARATION_STEP, [contractStepStatus: DONE]),
+                            with(KRYNICA_CONSENTS_COLLECTION_STEP, [contractStepStatus: DONE]),
+                            with(KRYNICA_PREPARATION_OF_DOCUMENTATION_STEP, [contractStepStatus: IN_PROGRESS])]])
+
     ContractDto COMPLETED_CONSENTS_PREPARATION_KRYNICA_CONTRACT = with(COMPLETED_TERRAIN_VISION_KRYNICA_CONTRACT, [
             contractSteps: [with(KRYNICA_CONTRACT_PRELIMINARY_PLAN_STEP, [contractStepStatus: DONE]),
                             with(KRYNICA_CONTRACT_TERRAIN_VISION_STEP, [contractStepStatus: DONE]),
