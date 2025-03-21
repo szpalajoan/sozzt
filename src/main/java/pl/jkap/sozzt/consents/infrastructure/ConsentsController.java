@@ -18,18 +18,6 @@ public class ConsentsController {
 
     private final ConsentsFacade consentsFacade;
 
-    @PostMapping("{idContract}/begin-consents-collection")
-    @ResponseStatus(HttpStatus.CREATED)
-    public void beginConsentsCollection(@PathVariable UUID idContract) {
-        consentsFacade.beginConsentsCollection(idContract);
-    }
-
-    @PutMapping("{idContract}/request-for-land-extracts-sent")
-    @ResponseStatus(HttpStatus.OK)
-    public void requestForLandExtractsSent(@PathVariable UUID idContract) {
-        consentsFacade.requestForLandExtractsSent(idContract);
-    }
-
     @PostMapping("{idContract}/private-plot-owner-consent")
     @ResponseStatus(HttpStatus.CREATED)
     public void addPrivatePlotOwnerConsent(@PathVariable UUID idContract,@RequestBody AddPrivatePlotOwnerConsentDto addPrivatePlotOwnerConsentDto) {
