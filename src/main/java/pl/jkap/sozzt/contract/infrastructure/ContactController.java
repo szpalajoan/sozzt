@@ -43,6 +43,12 @@ public class ContactController {
         contractFacade.finalizeContractIntroduction(idContract);
     }
 
+    @PostMapping("{idContract}/begin-consents-collection")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void beginConsentsCollection(@PathVariable UUID idContract) {
+        contractFacade.beginConsentsCollection(idContract);
+    }
+
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<ContractDto> getContracts() {

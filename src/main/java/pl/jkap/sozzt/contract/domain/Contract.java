@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.ToString;
 import pl.jkap.sozzt.contract.dto.ContractDto;
 import pl.jkap.sozzt.contract.dto.EditContractDto;
+import pl.jkap.sozzt.contract.exception.ContractStepCompleteException;
 import pl.jkap.sozzt.contract.exception.ContractStepNotFoundException;
 import pl.jkap.sozzt.globalvalueobjects.AuditInfo;
 import pl.jkap.sozzt.projectpurposesmappreparation.domain.ProjectPurposesMapPreparationFacade;
@@ -96,11 +97,7 @@ class Contract implements Serializable {
     void completeRoutePreparation() {
         ContractStep routePreparationStep = getContractStep(ContractStepType.ROUTE_PREPARATION);
         routePreparationStep.completeStep();
-        if (getContractStep(ContractStepType.CONSENTS_COLLECTION).isCompleted()) {
-            beginPreparationDocumentationStep();
-        } else {
-            beginConsentsCollectionStep();
-        }
+        beginConsentsCollectionStep();
     }
 
     void completeConsentsCollection() {
@@ -110,6 +107,13 @@ class Contract implements Serializable {
 
     void completePreparationDocumentation() {
         completePreparationDocumentationStep();
+    }
+
+    void beginConsentsCollectionStep() {
+        ContractStep consentsCollectionStep = getContractStep(ContractStepType.CONSENTS_COLLECTION);
+        if (consentsCollectionStep.getContractStepStatus().equals(ContractStepStatus.ON_HOLD)) {
+            consentsCollectionStep.beginStep();
+        }
     }
 
     private void completeProjectPurposesMapPreparationStep() {
@@ -140,15 +144,12 @@ class Contract implements Serializable {
         routePreparationStep.beginStep();
     }
 
-    private void beginConsentsCollectionStep() {
-        ContractStep consentsCollectionStep = getContractStep(ContractStepType.CONSENTS_COLLECTION);
-        if(consentsCollectionStep.getContractStepStatus().equals(ContractStepStatus.ON_HOLD)) {
-            consentsCollectionStep.beginStep();
-        }
-    }
-
     private void completeConsentsCollectionStep() {
         ContractStep consentsCollectionStep = getContractStep(ContractStepType.CONSENTS_COLLECTION);
+        ContractStep routePreparationStep = getContractStep(ContractStepType.ROUTE_PREPARATION);
+        if (!routePreparationStep.isCompleted()) {
+            throw new ContractStepCompleteException("Route preparation step must be completed before completing consents collection step: " + contractId);
+        }
         consentsCollectionStep.completeStep();
     }
 

@@ -90,6 +90,13 @@ public class ContractFacade {
         log.info("Contract finalized: {}", contract);
     }
 
+    public void beginConsentsCollection(UUID contractId) {
+        Contract contract = findContract(contractId);
+        contract.beginConsentsCollectionStep();
+        contractRepository.save(contract);
+        log.info("Consents collection started: {}", contract);
+    }
+
     private void completePreliminaryPlan(UUID contractId) {
         Contract contract = findContract(contractId);
         contract.completePreliminaryPlan(terrainVisionFacade);

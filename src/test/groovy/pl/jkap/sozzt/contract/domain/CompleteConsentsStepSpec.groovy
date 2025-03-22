@@ -2,11 +2,12 @@ package pl.jkap.sozzt.contract.domain
 
 import pl.jkap.sozzt.consents.dto.PrivatePlotOwnerConsentDto
 import pl.jkap.sozzt.consents.dto.PublicPlotOwnerConsentDto
+import pl.jkap.sozzt.contract.exception.ContractStepCompleteException
 import pl.jkap.sozzt.sample.ContractFixture
 import pl.jkap.sozzt.sample.SozztSpecification
 
 import static pl.jkap.sozzt.sample.ExpectedStageSample.BEGIN_CONSENTS_COLLECTION
-import static pl.jkap.sozzt.sample.ExpectedStageSample.COMPLETED_TERRAIN_VISION
+import static pl.jkap.sozzt.sample.ExpectedStageSample.BEGIN_ROUTE_PREPARATION
 
 class CompleteConsentsStepSpec extends SozztSpecification {
 
@@ -34,6 +35,17 @@ class CompleteConsentsStepSpec extends SozztSpecification {
             contractFacade.getContract(KRYNICA_CONTRACT.contractId) == COMPLETED_CONSENTS_PREPARATION_KRYNICA_CONTRACT
     }
 
-    //todo po dodaniu ręcznego uruchamiania consentów dodać test - should complete consents step and not begin preparation of documentation step when route preparation is not completed
-
+    def "shouldn't complete consents step when route preparation is not completed"() {
+        given: "there is $KRYNICA_CONSENTS stage"
+            addKrynicaContractOnStage(BEGIN_ROUTE_PREPARATION, new ContractFixture().withZudRequired(false))
+        and: "$DANIEL_ROUTE_DRAWER starts consents collection"
+            loginUser(DANIEL_ROUTE_DRAWER)
+            contractFacade.beginConsentsCollection(KRYNICA_CONTRACT.contractId)
+        and: "$KASIA_CONSENT_CORDINATOR is logged in"
+            loginUser(KASIA_CONSENT_CORDINATOR)
+        when: "$KASIA_CONSENT_CORDINATOR completes consents collection"
+            consentsFacade.completeConsentsCollection(KRYNICA_CONTRACT.contractId)
+        then: "consents step is not completed"
+            thrown(ContractStepCompleteException)
+    }
 }
