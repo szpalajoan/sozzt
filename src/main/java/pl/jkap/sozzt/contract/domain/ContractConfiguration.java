@@ -6,6 +6,7 @@ import pl.jkap.sozzt.consents.domain.ConsentsFacade;
 import pl.jkap.sozzt.contractsecurity.domain.ContractSecurityFacade;
 import pl.jkap.sozzt.documentation.domain.DocumentationFacade;
 import pl.jkap.sozzt.instant.InstantProvider;
+import pl.jkap.sozzt.landextracts.domain.LandExtractsFacade;
 import pl.jkap.sozzt.preliminaryplanning.domain.PreliminaryPlanFacade;
 import pl.jkap.sozzt.remark.domain.RemarkFacade;
 import pl.jkap.sozzt.projectpurposesmappreparation.domain.ProjectPurposesMapPreparationFacade;
@@ -21,6 +22,7 @@ public class ContractConfiguration {
                                   TerrainVisionFacade terrainVisionFacade,
                                   ProjectPurposesMapPreparationFacade projectPurposesMapPreparationFacade,
                                   RoutePreparationFacade routePreparationFacade,
+                                  LandExtractsFacade landExtractsFacade,
                                   ConsentsFacade consentsFacade,
                                   DocumentationFacade documentationFacade,
                                   RemarkFacade remarkFacade,
@@ -32,6 +34,7 @@ public class ContractConfiguration {
                 .terrainVisionFacade(terrainVisionFacade)
                 .projectPurposesMapPreparationFacade(projectPurposesMapPreparationFacade)
                 .routePreparationFacade(routePreparationFacade)
+                .landExtractsFacade(landExtractsFacade)
                 .contractCreator(contractCreator)
                 .contractStepCreator(contractStepCreator(preliminaryPlanFacade, terrainVisionFacade, consentsFacade, documentationFacade))
                 .remarkFacade(remarkFacade)

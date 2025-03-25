@@ -16,7 +16,6 @@ public class ConsentsDto {
 
     private UUID consentId;
     private Instant deadline;
-    private boolean requestForPlotExtractsSent;
     private Collection<PrivatePlotOwnerConsentDto> privatePlotOwnerConsents;
     private Collection<PublicPlotOwnerConsentDto> publicOwnerConsents;
     private boolean completed;

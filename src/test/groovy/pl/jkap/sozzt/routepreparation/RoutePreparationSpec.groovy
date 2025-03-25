@@ -11,7 +11,7 @@ import static pl.jkap.sozzt.sample.ExpectedStageSample.*
 class RoutePreparationSpec extends SozztSpecification {
 
     def "should add route preparation when project purposes map preparation is completed"() {
-        when: "terrain vision is completed"
+        when: "project purposes map preparation is completed"
             addKrynicaContractOnStage(COMPLETED_PROJECT_PURPOSES_MAP_PREPARATION)
         then: "Project purposes map preparation is started"
             contractFacade.getContract(KRYNICA_CONTRACT.contractId) == COMPLETED_PROJECT_PURPOSES_MAP_PREPARATION_KRYNICA_CONTRACT

@@ -14,7 +14,11 @@ import pl.jkap.sozzt.documentation.domain.DocumentationConfiguration
 import pl.jkap.sozzt.documentation.domain.DocumentationEventPublisherStub
 import pl.jkap.sozzt.documentation.domain.DocumentationFacade
 import pl.jkap.sozzt.documentation.domain.DocumentationSample
-import pl.jkap.sozzt.routepreparation.domain.InMemoryRoutePreparationRepository
+import pl.jkap.sozzt.landextracts.domain.LandExtractsConfiguration
+import pl.jkap.sozzt.landextracts.domain.LandExtractsEventPublisherStub
+import pl.jkap.sozzt.landextracts.domain.LandExtractsSample
+import pl.jkap.sozzt.landextracts.domain.LandExtractsFacade
+import pl.jkap.sozzt.landextracts.dto.LandExtractsDto
 import pl.jkap.sozzt.routepreparation.domain.RoutePreparationConfiguration
 import pl.jkap.sozzt.routepreparation.domain.RoutePreparationEventPublisherStub
 import pl.jkap.sozzt.routepreparation.domain.RoutePreparationFacade
@@ -54,7 +58,7 @@ import static pl.jkap.sozzt.terrainvision.domain.ProjectPurposesMapPreparationNe
 
 class SozztSpecification extends Specification implements FileSample, RemarkSample, TermVerificationSample,
         DocumentationSample, ConsentsSample, PlotOwnerConsentSample,
-        PreliminaryPlanSample, TerrainVisionSample, ProjectPurposesMapPreparationSample, RoutePreparationSample,
+        PreliminaryPlanSample, TerrainVisionSample, ProjectPurposesMapPreparationSample, LandExtractsSample, RoutePreparationSample,
         ContractSample, LocationSample, ContractDetailsSample, ContractStepSample,
         RouteDrawingSample, UserSample, InstantSamples {
     Collection<UUID> addedFileIds = []
@@ -69,9 +73,10 @@ class SozztSpecification extends Specification implements FileSample, RemarkSamp
     RoutePreparationFacade routePreparationFacade = new RoutePreparationConfiguration().routePreparationFacade(new RoutePreparationEventPublisherStub(eventInvoker), fileStorageFacade, instantProvider)
     ConsentsFacade consentsFacade = new ConsentsConfiguration().consentsFacade(fileStorageFacade, instantProvider, new ConsentsEventPublisherStub(eventInvoker))
     DocumentationFacade documentationFacade = new DocumentationConfiguration().documentationFacade(new DocumentationEventPublisherStub(eventInvoker), fileStorageFacade)
+    LandExtractsFacade landExtractsFacade = new LandExtractsConfiguration().landExtractsFacade(instantProvider, new LandExtractsEventPublisherStub(eventInvoker))
     RemarkFacade remarkFacade = new RemarkConfiguration().remarkFacade(instantProvider)
     ContractFacade contractFacade = new ContractConfiguration().contractFacade(contractSecurityFacade, preliminaryPlanFacade, terrainVisionFacade,
-            projectPurposesMapPreparationFacade, routePreparationFacade, consentsFacade, documentationFacade, remarkFacade,
+            projectPurposesMapPreparationFacade, routePreparationFacade, landExtractsFacade, consentsFacade, documentationFacade, remarkFacade,
             instantProvider)
 
 
@@ -165,10 +170,15 @@ class SozztSpecification extends Specification implements FileSample, RemarkSamp
             loginUser(DAREK_PRELIMINARY_PLANER)
             completePreliminaryPlan(COMPLETED_KRYNICA_PRELIMINARY_PLAN)
         }
-        if(step >= COMPLETED_TERRAIN_VISION || step >= BEGIN_PROJECT_PURPOSES_MAP_PREPARATION || step >= BEGIN_CONSENTS_COLLECTION) {
+        if(step >= COMPLETED_TERRAIN_VISION || step >= BEGIN_PROJECT_PURPOSES_MAP_PREPARATION || step >= BEGIN_LAND_EXTRACTS) {
             loginUser(MARCIN_TERRAIN_VISIONER)
             completeTerrainVision(COMPLETED_KRYNICA_TERRAIN_VISION, contractFixture.isMapRequired)
         }
+        if(step >= COMPLETED_LAND_EXTRACTS){
+            loginUser(KASIA_CONSENT_CORDINATOR)
+            completeLandExtracts(COMPLETED_KRYNICA_LAND_EXTRACTS)
+        }
+        
         if(step >= COMPLETED_PROJECT_PURPOSES_MAP_PREPARATION) {
             loginUser(WALDEK_SURVEYOR)
             completeProjectPurposesMapPreparation(COMPLETED_KRYNICA_PROJECT_PURPOSE_MAP_PREPARATION, contractFixture.isMapRequired)
@@ -200,6 +210,11 @@ class SozztSpecification extends Specification implements FileSample, RemarkSamp
         terrainVisionFacade.completeTerrainVision(terrainVisionDto.terrainVisionId)
     }
 
+    void completeLandExtracts(LandExtractsDto landExtractsDto) {
+        landExtractsFacade.requestForLandExtractsSent(KRYNICA_CONTRACT.contractId)
+        landExtractsFacade.completeLandExtracts(landExtractsDto.landExtractsId)
+    }
+
     void completeProjectPurposesMapPreparation(ProjectPurposesMapPreparationDto projectPurposesMapPreparation, boolean isMapRequired = true) {
         if(!isMapRequired) {
             return
@@ -226,4 +241,6 @@ class SozztSpecification extends Specification implements FileSample, RemarkSamp
         }
         consentsFacade.completeConsentsCollection(consentsDto.consentId)
     }
+
+
 }

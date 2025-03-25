@@ -17,6 +17,8 @@ import pl.jkap.sozzt.projectpurposesmappreparation.dto.AddProjectPurposesMapPrep
 import pl.jkap.sozzt.routepreparation.domain.RoutePreparationFacade;
 import pl.jkap.sozzt.routepreparation.dto.AddRoutePreparationDto;
 import pl.jkap.sozzt.terrainvision.domain.TerrainVisionFacade;
+import pl.jkap.sozzt.landextracts.domain.LandExtractsFacade;
+import pl.jkap.sozzt.landextracts.dto.AddLandExtractsDto;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -60,6 +62,7 @@ class Contract implements Serializable {
         contractSteps.add(contractStepCreator.createTerrainVisionStep(contractId, contractDetails.getOrderDate()));
         contractSteps.add(contractStepCreator.createProjectPurposesMapPreparationStep(contractDetails.getOrderDate()));
         contractSteps.add(contractStepCreator.createRoutePreparationStep(contractDetails.getOrderDate()));
+        contractSteps.add(contractStepCreator.createLandExtractsStep(contractDetails.getOrderDate()));
         contractSteps.add(contractStepCreator.createConsentsCollectionStep(contractId, contractDetails.getOrderDate(), zudConsentRequired));
         contractSteps.add(contractStepCreator.createPreparationOfDocumentationStep(contractId, contractDetails.getOrderDate()));
     }
@@ -79,14 +82,22 @@ class Contract implements Serializable {
         terrainVisionStep.beginStep();
     }
 
-    void completeTerrainVision(ProjectPurposesMapPreparationFacade projectPurposesMapPreparationFacade, RoutePreparationFacade routePreparationFacade, boolean projectPurposesMapPreparationNeed) {
+    void completeTerrainVision(ProjectPurposesMapPreparationFacade projectPurposesMapPreparationFacade, 
+                             RoutePreparationFacade routePreparationFacade, 
+                             LandExtractsFacade landExtractsFacade,
+                             boolean projectPurposesMapPreparationNeed) {
         completeTerrainVisionStep();
         if (projectPurposesMapPreparationNeed) {
             beginProjectPurposesMapPreparationStep(projectPurposesMapPreparationFacade);
         } else {
             beginRoutePreparationStep(routePreparationFacade);
         }
-        //todo Start wypisów
+        beginLandExtractsStep(landExtractsFacade);
+    }
+
+    public void completeLandExtracts() {
+        ContractStep landExtractsStep = getContractStep(ContractStepType.LAND_EXTRACTS);
+        landExtractsStep.completeStep();
     }
 
     void completeProjectPurposesMapPreparation(RoutePreparationFacade routePreparationFacade) {
@@ -167,7 +178,16 @@ class Contract implements Serializable {
         preparationDocumentationStep.completeStep();
     }
 
-    private ContractStep getContractStep(ContractStepType contractStepType) {
+    private void beginLandExtractsStep(LandExtractsFacade landExtractsFacade) {
+        ContractStep landExtractsStep = getContractStep(ContractStepType.LAND_EXTRACTS);
+        landExtractsFacade.addLandExtracts(AddLandExtractsDto.builder()
+                .landExtractsId(contractId)
+                .deadline(landExtractsStep.getDeadline())
+                .build());
+        landExtractsStep.beginStep();
+    }
+
+    public ContractStep getContractStep(ContractStepType contractStepType) {
         return contractSteps.stream()
                 .filter(step -> step.getContractStepType() == contractStepType)
                 .findFirst()

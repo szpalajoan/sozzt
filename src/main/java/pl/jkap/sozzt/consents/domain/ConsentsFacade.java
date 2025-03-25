@@ -42,14 +42,6 @@ public class ConsentsFacade {
         log.info("Consents created: {}", newConsent);
     }
 
-    public void requestForLandExtractsSent(UUID uuid) {
-        Consents consents = consentsRepository.findById(uuid)
-                .orElseThrow(() -> new ConsentsNotFoundException("Consents not found: " + uuid));
-        consents.requestForLandExtractsSent();
-        consentsRepository.save(consents);
-        log.info("Request for land extracts sent for consentsId: {}", consents.getConsentId());
-    }
-
     public PrivatePlotOwnerConsentDto addPrivatePlotOwnerConsent(UUID uuid, AddPrivatePlotOwnerConsentDto addPrivatePlotOwnerConsentDto) {
         Consents consents = consentsRepository.findById(uuid)
                 .orElseThrow(() -> new ConsentsNotFoundException("Consents not found: " + uuid));
@@ -165,7 +157,15 @@ public class ConsentsFacade {
                 .orElseThrow(() -> new ConsentsNotFoundException("Consents not found for contractId: " + consentsId));
         consents.markZudConsentAsSentByMail(instantProvider);
         consentsRepository.save(consents);
-        log.info("ZUD consent sent by mail for consentsId: {}", consentsId);
+        log.info("ZUD consent sent by mail: {}", consentsId);
+    }
+
+    public void acceptZudConsent(UUID consentsId) {
+        Consents consents = consentsRepository.findById(consentsId)
+                .orElseThrow(() -> new ConsentsNotFoundException("Consents not found for contractId: " + consentsId));
+        consents.acceptZudConsent(instantProvider);
+        consentsRepository.save(consents);
+        log.info("ZUD consent accepted: {}", consentsId);
     }
 
     public void invalidateZudConsent(UUID consentsId, String reason) {
@@ -173,6 +173,6 @@ public class ConsentsFacade {
                 .orElseThrow(() -> new ConsentsNotFoundException("Consents not found for contractId: " + consentsId));
         consents.invalidateZudConsent(reason, instantProvider);
         consentsRepository.save(consents);
-        log.info("ZUD consent invalidated for consentsId: {}", consentsId);
+        log.info("ZUD consent invalidated: {}", consentsId);
     }
 }

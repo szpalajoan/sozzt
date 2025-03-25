@@ -22,6 +22,8 @@ import pl.jkap.sozzt.routepreparation.domain.RoutePreparationFacade;
 import pl.jkap.sozzt.routepreparation.event.RoutePreparationCompletedEvent;
 import pl.jkap.sozzt.terrainvision.domain.TerrainVisionFacade;
 import pl.jkap.sozzt.terrainvision.event.TerrainVisionCompletedEvent;
+import pl.jkap.sozzt.landextracts.domain.LandExtractsFacade;
+import pl.jkap.sozzt.landextracts.event.LandExtractsCompletedEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,8 +41,10 @@ public class ContractFacade {
     private final ContractStepCreator contractStepCreator;
     private final TerrainVisionFacade terrainVisionFacade;
     private final ProjectPurposesMapPreparationFacade projectPurposesMapPreparationFacade;
+    private final LandExtractsFacade landExtractsFacade;
     private final RoutePreparationFacade routePreparationFacade;
     private final RemarkFacade remarkFacade;
+
 
     public ContractDto addContract(CreateContractDto createContractDto) {
         requireNonNull(createContractDto);
@@ -106,7 +110,7 @@ public class ContractFacade {
 
     private void completeTerrainVision(UUID contractId, boolean projectPurposesMapPreparationNeed) {
         Contract contract = findContract(contractId);
-        contract.completeTerrainVision(projectPurposesMapPreparationFacade, routePreparationFacade, projectPurposesMapPreparationNeed);
+        contract.completeTerrainVision(projectPurposesMapPreparationFacade, routePreparationFacade, landExtractsFacade, projectPurposesMapPreparationNeed);
         contractRepository.save(contract);
         log.info("Terrain vision finalized: {}", contract);
     }
@@ -123,6 +127,13 @@ public class ContractFacade {
         contract.completeRoutePreparation();
         contractRepository.save(contract);
         log.info("Route preparation finalized: {}", contract);
+    }
+
+    private void completeLandExtracts(UUID contractId) {
+        Contract contract = findContract(contractId);
+        contract.completeLandExtracts();
+        contractRepository.save(contract);
+        log.info("Land extracts completed for contract: {}", contractId);
     }
 
     private void completeConsentsCollection(UUID contractId) {
@@ -205,6 +216,12 @@ public class ContractFacade {
     @SuppressWarnings("unused")
     public void onDocumentationCompletedEvent(DocumentationCompletedEvent event) {
         completeDocumentation(event.getContractId());
+    }
+
+    @EventListener
+    @SuppressWarnings("unused")
+    public void onLandExtractsCompletedEvent(LandExtractsCompletedEvent event) {
+        completeLandExtracts(event.getContractId());
     }
 
 }

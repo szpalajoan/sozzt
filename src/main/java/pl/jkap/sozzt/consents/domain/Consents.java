@@ -20,15 +20,10 @@ class Consents {
 
     private UUID consentId;
     private Instant deadline;
-    private boolean requestForPlotExtractsSent;
     private Collection<PrivatePlotOwnerConsent> privatePlotOwnerConsents;
     private Collection<PublicOwnerConsent> publicOwnerConsents;
     private boolean isCompleted;
     private ZudConsent zudConsent;
-
-    void requestForLandExtractsSent() {
-        requestForPlotExtractsSent = true;
-    }
 
     PrivatePlotOwnerConsent addPrivatePlotOwnerConsent(AddPrivatePlotOwnerConsentDto addPrivatePlotOwnerConsentDto, InstantProvider instantProvider) {
         PrivatePlotOwnerConsent consent = PrivatePlotOwnerConsent.builder()
@@ -162,7 +157,6 @@ class Consents {
         return ConsentsDto.builder()
                 .consentId(consentId)
                 .deadline(deadline)
-                .requestForPlotExtractsSent(requestForPlotExtractsSent)
                 .privatePlotOwnerConsents(privatePlotOwnerConsents.stream().map(PrivatePlotOwnerConsent::dto).toList())
                 .publicOwnerConsents(publicOwnerConsents.stream().map(PublicOwnerConsent::dto).toList())
                 .zudConsent(zudConsent == null ? null : zudConsent.dto())
