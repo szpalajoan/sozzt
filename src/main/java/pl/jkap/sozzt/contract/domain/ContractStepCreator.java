@@ -53,7 +53,7 @@ class ContractStepCreator {
 
     ContractStep createLandExtractsStep(Instant contractOrderDate) {
         Instant deadline = contractOrderDate.plus(Duration.ofDays(70));
-        return new ContractStep(ContractStepType.LAND_EXTRACTS, ContractStepStatus.NOT_ACTIVE, deadline);
+        return new ContractStep(ContractStepType.LAND_EXTRACTS, ContractStepStatus.ON_HOLD, deadline);
     }
 
     ContractStep createConsentsCollectionStep(UUID contractId, Instant contractOrderDate, boolean zudConsentRequired) {

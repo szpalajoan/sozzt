@@ -40,7 +40,7 @@ trait ContractSample implements UserSample, LocationSample, ContractDetailsSampl
                             with(KRYNICA_CONTRACT_TERRAIN_VISION_STEP, [contractStepStatus: IN_PROGRESS]),
                             with(KRYNICA_PROJECT_PURPOSES_MAP_PREPARATION_STEP, [contractStepStatus: NOT_ACTIVE]),
                             with(KRYNICA_ROUTE_PREPARATION_STEP, [contractStepStatus: ON_HOLD]),
-                            with(KRYNICA_LAND_EXTRACTS_STEP, [contractStepStatus: NOT_ACTIVE]),
+                            with(KRYNICA_LAND_EXTRACTS_STEP, [contractStepStatus: ON_HOLD]),
                             with(KRYNICA_CONSENTS_COLLECTION_STEP, [contractStepStatus: ON_HOLD]),
                             with(KRYNICA_PREPARATION_OF_DOCUMENTATION_STEP, [contractStepStatus: ON_HOLD])]])
 
